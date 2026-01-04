@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "A robust template for debugging and testing High-Performance APIs"
 authors = ["Dare AbdulGoniyy adelekedare2012@gmail.com"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
