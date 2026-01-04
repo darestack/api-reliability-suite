@@ -22,6 +22,7 @@ Sound familiar? Most APIs are built without proper **observability**, **security
 This project is a **production-ready template** that shows you how to build APIs that are:
 
 - 🔍 **Observable** — Every request is traced, every error is logged in structured JSON
+- 🤖 **Intelligent** — Uses LLMs (Groq/OpenAI) to analyze logs and suggest fixes
 - 🛡️ **Secure** — Rate limiting & JWT authentication protect your resources
 - ✅ **Tested** — Automated tests catch bugs before they reach production
 - 🚀 **CI/CD Ready** — Push code, tests run automatically
@@ -33,6 +34,7 @@ This project is a **production-ready template** that shows you how to build APIs
 | Skill | Implementation |
 |-------|----------------|
 | **API Development** | FastAPI with async endpoints |
+| **Log Analysis (AI)** | Automated error triage via LLM (Groq/OpenAI/Google) |
 | **Structured Logging** | JSON logs via Structlog (ELK/Datadog ready) |
 | **Distributed Tracing** | OpenTelemetry instrumentation |
 | **Error Handling** | Global exception middleware |
@@ -71,6 +73,8 @@ docker run -p 8000:8000 reliability-suite
 | `GET /slow` | ❌ | ❌ | Simulates slow request (tracing demo) |
 | `POST /login` | ❌ | ❌ | Get JWT token (demo/secret123) |
 | `GET /protected` | ✅ | ❌ | Protected route (requires JWT) |
+| `GET /debug/summarize-errors`| ✅ | ❌ | **AI analyzes logs** and returns insights 🤖 |
+| `GET /metrics` | ❌ | ❌ | Prometheus metrics for Grafana 📊 |
 | `GET /force-error` | ❌ | ❌ | Triggers 500 error (error handling demo) |
 | `GET /docs` | ❌ | ❌ | Interactive Swagger docs |
 
@@ -97,11 +101,13 @@ View your traces at `http://localhost:16686`.
 
 ---
 
-## 🧠 Roadmap: AI-Powered Debugging
+## 🧠 AI-Powered Debugging
+This project includes a **Self-Healing AI Agent** that reads `app.json` logs and provides actionable insights.
 
-- 🤖 **LLM-Powered Log Analysis** — Auto-summarize error patterns
-- 🔮 **Predictive Alerts** — Detect anomalies before they become incidents
-- 💬 **Natural Language Queries** — "Show me all slow requests from yesterday"
+**How to use:**
+1. Set an API key in `.env`: `GROQ_API_KEY`, `OPENAI_API_KEY`, or `GOOGLE_API_KEY`.
+2. Hit the `/debug/summarize-errors` endpoint (requires auth).
+3. Receive a JSON summary of root causes and fixes.
 
 ---
 

@@ -1,6 +1,7 @@
 import logging
-import structlog
 import sys
+import structlog
+from logging.handlers import RotatingFileHandler
 from src.core.config import settings
 
 def configure_logging():
@@ -21,31 +22,33 @@ def configure_logging():
     cache_logger_on_first_use=True,
   )
 
+  root_logger = logging.getLogger()
+  root_logger.setLevel(settings.LOG_LEVEL.upper())
+
   # 3. Configure standard library logging
-  handler = logging.StreamHandler(sys.stdout)
+  console_handler = logging.StreamHandler(sys.stdout)
   
   # Use structlog's ProcessorFormatter to render the final JSON
-  formatter = structlog.stdlib.ProcessorFormatter(
+  console_formatter = structlog.stdlib.ProcessorFormatter(
+    foreign_pre_chain=shared_processors,
+    processors=[
+        structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+        structlog.dev.ConsoleRenderer(),
+    ],
+  )
+  console_handler.setFormatter(console_formatter)
+
+  # File Handler
+  # Rotate after 10MB, keeps last 5 files
+  file_handler = RotatingFileHandler("app.json", maxBytes=10*1024*1024, backupCount=5)
+  file_formatter = structlog.stdlib.ProcessorFormatter(
+    foreign_pre_chain=shared_processors,
     processors=[
         structlog.stdlib.ProcessorFormatter.remove_processors_meta,
         structlog.processors.JSONRenderer(),
     ],
-    foreign_pre_chain=shared_processors,
   )
-  handler.setFormatter(formatter)
+  file_handler.setFormatter(file_formatter)
 
-  root_logger = logging.getLogger()
-  # Avoid adding duplicate handlers (e.g. on reload)
-  # Ideally check if handler of this type exists, but for now simple check:
-  found = False
-  for h in root_logger.handlers:
-      if isinstance(h, logging.StreamHandler) and h.stream == sys.stdout:
-          # Assuming it's our handler or similar
-           h.setFormatter(formatter) # Update formatter just in case
-           found = True
-           break
-  
-  if not found:
-      root_logger.addHandler(handler)
-  
-  root_logger.setLevel(settings.LOG_LEVEL.upper())
+  # Add both handlers
+  root_logger.handlers = [console_handler, file_handler]

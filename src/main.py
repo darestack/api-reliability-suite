@@ -17,6 +17,9 @@ from src.core.auth import create_access_token, verify_password, get_password_has
 from jose import jwt, JWTError
 from src.core.auth import ALGORITHM
 from src.core.config import settings
+from prometheus_fastapi_instrumentator import Instrumentator
+from src.core.llm import summarize_with_llm
+import aiofiles
 
 
 
@@ -40,6 +43,9 @@ app = FastAPI(
   version="1.0.0",
   lifespan=lifespan
 )
+
+# Enable Prometheus metrics
+Instrumentator().instrument(app).expose(app)
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -113,6 +119,31 @@ async def protected_route(current_user: str = Depends(get_current_user)):
     return {"message": f"Hello, {current_user}! You accessed a protected route."}
 
 
+# 
+@app.get("/debug/summarize-errors")
+async def summarize_errors(current_user: str = Depends(get_current_user)):
+  """
+  (Admin only) Reads the last 100 lines of app.json and asks AI to summarize errors.
+    Requires Authentication!
+  """
+  log_file_path = "app.json" #Inspect your local log file
+  logs = []
+
+  try:
+    async with aiofiles.open(log_file_path, mode="r") as file:
+      async for line in file:
+        if "error" in line.lower() or "exception" in line.lower():
+          logs.append(line.strip())
+
+  except FileNotFoundError:
+    return {"summary": "No log file found."}
+
+  if not logs:
+    return {"summary": "No errors found in the log file."}
+
+  summary = await summarize_with_llm(logs)
+  return {"ai_summary": summary, "provider": "Auto-Selected"}
+  
 # 
 if __name__ == "__main__":
   uvicorn.run("src.main:app", host="0.0.0.0", port=8000, reload=True, log_level="warning")

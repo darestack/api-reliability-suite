@@ -1,0 +1,63 @@
+{"status": "starting_app", "event": "startup_event", "level": "info", "timestamp": "2026-01-04T16:25:50.468431Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:28:02.750374Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.13s.", "level": "warning", "timestamp": "2026-01-04T16:28:05.165902Z"}
+{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:28:12.022164Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:28:14.696674Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:28:15.535127Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:28:15.924956Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:28:16.244185Z"}
+{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /health", "level": "warning", "timestamp": "2026-01-04T16:28:16.646779Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.11s.", "level": "warning", "timestamp": "2026-01-04T16:28:17.024410Z"}
+{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /health", "level": "warning", "timestamp": "2026-01-04T16:28:17.121606Z"}
+{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /health", "level": "warning", "timestamp": "2026-01-04T16:28:17.589739Z"}
+{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /health", "level": "warning", "timestamp": "2026-01-04T16:28:17.902265Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 4.41s.", "level": "warning", "timestamp": "2026-01-04T16:28:20.427267Z"}
+{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:28:24.838371Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 0.91s.", "level": "warning", "timestamp": "2026-01-04T16:28:29.840253Z"}
+{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:28:37.516265Z"}
+{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T16:29:02.842094Z"}
+{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T16:29:02.842591Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.18s.", "level": "warning", "timestamp": "2026-01-04T16:29:07.518578Z"}
+{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T16:29:12.985095Z"}
+{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T16:29:12.985600Z"}
+{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T16:29:14.031206Z"}
+{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T16:29:14.031603Z"}
+{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:29:14.288350Z"}
+{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T16:29:15.353215Z"}
+{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T16:29:15.353616Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.13s.", "level": "warning", "timestamp": "2026-01-04T16:29:19.289797Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.62s.", "level": "warning", "timestamp": "2026-01-04T16:29:20.421549Z"}
+{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:29:25.325965Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:36:33.089200Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 0.84s.", "level": "warning", "timestamp": "2026-01-04T16:36:35.401134Z"}
+{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:36:42.448586Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:36:52.541141Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:36:52.846546Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:36:53.218155Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:36:53.551071Z"}
+{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /health", "level": "warning", "timestamp": "2026-01-04T16:36:54.220654Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.06s.", "level": "warning", "timestamp": "2026-01-04T16:36:57.453567Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 3.92s.", "level": "warning", "timestamp": "2026-01-04T16:37:00.462795Z"}
+{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:37:04.382316Z"}
+{"status": "stopping_app", "event": "shutdown_event", "level": "info", "timestamp": "2026-01-04T16:37:19.612113Z"}
+{"status": "starting_app", "event": "startup_event", "level": "info", "timestamp": "2026-01-04T16:38:45.706799Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:38:45.714746Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.15s.", "level": "warning", "timestamp": "2026-01-04T16:38:50.424462Z"}
+{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:38:57.669214Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.03s.", "level": "warning", "timestamp": "2026-01-04T16:39:47.674435Z"}
+{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:39:54.698453Z"}
+{"event": "HTTP Request: POST https://api.groq.com/openai/v1/chat/completions \"HTTP/1.1 403 Forbidden\"", "level": "info", "timestamp": "2026-01-04T16:39:57.233502Z"}
+{"error": "Error code: 403 - {'error': {'message': 'The model `llama-3.1-8b-instant` is blocked at the organization level. Please have the org admin enable this model in the org settings at https://console.groq.com/settings/limits', 'type': 'permissions_error', 'code': 'model_permission_blocked_org'}}", "path": "/debug/summarize-errors", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T16:39:57.234925Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 0.83s.", "level": "warning", "timestamp": "2026-01-04T16:39:59.700060Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 2.31s.", "level": "warning", "timestamp": "2026-01-04T16:40:00.527281Z"}
+{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:40:06.677942Z"}
+{"status": "stopping_app", "event": "shutdown_event", "level": "info", "timestamp": "2026-01-04T16:42:17.496720Z"}
+{"status": "starting_app", "event": "startup_event", "level": "info", "timestamp": "2026-01-04T16:42:18.330180Z"}
+{"event": "HTTP Request: POST https://api.groq.com/openai/v1/chat/completions \"HTTP/1.1 403 Forbidden\"", "level": "info", "timestamp": "2026-01-04T16:42:29.455473Z"}
+{"error": "Error code: 403 - {'error': {'message': 'The model `llama-3.1-8b-instant` is blocked at the organization level. Please have the org admin enable this model in the org settings at https://console.groq.com/settings/limits', 'type': 'permissions_error', 'code': 'model_permission_blocked_org'}}", "path": "/debug/summarize-errors", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T16:42:29.457015Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.18s.", "level": "warning", "timestamp": "2026-01-04T16:42:33.043819Z"}
+{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:42:40.835167Z"}
+{"event": "HTTP Request: POST https://api.groq.com/openai/v1/chat/completions \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T16:44:52.321637Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 0.84s.", "level": "warning", "timestamp": "2026-01-04T16:44:55.844667Z"}
+{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:45:02.388302Z"}
+{"status": "stopping_app", "event": "shutdown_event", "level": "info", "timestamp": "2026-01-04T16:46:58.477950Z"}

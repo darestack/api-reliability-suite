@@ -9,6 +9,11 @@ class Settings(BaseSettings):
   LOG_LEVEL: str = "info"
   OTLP_ENDPOINT: str | None = None # Where to send the traces
 
+  # LLM Provider Keys (set One of these)
+  OPENAI_API_KEY: str | None = None
+  GROQ_API_KEY: str | None = None
+  GOOGLE_API_KEY: str | None = None
+
   # Security Settings
   SECRET_KEY: str = "change-me-in-production"
 
