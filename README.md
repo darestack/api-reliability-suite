@@ -53,12 +53,25 @@ This project is a **production-ready template** that shows you how to build APIs
 ```bash
 git clone https://github.com/daretechie/api-reliability-suite.git
 cd api-reliability-suite
+
+# The fast way (using Makefile)
+make install
+make run
+
+# ...or manually with Poetry
 poetry install
 poetry run uvicorn src.main:app --reload
 ```
 
 ### Run with Docker
 ```bash
+### Run with Docker
+```bash
+# Using Makefile
+make docker-build
+make docker-run
+
+# ...or manually
 docker build -t reliability-suite .
 docker run -p 8000:8000 reliability-suite
 ```
@@ -82,7 +95,7 @@ docker run -p 8000:8000 reliability-suite
 
 ## 📡 Observability & Tracing
 
-This suite supports **OTLP (OpenTelemetry Line Protocol)** for production-grade tracing. 
+This suite supports **OTLP (OpenTelemetry Line Protocol)** for production-grade tracing.
 
 ### Connecting to Jaeger
 To see your traces in a dashboard, update your `.env`:
@@ -99,6 +112,11 @@ docker run -d --name jaeger \
 ```
 View your traces at `http://localhost:16686`.
 
+### 📊 Metrics & Grafana
+The app automatically exposes **RED metrics** (Rate, Errors, Duration) at `/metrics`.
+
+> **💡 Pro Tip:** Any DevOps team can scrape this endpoint with Prometheus and plug it into **Grafana** to build instant dashboards for latency, request volume, and error rates.
+
 ---
 
 ## 🧠 AI-Powered Debugging
@@ -111,11 +129,28 @@ This project includes a **Self-Healing AI Agent** that reads `app.json` logs and
 
 ---
 
-## 💖 Support This Project
+## � Developer Tools
+
+This project uses **Ruff** for linting and **Pre-Commit** for quality checks.
+
+```bash
+# Install git hooks (runs automatically on commit)
+make install-hooks
+
+# Run tests
+make test
+
+# Format code manually
+make format
+```
+
+---
+
+## �💖 Support This Project
 
 If this template helps you, consider [sponsoring my work](https://github.com/sponsors/daretechie)!
 
 ## 🤝 Hire Me
 
-Looking for a developer who understands **API reliability, security, and DevOps**?  
+Looking for a developer who understands **API reliability, security, and DevOps**?
 📧 [adelekedare2012@gmail.com](mailto:adelekedare2012@gmail.com) | [LinkedIn](https://linkedin.com/in/daretechie)

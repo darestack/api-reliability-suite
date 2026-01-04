@@ -61,3 +61,67 @@
 {"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 0.84s.", "level": "warning", "timestamp": "2026-01-04T16:44:55.844667Z"}
 {"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:45:02.388302Z"}
 {"status": "stopping_app", "event": "shutdown_event", "level": "info", "timestamp": "2026-01-04T16:46:58.477950Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T17:09:28.852704Z"}
+{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:09:28.854259Z"}
+{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T17:09:28.856691Z"}
+{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T17:09:28.857119Z"}
+{"event": "HTTP Request: GET http://test/force-error \"HTTP/1.1 500 Internal Server Error\"", "level": "info", "timestamp": "2026-01-04T17:09:28.857696Z"}
+{"event": "slow_endpoint_called", "level": "info", "timestamp": "2026-01-04T17:09:28.860111Z"}
+{"event": "HTTP Request: GET http://test/slow \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:09:30.863391Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:09:31.133433Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-04T17:09:31.379778Z"}
+{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-04T17:09:31.382844Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:09:31.628771Z"}
+{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:09:31.630281Z"}
+{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.03s.", "level": "warning", "timestamp": "2026-01-04T17:09:31.786608Z"}
+{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T17:09:39.071538Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T17:25:17.269939Z"}
+{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:25:17.271984Z"}
+{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T17:25:17.276271Z"}
+{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T17:25:17.276772Z"}
+{"event": "HTTP Request: GET http://test/force-error \"HTTP/1.1 500 Internal Server Error\"", "level": "info", "timestamp": "2026-01-04T17:25:17.277424Z"}
+{"event": "slow_endpoint_called", "level": "info", "timestamp": "2026-01-04T17:25:17.280166Z"}
+{"event": "HTTP Request: GET http://test/slow \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:25:19.283696Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:25:19.549817Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-04T17:25:19.796902Z"}
+{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-04T17:25:19.799997Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:25:20.047051Z"}
+{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:25:20.052715Z"}
+{"event": "Exception while exporting Span.", "exc_info": ["<class 'ValueError'>", "ValueError('I/O operation on closed file.')", "<traceback object at 0x7ce50f773d00>"], "level": "error", "timestamp": "2026-01-04T17:25:20.200074Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T17:29:30.845754Z"}
+{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:29:30.847158Z"}
+{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T17:29:30.849850Z"}
+{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T17:29:30.850325Z"}
+{"event": "HTTP Request: GET http://test/force-error \"HTTP/1.1 500 Internal Server Error\"", "level": "info", "timestamp": "2026-01-04T17:29:30.851012Z"}
+{"event": "slow_endpoint_called", "level": "info", "timestamp": "2026-01-04T17:29:30.853104Z"}
+{"event": "HTTP Request: GET http://test/slow \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:29:32.856701Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:29:33.120824Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-04T17:29:33.368043Z"}
+{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-04T17:29:33.370889Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:29:33.618048Z"}
+{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:29:33.619426Z"}
+{"event": "Exception while exporting Span.", "exc_info": ["<class 'ValueError'>", "ValueError('I/O operation on closed file.')", "<traceback object at 0x73c4a55fd900>"], "level": "error", "timestamp": "2026-01-04T17:29:33.763482Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T17:30:19.773894Z"}
+{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:30:19.775541Z"}
+{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T17:30:19.778302Z"}
+{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T17:30:19.778760Z"}
+{"event": "HTTP Request: GET http://test/force-error \"HTTP/1.1 500 Internal Server Error\"", "level": "info", "timestamp": "2026-01-04T17:30:19.779390Z"}
+{"event": "slow_endpoint_called", "level": "info", "timestamp": "2026-01-04T17:30:19.781626Z"}
+{"event": "HTTP Request: GET http://test/slow \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:30:21.785637Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:30:22.040930Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-04T17:30:22.287907Z"}
+{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-04T17:30:22.291529Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:30:22.539397Z"}
+{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:30:22.540870Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T17:31:35.024828Z"}
+{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:31:35.026294Z"}
+{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T17:31:35.029086Z"}
+{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T17:31:35.029559Z"}
+{"event": "HTTP Request: GET http://test/force-error \"HTTP/1.1 500 Internal Server Error\"", "level": "info", "timestamp": "2026-01-04T17:31:35.030222Z"}
+{"event": "slow_endpoint_called", "level": "info", "timestamp": "2026-01-04T17:31:35.032384Z"}
+{"event": "HTTP Request: GET http://test/slow \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:31:37.036486Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:31:37.295578Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-04T17:31:37.542150Z"}
+{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-04T17:31:37.545045Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:31:37.793032Z"}
+{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:31:37.794516Z"}
