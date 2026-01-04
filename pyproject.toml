@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "api-reliability-suite"
+version = "0.1.0"
+description = "A robust template for debugging and testing High-Performance APIs"
+authors = ["Dare AbdulGoniyy adelekedare2012@gmail.com"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.128.0"
+uvicorn = "^0.40.0"
+structlog = "^25.5.0"
+opentelemetry-sdk = "^1.39.1"
+opentelemetry-exporter-otlp-proto-grpc = "^1.39.1"
+opentelemetry-instrumentation-fastapi = "^0.60b1"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^9.0.2"
+pytest-asyncio = "^1.3.0"
+httpx = "^0.28.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
