@@ -13,16 +13,16 @@
 >
 > **"This endpoint is slow, but we can't figure out where the bottleneck is."**
 >
-> **"We deployed a fix, but it broke something else."**
+> **"We're getting hammered by bots and can't stop them."**
 
-Sound familiar? Most APIs are built without proper **observability** or **testing**—making debugging a nightmare.
+Sound familiar? Most APIs are built without proper **observability**, **security**, or **testing**—making debugging a nightmare.
 
 ## ✅ The Solution
 
 This project is a **production-ready template** that shows you how to build APIs that are:
 
 - 🔍 **Observable** — Every request is traced, every error is logged in structured JSON
-- 🛡️ **Resilient** — Global exception handling ensures clean error responses
+- 🛡️ **Secure** — Rate limiting & JWT authentication protect your resources
 - ✅ **Tested** — Automated tests catch bugs before they reach production
 - 🚀 **CI/CD Ready** — Push code, tests run automatically
 
@@ -36,6 +36,10 @@ This project is a **production-ready template** that shows you how to build APIs
 | **Structured Logging** | JSON logs via Structlog (ELK/Datadog ready) |
 | **Distributed Tracing** | OpenTelemetry instrumentation |
 | **Error Handling** | Global exception middleware |
+| **Rate Limiting** | Slowapi with IP-based throttling |
+| **Authentication** | JWT tokens with OAuth2 password flow |
+| **Configuration** | Environment-aware settings (Pydantic) |
+| **Containerization** | Multi-stage Docker build |
 | **Automated Testing** | Pytest with async support |
 | **CI/CD** | GitHub Actions with matrix testing |
 
@@ -43,6 +47,7 @@ This project is a **production-ready template** that shows you how to build APIs
 
 ## 🚀 Quick Start
 
+### Local Development
 ```bash
 git clone https://github.com/daretechie/api-reliability-suite.git
 cd api-reliability-suite
@@ -50,20 +55,49 @@ poetry install
 poetry run uvicorn src.main:app --reload
 ```
 
+### Run with Docker
+```bash
+docker build -t reliability-suite .
+docker run -p 8000:8000 reliability-suite
+```
+
+---
+
 ## 🔍 API Endpoints
 
-| Endpoint | Description |
-|----------|-------------|
-| `GET /health` | Health check |
-| `GET /slow` | Simulates slow request (tracing demo) |
-| `GET /force-error` | Triggers 500 error (error handling demo) |
-| `GET /docs` | Interactive Swagger docs |
+| Endpoint | Auth | Rate Limited | Description |
+|----------|------|--------------|-------------|
+| `GET /health` | ❌ | ✅ 5/min | Health check |
+| `GET /slow` | ❌ | ❌ | Simulates slow request (tracing demo) |
+| `POST /login` | ❌ | ❌ | Get JWT token (demo/secret123) |
+| `GET /protected` | ✅ | ❌ | Protected route (requires JWT) |
+| `GET /force-error` | ❌ | ❌ | Triggers 500 error (error handling demo) |
+| `GET /docs` | ❌ | ❌ | Interactive Swagger docs |
+
+---
+
+## 📡 Observability & Tracing
+
+This suite supports **OTLP (OpenTelemetry Line Protocol)** for production-grade tracing. 
+
+### Connecting to Jaeger
+To see your traces in a dashboard, update your `.env`:
+```env
+OTLP_ENDPOINT="http://localhost:4317"
+```
+Then run Jaeger via Docker:
+```bash
+docker run -d --name jaeger \
+  -e COLLECTOR_OTLP_ENABLED=true \
+  -p 16686:16686 \
+  -p 4317:4317 \
+  jaegertracing/all-in-one:latest
+```
+View your traces at `http://localhost:16686`.
 
 ---
 
 ## 🧠 Roadmap: AI-Powered Debugging
-
-> *Coming Soon: Intelligent observability features*
 
 - 🤖 **LLM-Powered Log Analysis** — Auto-summarize error patterns
 - 🔮 **Predictive Alerts** — Detect anomalies before they become incidents
@@ -77,5 +111,5 @@ If this template helps you, consider [sponsoring my work](https://github.com/spo
 
 ## 🤝 Hire Me
 
-Looking for a developer who understands **API reliability and DevOps**?  
+Looking for a developer who understands **API reliability, security, and DevOps**?  
 📧 [adelekedare2012@gmail.com](mailto:adelekedare2012@gmail.com) | [LinkedIn](https://linkedin.com/in/daretechie)

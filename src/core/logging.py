@@ -1,6 +1,7 @@
 import logging
 import structlog
 import sys
+from src.core.config import settings
 
 def configure_logging():
   # 1. Define shared processors (used by both structlog and stdlib)
@@ -47,4 +48,4 @@ def configure_logging():
   if not found:
       root_logger.addHandler(handler)
   
-  root_logger.setLevel(logging.INFO)
+  root_logger.setLevel(settings.LOG_LEVEL.upper())
