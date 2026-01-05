@@ -113,9 +113,26 @@ docker run -d --name jaeger \
 View your traces at `http://localhost:16686`.
 
 ### 📊 Metrics & Grafana
+
 The app automatically exposes **RED metrics** (Rate, Errors, Duration) at `/metrics`.
 
-> **💡 Pro Tip:** Any DevOps team can scrape this endpoint with Prometheus and plug it into **Grafana** to build instant dashboards for latency, request volume, and error rates.
+Spin up the full observability stack with:
+```bash
+docker compose up -d --build
+```
+
+| Service | URL | Login |
+|---------|-----|-------|
+| **API** | `http://localhost:8000` | — |
+| **Prometheus** | `http://localhost:9099` | — |
+| **Grafana** | `http://localhost:3030` | admin / admin |
+
+**First-Time Grafana Setup:**
+1. Open Grafana → Connections → Data Sources → Add Prometheus.
+2. Set URL to `http://prometheus:9090` (internal Docker DNS).
+3. Save & Test → Create your first dashboard!
+
+![Grafana Dashboard](docs/grafana-dashboard.png)
 
 ---
 
