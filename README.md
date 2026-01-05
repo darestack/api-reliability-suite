@@ -144,6 +144,32 @@ This project includes a **Self-Healing AI Agent** that reads `app.json` logs and
 
 ---
 
+## 🏗️ Architecture Highlight: Hybrid Logging
+
+Why do we log to both Console and File?
+
+1.  **Console (`stdout`)**: Follows **12-Factor App** principles. Allows Docker/K8s/Datadog to capture logs without config.
+2.  **File (`app.json`)**: Allows the **AI Agent** (running inside the app) to read its own history and perform self-diagnosis.
+
+This "Loopback" architecture enables the application to **debug itself** without external dependencies.
+
+---
+
+## 🧩 Technical Design & Patterns
+
+This project implements several advanced patterns that are often overlooked:
+
+### 1. Vendor-Agnostic AI Adapter
+The system doesn't rely on a single AI provider. `src/core/llm.py` automatically detects which API keys are present (Groq, OpenAI, or Google) and dynamically selects the best available provider. This prevents vendor lock-in.
+
+### 2. Hermetic Testing
+Tests (`tests/conftest.py`) are designed to run in complete isolation. We mock the OpenTelemetry exporters so that running `make test` doesn't require a running Jaeger instance or Docker container. The tests verify the *logic*, not the infrastructure.
+
+### 3. Fail-Safe Configuration
+Using Pydantic Settings (`src/core/config.py`), the application enforces strict type validation on startup. If a required environment variable is missing, the app crashes immediately (Fail Fast) rather than failing silently at runtime.
+
+---
+
 ## 👷 Developer Tools
 
 This project uses **Ruff** for linting and **Pre-Commit** for quality checks.
