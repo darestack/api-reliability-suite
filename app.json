@@ -149,3 +149,15 @@
 {"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-04T22:01:57.234727Z"}
 {"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T22:01:57.481498Z"}
 {"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T22:01:57.487299Z"}
+{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-05T04:10:49.261221Z"}
+{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-05T04:10:49.262893Z"}
+{"event": "triggering_error", "level": "info", "timestamp": "2026-01-05T04:10:49.265472Z"}
+{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-05T04:10:49.265944Z"}
+{"event": "HTTP Request: GET http://test/force-error \"HTTP/1.1 500 Internal Server Error\"", "level": "info", "timestamp": "2026-01-05T04:10:49.266710Z"}
+{"event": "slow_endpoint_called", "level": "info", "timestamp": "2026-01-05T04:10:49.269646Z"}
+{"event": "HTTP Request: GET http://test/slow \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-05T04:10:51.272624Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-05T04:10:51.533804Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-05T04:10:51.814591Z"}
+{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-05T04:10:51.818976Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-05T04:10:52.116701Z"}
+{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-05T04:10:52.119085Z"}

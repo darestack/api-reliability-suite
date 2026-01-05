@@ -65,8 +65,6 @@ poetry run uvicorn src.main:app --reload
 
 ### Run with Docker
 ```bash
-### Run with Docker
-```bash
 # Using Makefile
 make docker-build
 make docker-run
@@ -146,7 +144,7 @@ This project includes a **Self-Healing AI Agent** that reads `app.json` logs and
 
 ---
 
-## � Developer Tools
+## 👷 Developer Tools
 
 This project uses **Ruff** for linting and **Pre-Commit** for quality checks.
 
@@ -163,7 +161,7 @@ make format
 
 ---
 
-## �💖 Support This Project
+## 💖 Support This Project
 
 If this template helps you, consider [sponsoring my work](https://github.com/sponsors/daretechie)!
 
