@@ -1,5 +1,7 @@
 # API Reliability & Debugging Suite
 
+![Thumbnail](docs/thumbnail.png)
+
 ![CI Pipeline](https://github.com/daretechie/api-reliability-suite/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.12%20%7C%203.13-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.128-009688)
