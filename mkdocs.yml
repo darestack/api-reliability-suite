@@ -5,6 +5,9 @@ site_author: daretechie
 repo_url: https://github.com/daretechie/api-reliability-suite
 repo_name: daretechie/api-reliability-suite
 
+extra_css:
+  - stylesheets/extra.css
+
 theme:
   name: material
   logo: docs/thumbnail.png
@@ -19,9 +22,6 @@ theme:
     - search.highlight
     - content.code.copy
     - content.tabs.link
-
-extra_css:
-  - stylesheets/extra.css
   palette:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
