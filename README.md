@@ -128,14 +128,16 @@ See the lifecycle of every request.
 
 ### Run Full Stack (Recommended)
 ```bash
-# Spins up API + Prometheus + Jaeger + Grafana
+# Build image
+make docker-build
+
+# Start API + Prometheus + Jaeger + Grafana
 make stack-up
 ```
 
-### Run API Only
+### Stop All Services
 ```bash
-make docker-build
-make docker-run
+make stack-down
 ```
 
 ---
