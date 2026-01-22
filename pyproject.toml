@@ -26,6 +26,7 @@ openai = "^2.14.0"
 google-generativeai = "^0.8.6"
 aiofiles = "^25.1.0"
 pybreaker = "^1.4.1"
+mkdocs-material = "^9.7.1"
 
 
 [tool.poetry.group.dev.dependencies]
