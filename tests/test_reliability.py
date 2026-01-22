@@ -23,21 +23,44 @@ async def test_custom_correlation_id(client):
 @pytest.mark.asyncio
 async def test_circuit_breaker_flow(client):
     """Verify circuit breaker trips and returns fallback"""
+    from src.core.circuit_breaker import external_api_breaker
+
+    # Ensure breaker is closed before starting
+    external_api_breaker.close()
+
     # 1. Enable failure simulation
     await client.post("/simulate-failure/true")
 
     # 2. Hit it until it trips (threshold is 5)
-    # We expect 502 while it fails normally
-    for _ in range(5):
+    # The endpoint should return 502 Bad Gateway during failures, eventually 200 (Fallback)
+    circuit_opened = False
+    for i in range(7):
         resp = await client.get("/external-api")
-        # If it returns 200, it might be due to race or state issue in some envs,
-        # but locally it should be 502. We'll be lenient if it already tripped.
-        assert resp.status_code in [502, 200]
 
-    # 3. Next request should be OPEN and return fallback (200)
+        if resp.status_code == 502:
+            # Still failing, circuit closed
+            continue
+        elif resp.status_code == 200:
+            # Circuit might have opened
+            data = resp.json()
+            if data.get("source") == "cache":
+                circuit_opened = True
+                break
+            else:
+                assert False, f"Iteration {i+1}: got 200 OK (success) but expected failure/fallback. Body: {data}"
+        else:
+            assert False, f"Iteration {i+1}: Unexpected status {resp.status_code}"
+
+    assert circuit_opened, "Circuit did not open after 7 failed attempts"
+
+    # 3. Verify it stays open
     resp = await client.get("/external-api")
     assert resp.status_code == 200
     assert resp.json()["source"] == "cache"
+
+    # 4. Reset
+    await client.post("/simulate-failure/false")
+    external_api_breaker.close()
 
 
 @pytest.mark.asyncio

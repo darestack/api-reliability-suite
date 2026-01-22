@@ -70,7 +70,7 @@ async def test_protected_with_valid_token(client):
         "/protected", headers={"Authorization": f"Bearer {token}"}
     )
     assert response.status_code == 200
-    assert "Hello, demo" in response.json()["message"]
+    assert "Hello demo, you are authorized!" in response.json()["message"]
 
 
 # --- Rate Limiting Tests ---
