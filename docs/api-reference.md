@@ -2,7 +2,7 @@
 
 The API provides interactive documentation via Swagger UI.
 
-👉 **[Launch Interactive Docs (Swagger UI)](http://localhost:8000/docs)**
+👉 **[Launch Interactive Docs (Swagger UI)](http://localhost:8000/docs)** *(Requires running app locally)*
 
 ## Endpoint Summary
 
