@@ -16,8 +16,8 @@ theme:
     - navigation.tabs
     - navigation.sections
     - navigation.top
-    - navigation.instant  # SPA-like transitions
-    - navigation.tracking # URL tracking
+    - navigation.instant
+    - navigation.tracking
     - search.suggest
     - search.highlight
     - content.code.copy
