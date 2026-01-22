@@ -5,6 +5,8 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    environment:
+      - OTLP_ENDPOINT=http://jaeger:4317
     networks:
       - monitoring
 
