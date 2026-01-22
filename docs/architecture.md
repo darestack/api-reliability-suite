@@ -38,12 +38,12 @@ graph TD
     API --> Service
     Service --> Domain
     Service --> Repo
-    
+
     API -.-> OTel
     API -.-> Metrics
     LLM -.-> API
     HTTP -.-> OTel
-    
+
     OTel --> Jaeger
     Metrics --> Prom
 ```
