@@ -131,6 +131,11 @@ docker compose up -d --build
 1. Open Grafana → Connections → Data Sources → Add Prometheus.
 2. Set URL to `http://prometheus:9090` (internal Docker DNS).
 3. Save & Test → Create your first dashboard!
+4. **Import the Reliability Dashboard**:
+    - Dashboards → New → Import.
+    - Paste content from [`infra/grafana/dashboard.json`](infra/grafana/dashboard.json).
+    - Select your Prometheus data source.
+    - Click **Load**.
 
 ![Grafana Dashboard](docs/grafana-dashboard.png)
 
