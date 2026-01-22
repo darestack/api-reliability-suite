@@ -2,21 +2,21 @@
 
 This suite enables enterprise-grade observability out of the box, giving you full visibility into your API's health and performance.
 
-## 1. The "WOW" Dashboard (Grafana)
+## 1. Real-Time Dashboard (Grafana)
 
-We provide a pre-configured Grafana Dashboard that visualizes the health of your API in real-time.
+The suite includes a comprehensive Grafana Dashboard designed for SREs and Reliability Engineers. It provides immediate visibility into system health without requiring manual query construction.
 
 ![Grafana Dashboard](grafana-dashboard.png)
 
-!!! abstract "Key Metrics Tracked"
-    *   **SLO Tracking**: Error Budget Burn Rate (Are we reliable enough?)
-    *   **User Experience**: P99 Latency (How slow is the slowest 1%?)
-    *   **Resilience**: Live Circuit Breaker status.
+!!! abstract "Key Metrics"
+    *   **SLO Tracking**: Monitors the Error Budget Burn Rate to detect reliability risks early.
+    *   **Latency Distribution**: Tracks P99 Latency to ensure performance for tail-end users.
+    *   **System Resilience**: Visualizes Circuit Breaker states in real-time.
 
-!!! tip "How to Import"
-    1.  Open Grafana (`http://localhost:3030`).
-    2.  Go to **Dashboards** -> **New** -> **Import**.
-    3.  Upload the file: `infra/grafana/dashboard.json`.
+!!! tip "Import Instructions"
+    1.  Access Grafana at `http://localhost:3030`.
+    2.  Navigate to **Dashboards** -> **New** -> **Import**.
+    3.  Upload the configuration file: `infra/grafana/dashboard.json`.
     4.  Select **Prometheus** as the data source.
 
 ## 2. Distributed Tracing (Jaeger)
