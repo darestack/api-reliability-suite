@@ -3,6 +3,7 @@
 ![Thumbnail](docs/thumbnail.png)
 
 ![CI Pipeline](https://github.com/daretechie/api-reliability-suite/actions/workflows/ci.yml/badge.svg)
+[![Documentation](https://img.shields.io/badge/docs-live-forestgreen)](https://daretechie.github.io/api-reliability-suite/)
 ![Version](https://img.shields.io/badge/version-1.0.0-gold)
 ![Architecture](https://img.shields.io/badge/architecture-Hexagonal-orange)
 ![Python](https://img.shields.io/badge/python-3.12%20%7C%203.13-blue)
