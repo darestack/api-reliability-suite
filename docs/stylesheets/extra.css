@@ -1,0 +1,59 @@
+/* Animations for MkDocs Material */
+
+/* 1. Fade In Up for Main Content */
+.md-content__inner {
+    animation: fade-in-up 0.6s ease-out forwards;
+    opacity: 0; /* Start hidden */
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 2. Hero Image Float Animation (for index.md) */
+img[src$="thumbnail.png"] {
+    animation: float 6s ease-in-out infinite;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    border-radius: 12px;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+/* 3. Button Hover Scale */
+.md-button {
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.2s;
+}
+
+.md-button:hover {
+    transform: scale(1.05);
+}
+
+/* 4. Admonition (Alerts) Pop-In */
+.admonition {
+    animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+    animation-delay: 0.2s; /* Slight delay after main content */
+    animation-fill-mode: forwards;
+}
+
+@keyframes pop-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
