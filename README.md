@@ -126,31 +126,16 @@ See the lifecycle of every request.
 
 ---
 
-## 🚀 Quick Start
-
-### Local Development
+### Run Full Stack (Recommended)
 ```bash
-git clone https://github.com/daretechie/api-reliability-suite.git
-cd api-reliability-suite
-
-# The fast way (using Makefile)
-make install
-make run
-
-# ...or manually with Poetry
-poetry install
-poetry run uvicorn src.main:app --reload
+# Spins up API + Prometheus + Jaeger + Grafana
+make stack-up
 ```
 
-### Run with Docker
+### Run API Only
 ```bash
-# Using Makefile
 make docker-build
 make docker-run
-
-# ...or manually
-docker build -t reliability-suite .
-docker run -p 8000:8000 reliability-suite
 ```
 
 ---

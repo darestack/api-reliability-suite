@@ -22,7 +22,13 @@ docker-build:
 	docker build -t reliability-suite .
 
 docker-run:
-	docker run -p 8000:8000 reliability-suite
+	docker run --env-file .env -p 8000:8000 reliability-suite
+
+stack-up:
+	docker compose up -d
+
+stack-down:
+	docker compose down
 
 clean:
 	rm -rf .pytest_cache .ruff_cache .coverage htmlcov app.json app.log app.json.*

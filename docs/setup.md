@@ -30,9 +30,9 @@
     To spin up the full stack (API + Prometheus + Jaeger + Grafana):
 
     ```bash
-    # Build and Run
+    # Build and start all services
     make docker-build
-    make docker-run
+    make stack-up
     ```
 
     **Service Registry:**
