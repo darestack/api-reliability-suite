@@ -1,6 +1,6 @@
-# Observability & "Day 2" Operations
+# Operations & Monitoring
 
-Building the API is only "Day 1". "Day 2" is about operating, monitoring, and debugging it in production. This suite enables enterprise-grade observability out of the box.
+This suite enables enterprise-grade observability out of the box, giving you full visibility into your API's health and performance.
 
 ## 1. The "WOW" Dashboard (Grafana)
 
