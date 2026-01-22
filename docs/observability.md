@@ -54,3 +54,12 @@ Located in `src/core/circuit_breaker.py`.
 
 ### Rate Limiting
 Located in `src/core/rate_limit.py`. Implements the **Token Bucket** algorithm to protect endpoints like `/login` from brute-force attacks.
+
+## 4. Intelligent Debugging (AI Agent)
+
+When incidents occur, the **AI Agent** (`/debug/summarize-errors`) acts as a Level 1 Support Engineer. It analyzes the raw JSON logs and generates a **Structured Root Cause Analysis**.
+
+![AI Triage Screenshot](ai-debug-screenshot.png)
+
+!!! quote "Automated Triage"
+    Instead of grepping through thousands of log lines, you get a clean **JSON Report** identifying the exact point of failure (e.g., "Connection Refused on port 4317").

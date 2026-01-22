@@ -148,6 +148,8 @@ docker run -p 8000:8000 reliability-suite
 ## 🧠 AI-Powered Debugging
 This project includes a **Self-Healing AI Agent** that reads `app.json` logs and provides actionable insights.
 
+![AI Agent Screenshot](docs/ai-debug-screenshot.png)
+
 **How to use:**
 1. Set an API key in `.env`: `GROQ_API_KEY`, `OPENAI_API_KEY`, or `GOOGLE_API_KEY`.
 2. Hit the `/debug/summarize-errors` endpoint (requires auth).
