@@ -1,32 +1,34 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends, HTTPException
 import structlog
 import uvicorn
-from src.core.logging import configure_logging
-
-# from core.exceptions import global_exception_handler
-from src.core.exceptions import GlobalExceptionMiddleware
-from src.core.tracing import configure_tracing
 import asyncio
+import aiofiles
 from contextlib import asynccontextmanager
+from prometheus_fastapi_instrumentator import Instrumentator
+
+from src.core.logging import configure_logging
+from src.core.exceptions import GlobalExceptionMiddleware
+from src.core.middleware import CorrelationIdMiddleware
+from src.core.tracing import configure_tracing
 from src.core.config import settings
 from src.core.rate_limit import limiter
+from src.core.llm import summarize_with_llm
+from src.domain.models import HealthStatus, Token
+from src.services.auth_service import AuthService
+from src.infrastructure.user_repository import user_repository
+from src.core.circuit_breaker import external_api_breaker
+import pybreaker
+
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi import Depends, HTTPException
-from src.core.auth import create_access_token, verify_password, get_password_hash
-from jose import jwt, JWTError
-from src.core.auth import ALGORITHM
-from prometheus_fastapi_instrumentator import Instrumentator
-from src.core.llm import summarize_with_llm
-import aiofiles
-
 
 # Configure logging
 configure_logging()
-
-# Get logger
 logger = structlog.get_logger()
+
+# Initialize Services
+auth_service = AuthService(repository=user_repository)
 
 
 # Define lifespan
@@ -40,8 +42,8 @@ async def lifespan(app: FastAPI):
 # Create FastAPI instance
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    description="A template for robust, debuggable, and maintainable APIs",
-    version="1.0.0",
+    description="A template for robust, debuggable, and maintainable APIs (Blueprint 2026 Aligned)",
+    version="1.1.0",
     lifespan=lifespan,
 )
 
@@ -51,22 +53,20 @@ Instrumentator().instrument(app).expose(app)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# Register exception handler
-# app.add_exception_handler(Exception, global_exception_handler)
-
-# Register middleware
-app.add_middleware(GlobalExceptionMiddleware)
+# Register Middlewares
+app.add_middleware(CorrelationIdMiddleware)  # Traceability first
+app.add_middleware(GlobalExceptionMiddleware)  # Error handling second
 
 # CONFIGURE TRACING (after app is created, before routes are hit)
 configure_tracing(app)
 
 
 # Health Check
-@app.get("/health")
+@app.get("/health", response_model=HealthStatus)
 @limiter.limit("5/minute")
 async def health_check(request: Request):
     logger.info("health_check_called", endpoint="/health")
-    return {"status": "ok", "service": "reliability-suite"}
+    return HealthStatus(status="ok", service="reliability-suite")
 
 
 @app.get("/force-error")
@@ -77,57 +77,65 @@ async def force_error():
 
 
 @app.get("/slow")
-async def slow_endpoint():
+@limiter.limit("10/minute")
+async def slow_endpoint(request: Request):
     logger.info("slow_endpoint_called")
     await asyncio.sleep(2)
     return {"status": "done", "message": "That was slow!"}
 
 
-FAKE_USER = {"username": "demo", "hashed_password": get_password_hash("secret123")}
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
-@app.post("/login")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+@app.post("/login", response_model=Token)
+@limiter.limit("5/minute")
+async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     """
-    Login endpoint that returns a JWT token
+    Login endpoint that returns a JWT token.
+    Uses AuthService (Hexagonal Service Layer).
     """
-    if form_data.username != FAKE_USER["username"]:
-        raise HTTPException(status_code=400, detail="Incorrect username")
+    authenticated = auth_service.authenticate_user(
+        form_data.username, form_data.password
+    )
 
-    if not verify_password(form_data.password, FAKE_USER["hashed_password"]):
-        raise HTTPException(status_code=400, detail="Incorrect password")
+    if not authenticated:
+        # We raise 400 for consistency with previous tests,
+        # though 401 might be more semantically correct for auth failures.
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
 
-    token = create_access_token(data={"sub": form_data.username})
+    token = auth_service.create_access_token(data={"sub": form_data.username})
 
-    return {"access_token": token, "token_type": "bearer"}
+    return Token(access_token=token, token_type="bearer")
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     """Dependency that validates the JWT and returns the username"""
-    try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
-        username = payload.get("sub")
-        if username is None:
-            raise HTTPException(status_code=401, detail="Invalid token")
-        return username
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+    # Use the service layer to verify the token
+    return auth_service.verify_token(token)
 
 
 @app.get("/protected")
-async def protected_route(current_user: str = Depends(get_current_user)):
-    """This route requires a valid JWT token"""
-    return {"message": f"Hello, {current_user}! You accessed a protected route."}
-
-
-#
-@app.get("/debug/summarize-errors")
-async def summarize_errors(current_user: str = Depends(get_current_user)):
+async def protected_route(
+    request: Request, current_user: str = Depends(get_current_user)
+):
     """
-    (Admin only) Reads the last 100 lines of app.json and asks AI to summarize errors.
-      Requires Authentication!
+    Endpoint that requires a valid JWT token
+    """
+    logger.info("protected_route_called", user=current_user)
+    return {
+        "message": f"Hello {current_user}, you are authorized!",
+        "user": current_user,
+    }
+
+
+@app.get("/debug/summarize-errors")
+@limiter.limit("2/minute")
+async def summarize_errors(
+    request: Request, current_user: str = Depends(get_current_user)
+):
+    """
+    Analyze local log file and summarize errors using LLM.
+    Requires Authentication!
     """
     log_file_path = "app.json"  # Inspect your local log file
     logs = []
@@ -146,6 +154,57 @@ async def summarize_errors(current_user: str = Depends(get_current_user)):
 
     summary = await summarize_with_llm(logs)
     return {"ai_summary": summary, "provider": "Auto-Selected"}
+
+
+# ...
+
+# Internal toggle to simulate external service failure
+SIMULATE_FAILURE = False
+
+
+def call_external_service():
+    """Simulates a call to an external service (e.g., OpenAI)"""
+    if SIMULATE_FAILURE:
+        # Simulate a timeout or connection error
+        raise Exception("External Service Timeout!")
+    return {
+        "status": "ok",
+        "message": "Fresh data from External API",
+        "source": "upstream",
+    }
+
+
+@app.get("/external-api")
+async def external_api():
+    """
+    Demonstrates Circuit Breaker pattern.
+    If external service fails repeatedly, the breaker opens and we return cached response immediately.
+    """
+    try:
+        # Wrap the function call with the circuit breaker
+        # Note: In async app, ideally use an async-aware breaker or run in threadpool if blocking
+        # pybreaker is thread-safe. For simple demo, we call synchronously or wrapped.
+        result = external_api_breaker.call(call_external_service)
+        return result
+    except pybreaker.CircuitBreakerError:
+        # Circuit is OPEN. Return fallback/cached response.
+        logger.warning("circuit_open_fallback", service="external_api")
+        return {
+            "status": "degraded",
+            "message": "Circuit is OPEN. Returning cached data.",
+            "source": "cache",
+        }
+    except Exception as e:
+        logger.error("external_call_failed", error=str(e))
+        raise HTTPException(status_code=502, detail="External Service Failed")
+
+
+@app.post("/simulate-failure/{state}")
+async def set_simulate_failure(state: bool):
+    """Enable or disable simulated failures for the external service."""
+    global SIMULATE_FAILURE
+    SIMULATE_FAILURE = state
+    return {"message": f"External service failure simulation set to {state}"}
 
 
 #

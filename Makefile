@@ -1,4 +1,4 @@
-.PHONY: install run test lint format docker-build docker-run
+.PHONY: install run test lint format docker-build docker-run clean
 
 install:
 	poetry install
@@ -7,7 +7,7 @@ run:
 	poetry run uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 
 test:
-	OTLP_ENDPOINT="" poetry run pytest -v
+	OTLP_ENDPOINT="" poetry run pytest -v --cov=src --cov-report=term-missing
 
 lint:
 	poetry run ruff check .
@@ -23,3 +23,7 @@ docker-build:
 
 docker-run:
 	docker run -p 8000:8000 reliability-suite
+
+clean:
+	rm -rf .pytest_cache .ruff_cache .coverage htmlcov app.json app.log app.json.*
+	find . -type d -name "__pycache__" -exec rm -rf {} +

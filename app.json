@@ -1,163 +1,61 @@
-{"status": "starting_app", "event": "startup_event", "level": "info", "timestamp": "2026-01-04T16:25:50.468431Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:28:02.750374Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.13s.", "level": "warning", "timestamp": "2026-01-04T16:28:05.165902Z"}
-{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:28:12.022164Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:28:14.696674Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:28:15.535127Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:28:15.924956Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:28:16.244185Z"}
-{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /health", "level": "warning", "timestamp": "2026-01-04T16:28:16.646779Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.11s.", "level": "warning", "timestamp": "2026-01-04T16:28:17.024410Z"}
-{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /health", "level": "warning", "timestamp": "2026-01-04T16:28:17.121606Z"}
-{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /health", "level": "warning", "timestamp": "2026-01-04T16:28:17.589739Z"}
-{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /health", "level": "warning", "timestamp": "2026-01-04T16:28:17.902265Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 4.41s.", "level": "warning", "timestamp": "2026-01-04T16:28:20.427267Z"}
-{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:28:24.838371Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 0.91s.", "level": "warning", "timestamp": "2026-01-04T16:28:29.840253Z"}
-{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:28:37.516265Z"}
-{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T16:29:02.842094Z"}
-{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T16:29:02.842591Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.18s.", "level": "warning", "timestamp": "2026-01-04T16:29:07.518578Z"}
-{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T16:29:12.985095Z"}
-{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T16:29:12.985600Z"}
-{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T16:29:14.031206Z"}
-{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T16:29:14.031603Z"}
-{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:29:14.288350Z"}
-{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T16:29:15.353215Z"}
-{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T16:29:15.353616Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.13s.", "level": "warning", "timestamp": "2026-01-04T16:29:19.289797Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.62s.", "level": "warning", "timestamp": "2026-01-04T16:29:20.421549Z"}
-{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:29:25.325965Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:36:33.089200Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 0.84s.", "level": "warning", "timestamp": "2026-01-04T16:36:35.401134Z"}
-{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:36:42.448586Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:36:52.541141Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:36:52.846546Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:36:53.218155Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:36:53.551071Z"}
-{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /health", "level": "warning", "timestamp": "2026-01-04T16:36:54.220654Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.06s.", "level": "warning", "timestamp": "2026-01-04T16:36:57.453567Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 3.92s.", "level": "warning", "timestamp": "2026-01-04T16:37:00.462795Z"}
-{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:37:04.382316Z"}
-{"status": "stopping_app", "event": "shutdown_event", "level": "info", "timestamp": "2026-01-04T16:37:19.612113Z"}
-{"status": "starting_app", "event": "startup_event", "level": "info", "timestamp": "2026-01-04T16:38:45.706799Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T16:38:45.714746Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.15s.", "level": "warning", "timestamp": "2026-01-04T16:38:50.424462Z"}
-{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:38:57.669214Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.03s.", "level": "warning", "timestamp": "2026-01-04T16:39:47.674435Z"}
-{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:39:54.698453Z"}
-{"event": "HTTP Request: POST https://api.groq.com/openai/v1/chat/completions \"HTTP/1.1 403 Forbidden\"", "level": "info", "timestamp": "2026-01-04T16:39:57.233502Z"}
-{"error": "Error code: 403 - {'error': {'message': 'The model `llama-3.1-8b-instant` is blocked at the organization level. Please have the org admin enable this model in the org settings at https://console.groq.com/settings/limits', 'type': 'permissions_error', 'code': 'model_permission_blocked_org'}}", "path": "/debug/summarize-errors", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T16:39:57.234925Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 0.83s.", "level": "warning", "timestamp": "2026-01-04T16:39:59.700060Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 2.31s.", "level": "warning", "timestamp": "2026-01-04T16:40:00.527281Z"}
-{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:40:06.677942Z"}
-{"status": "stopping_app", "event": "shutdown_event", "level": "info", "timestamp": "2026-01-04T16:42:17.496720Z"}
-{"status": "starting_app", "event": "startup_event", "level": "info", "timestamp": "2026-01-04T16:42:18.330180Z"}
-{"event": "HTTP Request: POST https://api.groq.com/openai/v1/chat/completions \"HTTP/1.1 403 Forbidden\"", "level": "info", "timestamp": "2026-01-04T16:42:29.455473Z"}
-{"error": "Error code: 403 - {'error': {'message': 'The model `llama-3.1-8b-instant` is blocked at the organization level. Please have the org admin enable this model in the org settings at https://console.groq.com/settings/limits', 'type': 'permissions_error', 'code': 'model_permission_blocked_org'}}", "path": "/debug/summarize-errors", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T16:42:29.457015Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.18s.", "level": "warning", "timestamp": "2026-01-04T16:42:33.043819Z"}
-{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:42:40.835167Z"}
-{"event": "HTTP Request: POST https://api.groq.com/openai/v1/chat/completions \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T16:44:52.321637Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 0.84s.", "level": "warning", "timestamp": "2026-01-04T16:44:55.844667Z"}
-{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T16:45:02.388302Z"}
-{"status": "stopping_app", "event": "shutdown_event", "level": "info", "timestamp": "2026-01-04T16:46:58.477950Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T17:09:28.852704Z"}
-{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:09:28.854259Z"}
-{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T17:09:28.856691Z"}
-{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T17:09:28.857119Z"}
-{"event": "HTTP Request: GET http://test/force-error \"HTTP/1.1 500 Internal Server Error\"", "level": "info", "timestamp": "2026-01-04T17:09:28.857696Z"}
-{"event": "slow_endpoint_called", "level": "info", "timestamp": "2026-01-04T17:09:28.860111Z"}
-{"event": "HTTP Request: GET http://test/slow \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:09:30.863391Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:09:31.133433Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-04T17:09:31.379778Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-04T17:09:31.382844Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:09:31.628771Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:09:31.630281Z"}
-{"event": "Transient error StatusCode.UNAVAILABLE encountered while exporting traces to localhost:4317, retrying in 1.03s.", "level": "warning", "timestamp": "2026-01-04T17:09:31.786608Z"}
-{"event": "Failed to export traces to localhost:4317, error code: StatusCode.UNAVAILABLE", "level": "error", "timestamp": "2026-01-04T17:09:39.071538Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T17:25:17.269939Z"}
-{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:25:17.271984Z"}
-{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T17:25:17.276271Z"}
-{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T17:25:17.276772Z"}
-{"event": "HTTP Request: GET http://test/force-error \"HTTP/1.1 500 Internal Server Error\"", "level": "info", "timestamp": "2026-01-04T17:25:17.277424Z"}
-{"event": "slow_endpoint_called", "level": "info", "timestamp": "2026-01-04T17:25:17.280166Z"}
-{"event": "HTTP Request: GET http://test/slow \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:25:19.283696Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:25:19.549817Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-04T17:25:19.796902Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-04T17:25:19.799997Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:25:20.047051Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:25:20.052715Z"}
-{"event": "Exception while exporting Span.", "exc_info": ["<class 'ValueError'>", "ValueError('I/O operation on closed file.')", "<traceback object at 0x7ce50f773d00>"], "level": "error", "timestamp": "2026-01-04T17:25:20.200074Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T17:29:30.845754Z"}
-{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:29:30.847158Z"}
-{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T17:29:30.849850Z"}
-{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T17:29:30.850325Z"}
-{"event": "HTTP Request: GET http://test/force-error \"HTTP/1.1 500 Internal Server Error\"", "level": "info", "timestamp": "2026-01-04T17:29:30.851012Z"}
-{"event": "slow_endpoint_called", "level": "info", "timestamp": "2026-01-04T17:29:30.853104Z"}
-{"event": "HTTP Request: GET http://test/slow \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:29:32.856701Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:29:33.120824Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-04T17:29:33.368043Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-04T17:29:33.370889Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:29:33.618048Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:29:33.619426Z"}
-{"event": "Exception while exporting Span.", "exc_info": ["<class 'ValueError'>", "ValueError('I/O operation on closed file.')", "<traceback object at 0x73c4a55fd900>"], "level": "error", "timestamp": "2026-01-04T17:29:33.763482Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T17:30:19.773894Z"}
-{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:30:19.775541Z"}
-{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T17:30:19.778302Z"}
-{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T17:30:19.778760Z"}
-{"event": "HTTP Request: GET http://test/force-error \"HTTP/1.1 500 Internal Server Error\"", "level": "info", "timestamp": "2026-01-04T17:30:19.779390Z"}
-{"event": "slow_endpoint_called", "level": "info", "timestamp": "2026-01-04T17:30:19.781626Z"}
-{"event": "HTTP Request: GET http://test/slow \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:30:21.785637Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:30:22.040930Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-04T17:30:22.287907Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-04T17:30:22.291529Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:30:22.539397Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:30:22.540870Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T17:31:35.024828Z"}
-{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:31:35.026294Z"}
-{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T17:31:35.029086Z"}
-{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T17:31:35.029559Z"}
-{"event": "HTTP Request: GET http://test/force-error \"HTTP/1.1 500 Internal Server Error\"", "level": "info", "timestamp": "2026-01-04T17:31:35.030222Z"}
-{"event": "slow_endpoint_called", "level": "info", "timestamp": "2026-01-04T17:31:35.032384Z"}
-{"event": "HTTP Request: GET http://test/slow \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:31:37.036486Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:31:37.295578Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-04T17:31:37.542150Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-04T17:31:37.545045Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:31:37.793032Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:31:37.794516Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T17:44:06.746328Z"}
-{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:44:06.748797Z"}
-{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T17:44:06.753126Z"}
-{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T17:44:06.753791Z"}
-{"event": "HTTP Request: GET http://test/force-error \"HTTP/1.1 500 Internal Server Error\"", "level": "info", "timestamp": "2026-01-04T17:44:06.754690Z"}
-{"event": "slow_endpoint_called", "level": "info", "timestamp": "2026-01-04T17:44:06.757868Z"}
-{"event": "HTTP Request: GET http://test/slow \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:44:08.761413Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:44:09.028943Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-04T17:44:09.277801Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-04T17:44:09.281584Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:44:09.532077Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T17:44:09.537926Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-04T22:01:54.702497Z"}
-{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T22:01:54.704677Z"}
-{"event": "triggering_error", "level": "info", "timestamp": "2026-01-04T22:01:54.707544Z"}
-{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-04T22:01:54.708066Z"}
-{"event": "HTTP Request: GET http://test/force-error \"HTTP/1.1 500 Internal Server Error\"", "level": "info", "timestamp": "2026-01-04T22:01:54.708872Z"}
-{"event": "slow_endpoint_called", "level": "info", "timestamp": "2026-01-04T22:01:54.711564Z"}
-{"event": "HTTP Request: GET http://test/slow \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T22:01:56.715858Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T22:01:56.983430Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-04T22:01:57.231722Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-04T22:01:57.234727Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T22:01:57.481498Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-04T22:01:57.487299Z"}
-{"endpoint": "/health", "event": "health_check_called", "level": "info", "timestamp": "2026-01-05T04:10:49.261221Z"}
-{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-05T04:10:49.262893Z"}
-{"event": "triggering_error", "level": "info", "timestamp": "2026-01-05T04:10:49.265472Z"}
-{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-05T04:10:49.265944Z"}
-{"event": "HTTP Request: GET http://test/force-error \"HTTP/1.1 500 Internal Server Error\"", "level": "info", "timestamp": "2026-01-05T04:10:49.266710Z"}
-{"event": "slow_endpoint_called", "level": "info", "timestamp": "2026-01-05T04:10:49.269646Z"}
-{"event": "HTTP Request: GET http://test/slow \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-05T04:10:51.272624Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-05T04:10:51.533804Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-05T04:10:51.814591Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-05T04:10:51.818976Z"}
-{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-05T04:10:52.116701Z"}
-{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-05T04:10:52.119085Z"}
+{"endpoint": "/health", "event": "health_check_called", "correlation_id": "f524f49f-8a61-45f6-ac79-5d600d60c47f", "level": "info", "timestamp": "2026-01-22T17:13:51.509791Z", "trace_id": "4687485135c6e7089ecdc90cb2d72821", "span_id": "0d49c9d9f4d2ccc4"}
+{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-22T17:13:51.514976Z"}
+{"event": "triggering_error", "correlation_id": "4b2137d4-9005-45ee-8466-1ff3b2f6c54d", "level": "info", "timestamp": "2026-01-22T17:13:51.522156Z", "trace_id": "60a5465beea7488899dc8b6aef315c29", "span_id": "2886942548338476"}
+{"error": "division by zero", "path": "/force-error", "method": "GET", "event": "unhandled_exception", "level": "error", "timestamp": "2026-01-22T17:13:51.523826Z", "trace_id": "60a5465beea7488899dc8b6aef315c29", "span_id": "2886942548338476"}
+{"event": "HTTP Request: GET http://test/force-error \"HTTP/1.1 500 Internal Server Error\"", "level": "info", "timestamp": "2026-01-22T17:13:51.525243Z"}
+{"event": "slow_endpoint_called", "correlation_id": "22fbf9ae-c088-44e8-ac8f-2b508b321a8e", "level": "info", "timestamp": "2026-01-22T17:13:51.530528Z", "trace_id": "d50524a57bfb7a3933515a4663d78a8d", "span_id": "b8ab776c5f7a5127"}
+{"event": "HTTP Request: GET http://test/slow \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-22T17:13:53.538214Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-22T17:13:53.933250Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-22T17:13:54.260603Z"}
+{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-22T17:13:54.268307Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-22T17:13:54.583968Z"}
+{"event": "HTTP Request: GET http://test/protected \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-22T17:13:54.588099Z"}
+{"endpoint": "/health", "event": "health_check_called", "correlation_id": "145ed199-7c89-4a81-bc0d-7d155ec7eef4", "level": "info", "timestamp": "2026-01-22T17:13:54.595715Z", "trace_id": "422bc7accaa3edcf4e8c6e655a4baadc", "span_id": "5e5e2c9cb68bdb51"}
+{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-22T17:13:54.598311Z"}
+{"endpoint": "/health", "event": "health_check_called", "correlation_id": "f0d672ea-563a-4156-816a-b8ebd61ba8b3", "level": "info", "timestamp": "2026-01-22T17:13:54.599719Z", "trace_id": "df797c42f8fd3e94236e8ec93696302c", "span_id": "ca4e31e46cfee081"}
+{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-22T17:13:54.601892Z"}
+{"endpoint": "/health", "event": "health_check_called", "correlation_id": "447becc6-6276-4263-8b0d-7a701d62ae05", "level": "info", "timestamp": "2026-01-22T17:13:54.603252Z", "trace_id": "3b1d5de4534ca227ff95a3771c4d2224", "span_id": "68619c2b93d62450"}
+{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-22T17:13:54.605782Z"}
+{"endpoint": "/health", "event": "health_check_called", "correlation_id": "ba40bcfa-87b1-423c-82d1-54985d846115", "level": "info", "timestamp": "2026-01-22T17:13:54.608297Z", "trace_id": "2d46c068136068eebb516dee88ed6291", "span_id": "f6b727c89cae3dde"}
+{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-22T17:13:54.611075Z"}
+{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /health", "correlation_id": "06a4fb22-e24c-4604-bdd4-30f93b2a536e", "level": "warning", "timestamp": "2026-01-22T17:13:54.613043Z", "trace_id": "0696df4948e3e03e6ec54de6297a22ba", "span_id": "0f8b3ad441a799d7"}
+{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 429 Too Many Requests\"", "level": "info", "timestamp": "2026-01-22T17:13:54.615586Z"}
+{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /health", "correlation_id": "1d03b457-fefc-43f5-b3e0-36a2f3159c5b", "level": "warning", "timestamp": "2026-01-22T17:13:54.617180Z", "trace_id": "deb9bce43f167602fda1f381fa33490b", "span_id": "1424fc2b93f86f6b"}
+{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 429 Too Many Requests\"", "level": "info", "timestamp": "2026-01-22T17:13:54.619238Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-22T17:13:54.933722Z"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 400 Bad Request\"", "level": "info", "timestamp": "2026-01-22T17:13:55.246245Z"}
+{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /login", "correlation_id": "e2abed94-f021-4a24-bbe7-713e7c61411f", "level": "warning", "timestamp": "2026-01-22T17:13:55.251116Z", "trace_id": "c24f481089e64925ab3f59dc4991da32", "span_id": "e977141be2d52cce"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 429 Too Many Requests\"", "level": "info", "timestamp": "2026-01-22T17:13:55.253329Z"}
+{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /login", "correlation_id": "970ba71c-84a2-429d-aed7-842c68fead77", "level": "warning", "timestamp": "2026-01-22T17:13:55.257249Z", "trace_id": "c3d8c25aeaf0ee428d0b134f6e489320", "span_id": "d2213299d5b32160"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 429 Too Many Requests\"", "level": "info", "timestamp": "2026-01-22T17:13:55.259501Z"}
+{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /login", "correlation_id": "8b407c3c-bde3-4ad8-b884-3f03243605c7", "level": "warning", "timestamp": "2026-01-22T17:13:55.265524Z", "trace_id": "770667f47735cea5dd47d77ab332ef4c", "span_id": "654cdf31598ab425"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 429 Too Many Requests\"", "level": "info", "timestamp": "2026-01-22T17:13:55.267754Z"}
+{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /login", "correlation_id": "f54b7b44-7bcb-48bc-843d-085273293acf", "level": "warning", "timestamp": "2026-01-22T17:13:55.271510Z", "trace_id": "50bbd1e1534a7fde2106ea4f7e24eee6", "span_id": "6263c3fc8b7e921b"}
+{"event": "HTTP Request: POST http://test/login \"HTTP/1.1 429 Too Many Requests\"", "level": "info", "timestamp": "2026-01-22T17:13:55.273465Z"}
+{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /health", "correlation_id": "4cee323d-2f7c-46e6-8da5-afd8b0368823", "level": "warning", "timestamp": "2026-01-22T17:13:56.195559Z", "trace_id": "4d5c59e5435cf0e9a019f2a8a83b0850", "span_id": "2ee4d078f44ac9d5"}
+{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 429 Too Many Requests\"", "level": "info", "timestamp": "2026-01-22T17:13:56.198678Z"}
+{"event": "ratelimit 5 per 1 minute (127.0.0.1) exceeded at endpoint: /health", "correlation_id": "test-corr-id-123", "level": "warning", "timestamp": "2026-01-22T17:13:56.204121Z", "trace_id": "02dbff92ad1c6eb83a56b4d902cbbed7", "span_id": "1eecb3c5abcacb5f"}
+{"event": "HTTP Request: GET http://test/health \"HTTP/1.1 429 Too Many Requests\"", "level": "info", "timestamp": "2026-01-22T17:13:56.207069Z"}
+{"event": "HTTP Request: POST http://test/simulate-failure/true \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-22T17:13:56.215446Z"}
+{"error": "External Service Timeout!", "event": "external_call_failed", "correlation_id": "77682fb2-6da5-4fc2-b929-7a5b877872ad", "level": "error", "timestamp": "2026-01-22T17:13:56.217863Z", "trace_id": "7bb1f75387804ccfe2d2ae67e611e491", "span_id": "2ea202334bbfdc2b"}
+{"event": "HTTP Request: GET http://test/external-api \"HTTP/1.1 502 Bad Gateway\"", "level": "info", "timestamp": "2026-01-22T17:13:56.220613Z"}
+{"error": "External Service Timeout!", "event": "external_call_failed", "correlation_id": "a886b1e0-d286-4e4b-89c9-63eb43a3f3ff", "level": "error", "timestamp": "2026-01-22T17:13:56.222007Z", "trace_id": "3482788f4d211443fb7feda92f39f1ce", "span_id": "09a13b9e91544082"}
+{"event": "HTTP Request: GET http://test/external-api \"HTTP/1.1 502 Bad Gateway\"", "level": "info", "timestamp": "2026-01-22T17:13:56.224071Z"}
+{"error": "External Service Timeout!", "event": "external_call_failed", "correlation_id": "a824e32a-b959-4d07-bdb5-947e325dc337", "level": "error", "timestamp": "2026-01-22T17:13:56.225510Z", "trace_id": "b3687904953f8c11d1539ed163658a85", "span_id": "9ebc409e5cde7b47"}
+{"event": "HTTP Request: GET http://test/external-api \"HTTP/1.1 502 Bad Gateway\"", "level": "info", "timestamp": "2026-01-22T17:13:56.227584Z"}
+{"error": "External Service Timeout!", "event": "external_call_failed", "correlation_id": "182f411d-11a9-4111-be8b-d2b37f021731", "level": "error", "timestamp": "2026-01-22T17:13:56.229164Z", "trace_id": "7b0876b8192b205b334c9a4ab43ce859", "span_id": "67dc924e75b9812c"}
+{"event": "HTTP Request: GET http://test/external-api \"HTTP/1.1 502 Bad Gateway\"", "level": "info", "timestamp": "2026-01-22T17:13:56.232396Z"}
+{"name": "external_api_breaker", "old_state": "closed", "new_state": "open", "event": "circuit_breaker_state_change", "correlation_id": "1cc84f27-d884-4c76-8076-5f3e7427afa9", "level": "info", "timestamp": "2026-01-22T17:13:56.234139Z", "trace_id": "f2e74488dc3e4ddf057df9f6ecb7a3d3", "span_id": "7b6208d076513b08"}
+{"service": "external_api", "event": "circuit_open_fallback", "correlation_id": "1cc84f27-d884-4c76-8076-5f3e7427afa9", "level": "warning", "timestamp": "2026-01-22T17:13:56.234677Z", "trace_id": "f2e74488dc3e4ddf057df9f6ecb7a3d3", "span_id": "7b6208d076513b08"}
+{"event": "HTTP Request: GET http://test/external-api \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-22T17:13:56.236973Z"}
+{"service": "external_api", "event": "circuit_open_fallback", "correlation_id": "47a928d6-44fb-469b-b214-c3f6269c09f1", "level": "warning", "timestamp": "2026-01-22T17:13:56.238292Z", "trace_id": "a2cc2e41a8cdc08d1d1310de7bf7cf00", "span_id": "16232c26f70400bf"}
+{"event": "HTTP Request: GET http://test/external-api \"HTTP/1.1 200 OK\"", "level": "info", "timestamp": "2026-01-22T17:13:56.241388Z"}
+{"event": "HTTP Request: GET http://test/debug/summarize-errors \"HTTP/1.1 401 Unauthorized\"", "level": "info", "timestamp": "2026-01-22T17:13:56.293494Z"}
+{"event": "Overriding of current TracerProvider is not allowed", "level": "warning", "timestamp": "2026-01-22T17:17:52.398338Z"}
+{"status": "starting_app", "event": "startup_event", "level": "info", "timestamp": "2026-01-22T17:17:52.420377Z"}
+{"status": "stopping_app", "event": "shutdown_event", "level": "info", "timestamp": "2026-01-22T17:18:44.465429Z"}
+{"event": "Overriding of current TracerProvider is not allowed", "level": "warning", "timestamp": "2026-01-22T17:19:46.321472Z"}
+{"status": "starting_app", "event": "startup_event", "level": "info", "timestamp": "2026-01-22T17:19:46.330788Z"}
+{"status": "stopping_app", "event": "shutdown_event", "level": "info", "timestamp": "2026-01-22T17:19:47.749801Z"}
+{"event": "Overriding of current TracerProvider is not allowed", "level": "warning", "timestamp": "2026-01-22T17:19:48.548873Z"}
+{"status": "starting_app", "event": "startup_event", "level": "info", "timestamp": "2026-01-22T17:19:48.561435Z"}

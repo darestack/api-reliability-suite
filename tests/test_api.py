@@ -46,7 +46,7 @@ async def test_login_wrong_password(client):
         "/login", data={"username": "demo", "password": "wrongpassword"}
     )
     assert response.status_code == 400
-    assert response.json()["detail"] == "Incorrect password"
+    assert response.json()["detail"] == "Incorrect username or password"
 
 
 @pytest.mark.asyncio
@@ -71,3 +71,30 @@ async def test_protected_with_valid_token(client):
     )
     assert response.status_code == 200
     assert "Hello, demo" in response.json()["message"]
+
+
+# --- Rate Limiting Tests ---
+
+
+@pytest.mark.asyncio
+async def test_health_rate_limit(client):
+    """Test that /health is rate limited after 5 requests"""
+    # We already had one request from test_health_check, but let's be safe
+    # and hit it 6 more times.
+    for _ in range(6):
+        response = await client.get("/health")
+
+    assert response.status_code == 429
+    assert "Rate limit exceeded" in response.text
+
+
+@pytest.mark.asyncio
+async def test_login_rate_limit(client):
+    """Test that /login is rate limited after 5 requests"""
+    for _ in range(6):
+        response = await client.post(
+            "/login", data={"username": "demo", "password": "wrongpassword"}
+        )
+
+    assert response.status_code == 429
+    assert "Rate limit exceeded" in response.text

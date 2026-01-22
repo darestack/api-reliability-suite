@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "api-reliability-suite"
-version = "0.1.0"
-description = "A robust template for debugging and testing High-Performance APIs"
+version = "1.0.0"
+description = "A Production-Ready Reliability Suite: Hexagonal Architecture, AI Triage, and Full-Stack Observability"
 authors = ["Dare AbdulGoniyy adelekedare2012@gmail.com"]
 readme = "README.md"
 package-mode = false
@@ -25,6 +25,7 @@ groq = "^1.0.0"
 openai = "^2.14.0"
 google-generativeai = "^0.8.6"
 aiofiles = "^25.1.0"
+pybreaker = "^1.4.1"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -33,6 +34,7 @@ pytest-asyncio = "^1.3.0"
 httpx = "^0.28.1"
 pre-commit = "^4.5.1"
 ruff = "^0.14.10"
+pytest-cov = "^7.0.0"
 
 [build-system]
 requires = ["poetry-core"]

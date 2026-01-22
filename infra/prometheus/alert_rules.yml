@@ -1,0 +1,15 @@
+groups:
+  - name: slo_alerts
+    rules:
+      - alert: HighErrorBudgetBurn
+        expr: |
+          sum(rate(fastapi_requests_total{status=~"5.."}[1h]))
+          /
+          sum(rate(fastapi_requests_total[1h]))
+          > 0.01
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High Error Rate detected"
+          description: "Error rate is above 1% for the last hour. Current value: {{ $value }}"
