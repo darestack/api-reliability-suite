@@ -1,6 +1,6 @@
 # 📚 Developer Handbook & Wiki
 
-This page serves as a high-density reference for the **Reliability Suite**. For detailed explanations, refer to the specific guides listed in the [Reference Index](#-reference-index).
+This page serves as a high-density reference for the **Reliability Suite**. For detailed explanations, refer to the specific guides listed in the [Reference Index](#reference-index).
 
 ---
 
