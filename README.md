@@ -159,7 +159,7 @@ make stack-down
 ## 🧠 AI-Powered Debugging
 This project includes a **Self-Healing AI Agent** that reads `app.json` logs and provides actionable insights.
 
-![AI Agent Screenshot](docs/ai-debug-screenshot.png)
+![AI Agent Screenshot](docs/assets/ai-debug-screenshot.png)
 
 **How to use:**
 1. Set an API key in `.env`: `GROQ_API_KEY`, `OPENAI_API_KEY`, or `GOOGLE_API_KEY`.

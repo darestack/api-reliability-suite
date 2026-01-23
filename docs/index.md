@@ -1,6 +1,6 @@
 # API Reliability & Debugging Suite
 
-![Thumbnail](thumbnail.png)
+![Thumbnail](assets/thumbnail.png)
 
 [![CI Pipeline](https://github.com/daretechie/api-reliability-suite/actions/workflows/ci.yml/badge.svg)](https://github.com/daretechie/api-reliability-suite/actions)
 ![Version](https://img.shields.io/badge/version-1.0.0-gold)

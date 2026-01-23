@@ -1,8 +1,10 @@
 # Architecture & Internals
 
-This project follows **Hexagonal Architecture** (also known as Ports & Adapters) to ensure the system remains testable, maintainable, and decoupled from frameworks.
+This project follows **Hexagonal Architecture** (Ports & Adapters). This design allows us to swap infrastructure (like switching from Groq to OpenAI) without touching our core business logic.
 
-## System Diagram
+---
+
+## 📐 System Diagram
 
 ```mermaid
 graph TD
@@ -48,13 +50,31 @@ graph TD
     Metrics --> Prom
 ```
 
-## The Codebase Explained
+---
 
-A breakdown of the critical modules that provide reliability.
+## 🛠️ The Codebase Explained
 
 | Path | Feature | Why it matters |
-|------|---------|----------------|
-| `src/core/middleware.py` | **Correlation ID** | Injects a unique `X-Correlation-ID` into every request. This ID is propagated to logs and external services, allowing you to stitch together the entire story of a single request. |
-| `src/core/config.py` | **Fail-Fast Settings** | Uses **Pydantic v2** strict mode to validate environment variables on startup. If a required key is missing, the application crashes immediately (safe) rather than failing efficiently at runtime. |
-| `src/services/` | **Hexagonal Services** | The business logic lives here. It relies only on domain models and is completely unaware of HTTP, FastAPI, or JSON. This makes it trivially testable. |
-| `src/domain/models.py` | **Rich Domain Models** | Uses Pydantic to ensure data integrity. "Garbage In" immediately results in a validation error, never "Garbage Out". |
+| :--- | :--- | :--- |
+| `src/core/middleware.py` | **Correlation ID** | Injects a unique `X-Correlation-ID` into every request for distributed tracing. |
+| `src/core/config.py` | **Fail-Fast Settings** | Uses Pydantic v2 strict mode to validate environment variables on startup. |
+| `src/core/circuit_breaker.py` | **Fault Tolerance** | Implementation of the Circuit Breaker pattern with state management (Open, Closed, Half-Open). |
+| `src/core/rate_limit.py` | **Token Bucket** | Efficient, thread-safe rate limiting logic. |
+| `src/services/` | **Hexagonal Services** | Framework-agnostic business logic. |
+| `src/domain/models.py` | **Data Integrity** | Pydantic models ensuring "Garbage In" never reaches our core logic. |
+
+---
+
+## ⚡ Resilience Implementation
+
+### Circuit Breakers
+Our implementation tracks failures over a rolling window.
+- **Trip Condition**: 5 consecutive failures.
+- **Cooldown**: 60 seconds.
+- **Metric**: Each state change is exported as a Prometheus metric for real-time monitoring.
+
+### Trace Propagation
+We implement **Context Propagation** in `src.infrastructure.http_client`. When calling external LLMs, the client automatically extracts the current trace context and injects it into the outgoing request headers.
+
+!!! info "ADRs"
+    For high-level design rationale, refer to the [Decision Log (ADRs)](adr/0001-hexagonal-architecture.md).

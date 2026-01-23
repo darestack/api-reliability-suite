@@ -1,86 +1,45 @@
-# 📚 The Reliability Suite Wiki
+# 📚 Developer Handbook & Wiki
 
-Welcome to the comprehensive knowledge base for the **API Reliability Suite**. This page aggregates everything you need to know about the design, technology, and operations of this platform.
+This page serves as a high-density reference for the **Reliability Suite**. For detailed explanations, refer to the specific guides listed in the [Reference Index](#-reference-index).
 
 ---
 
 ## 🏗️ Technical Stack
 
-We use a "Boring but Powerful" stack designed for 2026 enterprise standards.
-
 | Component | Technology | Why? |
 | :--- | :--- | :--- |
-| **Language** | Python 3.12+ | Type hints, performance, and vast ecosystem. |
-| **Framework** | FastAPI | High performance, auto-validation, and Swagger UI. |
-| **Validation** | Pydantic v2 | Strict data modeling and serialization. |
-| **Linting** | Ruff | Blazing fast replacement for Flake8/Black/Isort. |
-| **Logging** | Structlog | JSON-structured logging for observability. |
-| **Tracing** | OpenTelemetry | Open standard for distributed tracing. |
-| **Container** | Docker | Consistent deployment across environments. |
+| **Language** | Python 3.12+ | Performance, Type safety, Ecosystem. |
+| **Framework** | FastAPI | Async-first, Auto-validation (Pydantic). |
+| **Lint/Format** | Ruff | 100x faster than traditional tools. |
+| **Logging** | Structlog | JSON production-ready logging. |
+| **Observability** | OpenTelemetry | Vendor-neutral tracing standard. |
 
 ---
 
-## 🏛️ Architecture & Design
+## 🚨 Emergency & Common Commands
 
-We strictly follow **Hexagonal Architecture** (ADR-0001).
-
-*   **[Read the Architecture Guide](architecture.md)**
-*   **[View Decision Records (ADRs)](adr/0001-hexagonal-architecture.md)**
-
-### Key Design Patterns used:
-1.  **Repository Pattern**: `src/infrastructure/user_repository.py` hides database details.
-2.  **Circuit Breaker**: `src/core/circuit_breaker.py` protects against cascading failures.
-3.  **Dependency Injection**: FastAPI `Depends()` is used to inject Services into Controllers.
-
----
-
-## 🛡️ Resilience Features
-
-This API is designed to **fail gracefully**, never catastrophically.
-
-1.  **Rate Limiting**:
-    *   *Implementation*: Token Bucket Algorithm.
-    *   *Limit*: 5 req/min for login, 60 req/min for general.
-    *   *Goal*: Prevent DDoS and brute-force attacks.
-
-2.  **Circuit Breakers**:
-    *   *Behavior*: If upstream fails 5 times, we stop calling it for 60s.
-    *   *Fallback*: Returns cached/degraded response instead of hanging.
-
-3.  **Timeout Management**:
-    *   All external calls have strict timeouts (e.g., 5 seconds) to prevent thread pool exhaustion.
-
----
-
-## 🤖 AI & Automation
-
-We employ an "AI-First" approach to operations.
-
-*   **Automated Triage**: The system reads its own logs (`app.json`) -> sends them to an LLM -> returns a fix.
-*   **Log Analysis**: See [ADR-0003](adr/0003-ai-error-analysis.md).
-*   **CLI Debugger**: Run `make debug` to get an instant terminal report on system health.
-
----
-
-## 📊 Operations Manual
-
-How to run and monitor the system in production.
-
-*   **[Setup Guide](setup.md)**: Deployment instructions (Local & Docker).
-*   **[Observability Guide](observability.md)**: How to use Grafana and Jaeger.
-*   **[API Reference](api-reference.md)**: List of available endpoints.
-
-### Emergency Commands
 | Scenario | Command |
 | :--- | :--- |
-| **System Down** | `make stack-down && make stack-up` |
-| **Debug Logs** | `make debug` |
-| **Run Tests** | `make test` |
+| **Full Stack Start** | `make stack-up` |
+| **Full Stack Stop** | `make stack-down` |
+| **AI Log Analysis** | `make debug` |
+| **Run Regression Tests** | `make test` |
+| **Fix Linting/Format** | `make format` |
 
 ---
 
-## 🤝 Contribution Guidelines
+## 📖 Reference Index
 
-1.  **Follow the Style**: Run `make format` before committing.
-2.  **Add ADRs**: If you make a major design change, document it in `docs/adr/`.
-3.  **Test First**: New features must include `pytest` coverage.
+- **[Architecture Deep Dive](architecture.md)**: Implementation of patterns and Hexagonal design.
+- **[Reliability Features](reliability.md)**: Overview of Circuit Breakers, Rate Limiting, and AI Triage.
+- **[Monitoring Guide](observability.md)**: How to use Grafana Dashboards and Jaeger Traces.
+- **[Setup Guide](setup.md)**: Environment configuration and Docker setup.
+- **[API Reference](api-reference.md)**: Interactive Swagger UI and endpoint details.
+
+---
+
+## 🤝 Contribution Rules
+
+1. **Commit Style**: Use [Conventional Commits](https://www.conventionalcommits.org/).
+2. **Quality Gates**: `make format` and `make test` must pass before any PR.
+3. **ADRs**: Major design shifts require a new file in `docs/adr/`.

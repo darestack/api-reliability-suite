@@ -73,13 +73,14 @@ markdown_extensions:
   - md_in_html
 
 nav:
-  - Home: index.md
-  - Wiki (Master Guide): wiki.md
-  - Architecture: architecture.md
-  - Observability: observability.md
+  - Introduction: index.md
+  - Quick Start: setup.md
+  - Reliability Features: reliability.md
+  - Monitoring & Metrics: observability.md
+  - Technical Architecture: architecture.md
   - API Reference: api-reference.md
-  - Setup Guide: setup.md
   - Decision Log (ADRs):
       - Hexagonal Arch: adr/0001-hexagonal-architecture.md
       - Logging: adr/0002-structured-logging.md
       - AI & LLM: adr/0003-ai-error-analysis.md
+  - Developer Wiki: wiki.md
