@@ -30,6 +30,10 @@ stack-up:
 stack-down:
 	docker compose down
 
+debug:
+	docker compose exec api pip install rich
+	docker compose exec api python src/scripts/cli_debugger.py
+
 clean:
 	rm -rf .pytest_cache .ruff_cache .coverage htmlcov app.json app.log app.json.*
 	find . -type d -name "__pycache__" -exec rm -rf {} +
