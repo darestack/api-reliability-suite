@@ -32,4 +32,4 @@ This suite is a **production-ready blueprint** for building "High-Reliability" A
 | **💥 Resilient** | **Circuit Breakers** prevent cascading failures when downstream dependencies go offline. |
 | **📊 Visual** | Includes a production-grade **Grafana Dashboard** for real-time SLO & Error Budget tracking.
 
-[Get Started](setup.md){ .md-button .md-button--primary } [View Architecture](architecture.md){ .md-button }
+[Get Started](setup.md){ .md-button .md-button--primary } [View Architecture](architecture.md){ .md-button } [Development Guide](development.md){ .md-button }

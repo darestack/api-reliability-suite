@@ -30,11 +30,17 @@ This page serves as a high-density reference for the **Reliability Suite**. For 
 
 ## 📖 Reference Index
 
-- **[Architecture Deep Dive](architecture.md)**: Implementation of patterns and Hexagonal design.
-- **[Reliability Features](reliability.md)**: Overview of Circuit Breakers, Rate Limiting, and AI Triage.
-- **[Monitoring Guide](observability.md)**: How to use Grafana Dashboards and Jaeger Traces.
-- **[Setup Guide](setup.md)**: Environment configuration and Docker setup.
-- **[API Reference](api-reference.md)**: Interactive Swagger UI and endpoint details.
+- **[Development Guide](development.md)**: Complete development setup, workflow, and contribution guidelines
+- **[Configuration Guide](configuration.md)**: All configuration options and environment variables
+- **[Security Guide](security.md)**: Authentication, authorization, and security best practices
+- **[Deployment Guide](deployment.md)**: Docker, Kubernetes, and cloud deployment strategies
+- **[Performance Guide](performance.md)**: Optimization, monitoring, and performance tuning
+- **[Architecture Deep Dive](architecture.md)**: Implementation of patterns and Hexagonal design
+- **[Reliability Features](reliability.md)**: Overview of Circuit Breakers, Rate Limiting, and AI Triage
+- **[Monitoring Guide](observability.md)**: How to use Grafana Dashboards and Jaeger Traces
+- **[Setup Guide](setup.md)**: Environment configuration and Docker setup
+- **[API Reference](api-reference.md)**: Interactive Swagger UI and endpoint details
+- **[Troubleshooting](troubleshooting.md)**: Common issues and solutions
 
 ---
 

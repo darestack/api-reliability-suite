@@ -75,10 +75,16 @@ markdown_extensions:
 nav:
   - Introduction: index.md
   - Quick Start: setup.md
+  - Development Guide: development.md
+  - Configuration: configuration.md
+  - Security: security.md
+  - Deployment: deployment.md
+  - Performance: performance.md
   - Reliability Features: reliability.md
   - Monitoring & Metrics: observability.md
   - Technical Architecture: architecture.md
   - API Reference: api-reference.md
+  - Troubleshooting: troubleshooting.md
   - Decision Log (ADRs):
       - Hexagonal Arch: adr/0001-hexagonal-architecture.md
       - Logging: adr/0002-structured-logging.md
