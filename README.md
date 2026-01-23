@@ -1,6 +1,6 @@
 # API Reliability & Debugging Suite
 
-![Thumbnail](docs/thumbnail.png)
+![Thumbnail](docs/assets/thumbnail.png)
 
 ![CI Pipeline](https://github.com/daretechie/api-reliability-suite/actions/workflows/ci.yml/badge.svg)
 [![Documentation](https://img.shields.io/badge/docs-live-forestgreen)](https://daretechie.github.io/api-reliability-suite/)
@@ -115,7 +115,7 @@ We provide a pre-built Grafana Dashboard (`infra/grafana/dashboard.json`) that t
 3. Upload `infra/grafana/dashboard.json`.
 4. Select **Prometheus** datasource and Load.
 
-![Grafana Dashboard](docs/grafana-dashboard.png)
+![Grafana Dashboard](docs/assets/grafana-dashboard.png)
 
 ### 2. Distributed Tracing (Jaeger)
 See the lifecycle of every request.

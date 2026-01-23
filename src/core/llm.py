@@ -4,23 +4,30 @@ Automatically uses whichever provider has an API key configured.
 Priority: Groq > OpenAI > Google
 """
 
+import json
+import re
+from typing import Any
+
 from src.core.config import settings
 import structlog
 
 logger = structlog.get_logger()
 
 
-async def summarize_with_llm(logs: list[str]) -> str:
+async def summarize_with_llm(logs: list[str]) -> dict[str, Any]:
     """
-    Sends logs to an LLM and returns a human-readable summary.
-    Auto-selects provider based on available API keys.
+    Sends logs to an LLM and returns a structured summary.
+    Returns a dict with 'summary_text' and 'structured_insight'.
     """
     if not logs:
-        return "No recent logs to analyze."
+        return {
+            "summary_text": "No recent logs to analyze.",
+            "structured_insight": None,
+        }
 
     # Prepare variables for the prompt
-    recent_logs = logs[-20:]  # Analyze last 20 entries
-    formatted_logs = chr(10).join(recent_logs)  # Join with newlines
+    recent_logs = logs[-20:]
+    formatted_logs = chr(10).join(recent_logs)
 
     prompt = f"""
 You are a senior API reliability engineer assisting with incident triage.
@@ -33,31 +40,47 @@ Recent Error Logs ({len(recent_logs)} entries, most recent last):
 ### Requirements:
 Please provide your analysis in a structured format:
 1. **Executive Summary**: 2-3 sentence overview.
-2. **Patterns Identified**: Recurring issues with specific log indices.
+2. **Patterns Identified**: Recurring issues.
 3. **Remediation Steps**: Bulleted immediate actions.
-4. **Structured JSON**: Include a block at the end like this:
+4. **Structured JSON**: Include a block at the very end using this schema:
    ```json
    {{
      "root_cause_id": "brief_id",
      "severity": "CRITICAL|HIGH|MEDIUM|LOW",
-     "action": "clear_instruction"
+     "action": ["step1", "step2"]
    }}
    ```
-
-Guidelines:
-- Prioritize findings by severity and impact
-- Avoid speculation not supported by the logs (Always be factual and realistic.)
-- Write clearly for an on-call engineering team responding to an incident
 """
-    # Try providers in order of preference
+    # Get raw response
+    raw_text = "No LLM configured."
     if settings.GROQ_API_KEY:
-        return await _call_groq(prompt)
+        raw_text = await _call_groq(prompt)
     elif settings.OPENAI_API_KEY:
-        return await _call_openai(prompt)
+        raw_text = await _call_openai(prompt)
     elif settings.GOOGLE_API_KEY:
-        return await _call_google(prompt)
+        raw_text = await _call_google(prompt)
     else:
-        return "No LLM configured. Set GROQ_API_KEY, OPENAI_API_KEY, or GOOGLE_API_KEY"
+        return {
+            "summary_text": "No LLM configured. Set GROQ/OPENAI_API_KEY.",
+            "structured_insight": None,
+        }
+
+    # Parse JSON block
+    structured_data = None
+    summary_text = raw_text
+
+    # Extract JSON between ```json and ```
+    json_match = re.search(r"```json\s*(\{.*?\})\s*```", raw_text, re.DOTALL)
+    if json_match:
+        json_str = json_match.group(1)
+        try:
+            structured_data = json.loads(json_str)
+            # Remove the JSON block from the readable text to avoid duplication
+            summary_text = raw_text.replace(json_match.group(0), "").strip()
+        except json.JSONDecodeError:
+            logger.warning("llm_json_parse_error", json_str=json_str)
+
+    return {"summary_text": summary_text, "structured_insight": structured_data}
 
 
 async def _call_groq(prompt: str) -> str:
