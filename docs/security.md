@@ -46,9 +46,9 @@ The application uses **Pydantic v2** with `strict=True` enabled in the model con
 
 ---
 
-## 📋 Security Checklist
+## 📋 Production Readiness Standard
 
-### Production Hardening
+### Security Hardening Audit
 - [ ] **Change `SECRET_KEY`:** Ensure `SECRET_KEY` is set to a cryptographically strong value in production.
 - [ ] **Enforce HTTPS:** Always serve the API behind a TLS-terminating proxy (Nginx, Ingress-Nginx).
 - [ ] **Review Log Levels:** Ensure `LOG_LEVEL` is not set to `debug` in production to avoid leaking sensitive metadata.

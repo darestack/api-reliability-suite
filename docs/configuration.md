@@ -86,3 +86,13 @@ make test
 # Verify current settings (dump)
 python -c "from src.core.config import settings; print(settings.model_dump())"
 ```
+
+---
+
+## 📋 Production Readiness Standard
+
+### Operational Configuration Audit
+- [ ] **Secret Management:** Verify `SECRET_KEY` is not using the default value.
+- [ ] **Log Level Alignment:** Confirm `LOG_LEVEL` is set to `info` or `warning` for production stability.
+- [ ] **LLM Connectivity:** Ensure at least one valid API key for an LLM provider is present in the `.env` file.
+- [ ] **Tracing Setup:** Verify `OTLP_ENDPOINT` points to a valid collector if distributed tracing is required.
