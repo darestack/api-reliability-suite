@@ -11,7 +11,7 @@ The API Reliability Suite is designed to be cloud-native and highly portable, ut
 The project uses a **multi-stage Docker build** to minimize the final image size and reduce the attack surface.
 
 - **Stage 1 (Builder):** Installs Poetry and downloads all dependencies.
-- **Stage 2 (Runtime):** Copies only the installed packages and the `src/` directory into a slim Python 3.12 image.
+- **Stage 2 (Runtime):** Copies the installed packages, the `src/` application code, and the runtime helper scripts into a slim Python 3.12 image.
 
 ### Building the Image
 ```bash

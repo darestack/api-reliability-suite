@@ -2,6 +2,13 @@
 
 This project uses a service-oriented layout with **ports-and-adapters-inspired seams**. Some boundaries are formalized through abstractions such as `BaseLLM`, while others are still concrete implementations that can be refactored further as the template matures.
 
+The goal is practical separation rather than architecture theater:
+
+- Request handling stays in FastAPI routes and middleware.
+- Business logic lives in services and domain models.
+- External integrations sit behind infrastructure adapters or provider abstractions.
+- Reliability concerns such as tracing, logging, rate limiting, and circuit breaking are treated as part of the application design, not bolt-ons.
+
 ---
 
 ## 📐 System Diagram
@@ -26,7 +33,7 @@ graph TD
 
     subgraph "Infrastructure Adapters (Driven)"
         Repo["User Repository<br/>(src.infrastructure.user_repository)"]
-        LLM["AI Adapter<br/>(src.core.llm)"]
+        LLM["AI Adapter<br/>(src.core.llm/)"]
         Logger["Structlog Adapter<br/>(src.core.logging)"]
         HTTP["Instrumented HTTP Client<br/>(src.infrastructure.http_client)"]
     end
@@ -49,6 +56,30 @@ graph TD
     OTel --> Jaeger
     Metrics --> Prom
 ```
+
+---
+
+## Design Principles
+
+### Service Layer + Adapter Seams
+
+We decouple the core decision-making paths from the external systems they depend on.
+
+Why it helps:
+
+- **Testability:** Services and helper modules can be exercised without booting the full observability stack.
+- **Provider Switching:** Moving between supported LLM providers is mostly a configuration and adapter concern.
+- **Refactor Path:** More boundaries can be promoted into explicit protocols or ports as the template grows.
+
+### Reliability as a First-Class Concern
+
+Observability and failure handling are part of the runtime design, not just deployment garnish.
+
+Current examples in the codebase:
+
+- **Distributed Tracing:** Requests carry correlation metadata and export spans when `OTLP_ENDPOINT` is configured.
+- **Circuit Breaker:** The demo upstream path fails fast after repeated errors and returns a degraded fallback response.
+- **AI Log Triage:** The summarizer reads filtered local error logs and produces a first-pass explanation plus remediation hints.
 
 ---
 
