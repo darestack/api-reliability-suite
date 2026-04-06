@@ -146,6 +146,14 @@ poetry run pytest -q --no-cov tests/test_auth.py tests/test_api_advanced.py test
 
 ## Documentation
 
+Live docs: <https://daretechie.github.io/api-reliability-suite/>
+
+Run docs locally:
+
+```bash
+poetry run mkdocs serve
+```
+
 - [Architecture & Internals](docs/architecture.md)
 - [Monitoring & Metrics](docs/observability.md)
 - [Development Guide](docs/development.md)
