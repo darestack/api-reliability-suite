@@ -1,17 +1,19 @@
 from fastapi import FastAPI, Request, Depends, HTTPException
+from typing import Annotated
 import structlog
 import uvicorn
 import asyncio
-import aiofiles
 from contextlib import asynccontextmanager
+from pathlib import Path
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from src.core.logging import configure_logging
-from src.core.exceptions import GlobalExceptionMiddleware
+from src.core.exceptions import handle_unexpected_exception
+from src.core.logs import is_error_log_line
 from src.core.middleware import CorrelationIdMiddleware
 from src.core.tracing import configure_tracing
-from src.core.config import settings
-from src.core.rate_limit import limiter
+from src.core.config import DEFAULT_SECRET_KEY, settings
+from src.core.rate_limit import limiter, rate_limit_exceeded_handler
 from src.core.llm import summarize_with_llm
 from src.domain.models import HealthStatus, Token
 from src.services.auth_service import AuthService
@@ -19,9 +21,9 @@ from src.infrastructure.user_repository import user_repository
 from src.core.circuit_breaker import external_api_breaker
 import pybreaker
 
-from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import Form
+from fastapi.security import OAuth2PasswordBearer
 
 
 # Configure logging
@@ -36,6 +38,11 @@ auth_service = AuthService(repository=user_repository)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("startup_event", status="starting_app")
+    if settings.SECRET_KEY == DEFAULT_SECRET_KEY:
+        logger.warning(
+            "default_secret_key_in_use",
+            detail="JWT signing is using the demo default. Set SECRET_KEY before shared or production deployments.",
+        )
     yield
     logger.info("shutdown_event", status="stopping_app")
 
@@ -43,7 +50,7 @@ async def lifespan(app: FastAPI):
 # Create FastAPI instance
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    description="A template for robust, debuggable, and maintainable APIs (Blueprint 2026 Aligned)",
+    description="A production-inspired FastAPI template for reliability-focused APIs.",
     version="1.1.0",
     lifespan=lifespan,
 )
@@ -52,11 +59,11 @@ app = FastAPI(
 Instrumentator().instrument(app).expose(app)
 
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
 
 # Register Middlewares
 app.add_middleware(CorrelationIdMiddleware)  # Traceability first
-app.add_middleware(GlobalExceptionMiddleware)  # Error handling second
+app.add_exception_handler(Exception, handle_unexpected_exception)
 
 # CONFIGURE TRACING (after app is created, before routes are hit)
 configure_tracing(app)
@@ -90,19 +97,21 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 @app.post("/login", response_model=Token)
 @limiter.limit("5/minute")
-async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
+async def login(
+    request: Request,
+    username: Annotated[str, Form()],
+    password: Annotated[str, Form()],
+):
     """
     Login endpoint that returns a JWT token.
     Uses AuthService (Hexagonal Service Layer).
     """
-    authenticated = auth_service.authenticate_user(
-        form_data.username, form_data.password
-    )
+    authenticated = auth_service.authenticate_user(username, password)
 
     if not authenticated:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
-    token = auth_service.create_access_token(data={"sub": form_data.username})
+    token = auth_service.create_access_token(data={"sub": username})
 
     return Token(access_token=token, token_type="bearer")
 
@@ -135,23 +144,25 @@ async def summarize_errors(
     Analyze local log file and summarize errors using LLM.
     Requires Authentication!
     """
-    log_file_path = "app.json"
-    logs = []
+    log_file_path = Path(settings.LOG_FILE_PATH)
 
     try:
-        async with aiofiles.open(log_file_path, mode="r") as file:
-            async for line in file:
-                if "error" in line.lower() or "exception" in line.lower():
-                    logs.append(line.strip())
-
+        # Read a snapshot of the current log file. Async iteration against the
+        # active rotating log file can stall under this logging setup.
+        log_contents = log_file_path.read_text()
     except FileNotFoundError:
-        return {"summary": "No log file found."}
+        return {"summary": "No log file found.", "provider": None}
+
+    logs = [
+        line.strip() for line in log_contents.splitlines() if is_error_log_line(line)
+    ]
 
     if not logs:
-        return {"summary": "No errors found in the log file."}
+        return {"summary": "No errors found in the log file.", "provider": None}
 
     summary = await summarize_with_llm(logs)
-    return {"ai_summary": summary, "provider": "Auto-Selected"}
+    provider = summary.pop("provider", None)
+    return {"ai_summary": summary, "provider": provider}
 
 
 # Simulation state
@@ -195,8 +206,8 @@ async def external_api():
         logger.warning("circuit_open_fallback", service="external_api")
         return {
             "status": "degraded",
-            "message": "Circuit is OPEN. Returning cached data.",
-            "source": "cache",
+            "message": "Circuit is OPEN. Returning a degraded fallback response.",
+            "source": "fallback",
         }
     except Exception as e:
         logger.error("external_call_failed", error=str(e))

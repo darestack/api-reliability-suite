@@ -27,6 +27,7 @@ kill -9 <PID>
     ```bash
     python -c "from src.core.config import settings; print(settings.model_dump())"
     ```
+3.  Confirm the log file configured by `LOG_FILE_PATH` exists and contains error events.
 
 ---
 
@@ -48,7 +49,7 @@ kill -9 <PID>
 
 **Solution:**
 1.  Ensure you have made at least one request to the API: `curl http://localhost:8000/health`.
-2.  Check if Prometheus is scraping the API: Open `http://localhost:9090/targets` and verify the `reliability-api` target is **UP**.
+2.  Check if Prometheus is scraping the API: Open `http://localhost:9099/targets` and verify the `fastapi` target is **UP**.
 
 ---
 
@@ -76,7 +77,7 @@ Use these commands for a rapid system audit:
 | **Logic Verification** | `make test` |
 | **Full Cleanup** | `make clean` |
 | **AI Triage Audit** | `make debug` |
-| **Check Logs** | `cat app.json | jq .` |
+| **Check Logs** | `cat "${LOG_FILE_PATH:-app.json}" | jq .` |
 
 ---
 
@@ -84,5 +85,5 @@ Use these commands for a rapid system audit:
 
 If an issue persists:
 1.  Enable debug logs: Set `LOG_LEVEL=debug` in `.env`.
-2.  Capture the relevant logs using `cat app.json | jq .`.
-3.  Review the logs with the **AI Debugger** (`make debug`).
+2.  Capture the relevant logs from `LOG_FILE_PATH` using `cat "${LOG_FILE_PATH:-app.json}" | jq .`.
+3.  Review the logs with the AI triage tool (`make debug`).

@@ -1,26 +1,38 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class CommonBaseModel(BaseModel):
-    model_config = ConfigDict(strict=True)
+    """Base model with shared configuration for all domain models."""
+
+    model_config = ConfigDict(strict=True, populate_by_name=True)
 
 
 class HealthStatus(CommonBaseModel):
-    status: str
-    service: str
+    """Represents the system health status."""
+
+    status: str = Field(..., description="Overall health status (e.g., 'ok')")
+    service: str = Field(..., description="Name of the service reporting status")
 
 
 class Token(CommonBaseModel):
-    access_token: str
-    token_type: str
+    """Schema for JWT access tokens."""
+
+    access_token: str = Field(..., description="The JWT access token string")
+    token_type: str = Field("bearer", description="The type of token")
 
 
 class User(CommonBaseModel):
-    username: str
-    hashed_password: str
+    """Internal user model for authentication."""
+
+    username: str = Field(..., min_length=3, max_length=50)
+    hashed_password: str = Field(..., description="Bcrypt hashed password")
 
 
 class AIRecommendation(CommonBaseModel):
-    root_cause_id: str
-    severity: str
-    action: str
+    """Structured insight returned by the LLM analysis agent."""
+
+    root_cause_id: str = Field(
+        ..., description="Short identifier for the identified issue"
+    )
+    severity: str = Field(..., pattern="^(CRITICAL|HIGH|MEDIUM|LOW)$")
+    action: list[str] = Field(..., description="List of recommended remediation steps")

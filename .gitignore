@@ -37,6 +37,8 @@ venv.bak/
 
 # Logs
 app.json
+app.json.*
+*.log
 
 # Pytest
 .pytest_cache/
@@ -45,6 +47,12 @@ htmlcov/
 
 # MyPy
 .mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# Local test/debug artifacts
+test_script.json
 
 # Editors
 .vscode/

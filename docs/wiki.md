@@ -11,7 +11,7 @@ This page serves as a high-density reference for the **API Reliability Suite**. 
 | **Language** | Python 3.12+ | Performance, Type safety, Ecosystem. |
 | **Framework** | FastAPI | Async-first, Auto-validation (Pydantic). |
 | **Lint/Format** | Ruff | 100x faster than traditional tools. |
-| **Logging** | Structlog | JSON production-ready logging. |
+| **Logging** | Structlog | Structured JSON logging for local and containerized runs. |
 | **Observability** | OpenTelemetry | Vendor-neutral tracing standard. |
 
 ---
@@ -35,7 +35,7 @@ This page serves as a high-density reference for the **API Reliability Suite**. 
 - **[Security Guide](security.md)**: Authentication, authorization, and security best practices
 - **[Deployment Guide](deployment.md)**: Docker, Kubernetes, and cloud deployment strategies
 - **[Performance Guide](performance.md)**: Optimization, monitoring, and performance tuning
-- **[Architecture Deep Dive](architecture.md)**: Implementation of patterns and Hexagonal design
+- **[Architecture Deep Dive](architecture.md)**: Implementation notes on services, adapters, and reliability patterns
 - **[Reliability Features](reliability.md)**: Overview of Circuit Breakers, Rate Limiting, and AI Triage
 - **[Monitoring Guide](observability.md)**: How to use Grafana Dashboards and Jaeger Traces
 - **[Setup Guide](setup.md)**: Environment configuration and Docker setup

@@ -7,13 +7,18 @@ services:
       - .env
     environment:
       - OTLP_ENDPOINT=http://jaeger:4317
+      - RATE_LIMIT_STORAGE_URI=redis://redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
     networks:
       - monitoring
 
   prometheus:
     image: prom/prometheus:latest
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./infra/prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
@@ -35,6 +40,19 @@ services:
     ports:
       - "16686:16686"
       - "4317:4317"
+    networks:
+      - monitoring
+
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - monitoring
 

@@ -10,8 +10,8 @@ The API Reliability Suite is designed with a "Secure by Default" mindset, implem
 
 The system uses **JWT (JSON Web Tokens)** for stateless authentication.
 - **Provider:** `python-jose`
-- **Hashing:** `bcrypt` (via `passlib`)
-- **Key Storage:** HMAC-SHA256 with the `SECRET_KEY` environment variable.
+- **Hashing:** `bcrypt`
+- **Key Storage:** HMAC-SHA256 with `SECRET_KEY` loaded from env vars or secret files.
 
 #### JWT Workflow
 1.  **Login:** Users authenticate at `/login`.
@@ -26,7 +26,7 @@ The system uses **JWT (JSON Web Tokens)** for stateless authentication.
 
 We use `slowapi` (based on the fixed-window counter algorithm) to protect against brute-force attacks and resource exhaustion.
 
-- **Storage:** Local Memory (default).
+- **Storage:** Configurable via `RATE_LIMIT_STORAGE_URI` (Redis recommended for shared deployments).
 - **Strategy:** IP-based tracking via `get_remote_address`.
 - **Implementation:** applied via decorators on specific routes (e.g., `@limiter.limit("5/minute")` on `/health`).
 
@@ -50,6 +50,15 @@ The application uses **Pydantic v2** with `strict=True` enabled in the model con
 
 ### Security Hardening Audit
 - [ ] **Change `SECRET_KEY`:** Ensure `SECRET_KEY` is set to a cryptographically strong value in production.
+- [ ] **Use Secret Files:** Mount secrets under `/run/secrets` or set `SETTINGS_SECRETS_DIR`.
 - [ ] **Enforce HTTPS:** Always serve the API behind a TLS-terminating proxy (Nginx, Ingress-Nginx).
 - [ ] **Review Log Levels:** Ensure `LOG_LEVEL` is not set to `debug` in production to avoid leaking sensitive metadata.
-- [ ] **Scale Rate Limiting:** For distributed deployments, consider migrating `slowapi` storage to Redis.
+- [ ] **Scale Rate Limiting:** Use Redis-backed storage via `RATE_LIMIT_STORAGE_URI` for distributed deployments.
+
+## ✅ Production Hardening Checklist
+
+- Set `ENVIRONMENT=production` and verify the app fails fast with default secrets.
+- Provide `SECRET_KEY` via a secrets file or trusted secret manager.
+- Configure `RATE_LIMIT_STORAGE_URI` with Redis for shared deployments.
+- Keep `RATE_LIMIT_IN_MEMORY_FALLBACK_ENABLED=false` in production.
+- Run behind TLS and restrict access to `/metrics` if exposed.

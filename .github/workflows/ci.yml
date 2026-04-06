@@ -52,3 +52,6 @@ jobs:
 
       - name: Run tests
         run: make test
+
+      - name: Build docs
+        run: poetry run mkdocs build --strict
