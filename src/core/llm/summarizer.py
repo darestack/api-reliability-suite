@@ -3,6 +3,7 @@ import re
 from typing import Any
 
 from src.core.llm.factory import LLMFactory
+from src.core.logs import sanitize_log_line_for_llm
 import structlog
 
 logger = structlog.get_logger()
@@ -28,12 +29,14 @@ async def summarize_with_llm(logs: list[str]) -> dict[str, Any]:
             "provider": None,
         }
 
+    sanitized_logs = [sanitize_log_line_for_llm(log) for log in logs]
+
     prompt = f"""
     You are a Senior SRE (Site Reliability Engineer).
-    Analyze the following JSON error logs from our application.
+    Analyze the following sanitized JSON error logs from our application.
 
     Logs:
-    {logs}
+    {sanitized_logs}
 
     1. Provide a concise executive summary of what is happening.
     2. Identify patterns (e.g., specific users, specific endpoints).

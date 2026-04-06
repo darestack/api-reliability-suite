@@ -34,3 +34,24 @@ class LLMFactory:
         """Return only the active provider instance for callers that do not need metadata."""
         _, provider = LLMFactory.get_provider_with_name()
         return provider
+
+    @staticmethod
+    async def check_provider_health() -> dict[str, str | bool | None]:
+        """Return a lightweight readiness snapshot for the configured LLM provider."""
+        provider_name, provider = LLMFactory.get_provider_with_name()
+        if provider is None:
+            return {"provider": None, "status": "skipped", "ready": True}
+
+        if not settings.ENABLE_LLM_READINESS_CHECKS:
+            return {
+                "provider": provider_name,
+                "status": "configured",
+                "ready": True,
+            }
+
+        ready = await provider.healthcheck()
+        return {
+            "provider": provider_name,
+            "status": "ok" if ready else "error",
+            "ready": ready,
+        }

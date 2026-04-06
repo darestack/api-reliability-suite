@@ -2,6 +2,8 @@ import httpx
 import structlog
 from typing import Optional, Dict, Any
 from opentelemetry import propagate
+
+from src.core.config import settings
 from src.core.middleware import correlation_id_ctx
 
 logger = structlog.get_logger()
@@ -14,8 +16,15 @@ class InstrumentedHttpClient:
     2. Custom Correlation ID (from middleware context)
     """
 
-    def __init__(self, timeout: float = 10.0):
-        self.client = httpx.AsyncClient(timeout=timeout)
+    def __init__(self, timeout: float | None = None):
+        request_timeout = timeout or settings.HTTP_CLIENT_TIMEOUT_SECONDS
+        self.client = httpx.AsyncClient(
+            timeout=httpx.Timeout(request_timeout),
+            limits=httpx.Limits(
+                max_connections=settings.HTTP_CLIENT_MAX_CONNECTIONS,
+                max_keepalive_connections=settings.HTTP_CLIENT_MAX_KEEPALIVE_CONNECTIONS,
+            ),
+        )
 
     async def get(
         self, url: str, headers: Optional[Dict[str, str]] = None, **kwargs

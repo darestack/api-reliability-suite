@@ -1,7 +1,13 @@
+import asyncio
+
+from src.core.config import settings
+from src.core.llm.guardrails import llm_bulkhead
 from src.core.llm.providers.base import BaseLLM
 import structlog
 
 logger = structlog.get_logger()
+
+GROQ_MODEL = "llama-3.1-8b-instant"
 
 
 class GroqProvider(BaseLLM):
@@ -12,19 +18,39 @@ class GroqProvider(BaseLLM):
         try:
             from groq import AsyncGroq
 
-            self.client = AsyncGroq(api_key=self.api_key)
+            self.client = AsyncGroq(
+                api_key=self.api_key,
+                timeout=settings.LLM_REQUEST_TIMEOUT_SECONDS,
+                max_retries=settings.LLM_MAX_RETRIES,
+            )
         except ImportError:
             logger.error("groq_not_installed")
             raise ImportError("Please install 'groq' package.")
 
     async def generate(self, prompt: str) -> str:
         try:
-            response = await self.client.chat.completions.create(
-                model="llama-3.1-8b-instant",
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=1000,
-            )
+            async with llm_bulkhead():
+                response = await self.client.chat.completions.create(
+                    model=GROQ_MODEL,
+                    messages=[{"role": "user", "content": prompt}],
+                    max_tokens=1000,
+                )
             return response.choices[0].message.content
         except Exception as e:
             logger.error("groq_api_error", error=str(e))
             return f"Groq Error: {str(e)}"
+
+    async def healthcheck(self) -> bool:
+        try:
+            async with llm_bulkhead():
+                await asyncio.wait_for(
+                    self.client.models.retrieve(
+                        GROQ_MODEL,
+                        timeout=settings.LLM_HEALTHCHECK_TIMEOUT_SECONDS,
+                    ),
+                    timeout=settings.LLM_HEALTHCHECK_TIMEOUT_SECONDS + 1,
+                )
+            return True
+        except Exception as exc:
+            logger.warning("groq_healthcheck_failed", error=str(exc))
+            return False

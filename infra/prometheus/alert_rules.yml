@@ -6,9 +6,9 @@ groups:
 
       - record: api:http_requests:error_ratio_5m
         expr: |
-          sum(rate(http_requests_total{status=~"5.."}[5m]))
+          (sum(rate(http_requests_total{status=~"5.."}[5m])) or vector(0))
           /
-          sum(rate(http_requests_total[5m]))
+          clamp_min(sum(rate(http_requests_total[5m])), 1)
 
       - record: api:http_request_duration_seconds:p99_5m
         expr: histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))

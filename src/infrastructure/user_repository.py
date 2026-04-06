@@ -10,6 +10,7 @@ from src.infrastructure.user_models import UserTable
 
 def _to_domain_user(record: UserTable) -> User:
     return User(
+        id=record.id,
         username=record.username,
         hashed_password=record.hashed_password,
         role=record.role,
@@ -27,6 +28,16 @@ class UserRepository:
         async with self.session_factory() as session:
             result = await session.execute(
                 select(UserTable).where(UserTable.username == username)
+            )
+            record = result.scalar_one_or_none()
+            if record is None:
+                return None
+            return _to_domain_user(record)
+
+    async def get_user_by_id(self, user_id: int) -> User | None:
+        async with self.session_factory() as session:
+            result = await session.execute(
+                select(UserTable).where(UserTable.id == user_id)
             )
             record = result.scalar_one_or_none()
             if record is None:

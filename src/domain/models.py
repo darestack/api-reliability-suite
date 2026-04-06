@@ -23,6 +23,12 @@ class Token(CommonBaseModel):
     token_type: str = Field("bearer", description="The type of token")
 
 
+class TokenPair(Token):
+    """Access + refresh token pair returned for session-based auth flows."""
+
+    refresh_token: str = Field(..., description="Opaque refresh token")
+
+
 class UserRole(StrEnum):
     """Application roles used for route-level authorization."""
 
@@ -33,6 +39,7 @@ class UserRole(StrEnum):
 class User(CommonBaseModel):
     """Internal user model for authentication."""
 
+    id: int | None = Field(default=None, description="Persistent user identifier")
     username: str = Field(..., min_length=3, max_length=50)
     hashed_password: str = Field(..., description="Bcrypt hashed password")
     role: UserRole = Field(default=UserRole.USER)
@@ -42,8 +49,24 @@ class User(CommonBaseModel):
 class AuthenticatedUser(CommonBaseModel):
     """Authenticated principal resolved from JWT + persistence layer."""
 
+    id: int | None = Field(default=None, description="Persistent user identifier")
     username: str = Field(..., min_length=3, max_length=50)
     role: UserRole = Field(..., description="Resolved role for the current user")
+
+
+class RefreshTokenRequest(CommonBaseModel):
+    """Refresh-token rotation request."""
+
+    refresh_token: str = Field(..., min_length=32)
+
+
+class LogoutRequest(CommonBaseModel):
+    """Logout request that can revoke the current refresh token too."""
+
+    refresh_token: str | None = Field(
+        default=None,
+        description="Optional refresh token to revoke alongside the current access token",
+    )
 
 
 class AIRecommendation(CommonBaseModel):

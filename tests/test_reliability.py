@@ -93,6 +93,71 @@ async def test_slo_report_without_prometheus_returns_targets(client):
 
 
 @pytest.mark.asyncio
+async def test_readiness_report_defaults_to_ok(client):
+    response = await client.get("/ready")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["status"] == "ok"
+    assert payload["dependencies"]["database"]["status"] == "ok"
+    assert payload["dependencies"]["llm_provider"]["status"] in {
+        "skipped",
+        "configured",
+        "ok",
+    }
+
+
+@pytest.mark.asyncio
+async def test_readiness_report_can_be_degraded_without_failing_traffic(client):
+    with patch(
+        "src.main.build_readiness_report",
+        new=AsyncMock(
+            return_value=(
+                200,
+                {
+                    "status": "degraded",
+                    "dependencies": {
+                        "database": {"status": "ok", "required": True},
+                        "llm_provider": {
+                            "status": "error",
+                            "required": False,
+                            "provider": "groq",
+                        },
+                    },
+                },
+            )
+        ),
+    ):
+        response = await client.get("/ready")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["status"] == "degraded"
+    assert payload["dependencies"]["llm_provider"]["status"] == "error"
+
+
+@pytest.mark.asyncio
+async def test_readiness_report_returns_503_for_required_dependency_failure(client):
+    with patch(
+        "src.main.build_readiness_report",
+        new=AsyncMock(
+            return_value=(
+                503,
+                {
+                    "status": "error",
+                    "dependencies": {
+                        "database": {"status": "error", "required": True},
+                    },
+                },
+            )
+        ),
+    ):
+        response = await client.get("/ready")
+
+    assert response.status_code == 503
+    assert response.json()["status"] == "error"
+
+
+@pytest.mark.asyncio
 async def test_circuit_breaker_uses_cached_fallback_when_available(client):
     from src.core.circuit_breaker import external_api_breaker
 

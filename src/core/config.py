@@ -52,6 +52,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = DEFAULT_SECRET_KEY
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 14
 
     # Rate limiting
     RATE_LIMIT_STORAGE_URI: str = DEFAULT_RATE_LIMIT_STORAGE_URI
@@ -64,6 +65,23 @@ class Settings(BaseSettings):
     CIRCUIT_BREAKER_CACHE_TTL_SECONDS: int = 300
     SLO_TARGET_SUCCESS_RATIO: float = 0.99
     SLO_TARGET_P99_LATENCY_SECONDS: float = 1.0
+
+    # Reverse proxy / web security
+    TRUSTED_HOSTS: str = "*"
+    CORS_ALLOW_ORIGINS: str = ""
+    HTTPS_REDIRECT_ENABLED: bool = False
+
+    # Outbound request protections
+    HTTP_CLIENT_TIMEOUT_SECONDS: float = 10.0
+    HTTP_CLIENT_MAX_CONNECTIONS: int = 20
+    HTTP_CLIENT_MAX_KEEPALIVE_CONNECTIONS: int = 10
+    LLM_REQUEST_TIMEOUT_SECONDS: float = 20.0
+    LLM_HEALTHCHECK_TIMEOUT_SECONDS: float = 5.0
+    LLM_MAX_RETRIES: int = 2
+    LLM_MAX_CONCURRENCY: int = 4
+
+    # Dependency checks
+    ENABLE_LLM_READINESS_CHECKS: bool = True
 
     model_config = SettingsConfigDict(env_file=".env", strict=True)
 
@@ -87,6 +105,20 @@ class Settings(BaseSettings):
             raise ValueError(
                 "DATABASE_URL must point to a server-grade database when ENVIRONMENT is staging or production."
             )
+
+    @property
+    def trusted_hosts_list(self) -> list[str]:
+        raw = self.TRUSTED_HOSTS.strip()
+        if not raw:
+            return ["*"]
+        return [value.strip() for value in raw.split(",") if value.strip()]
+
+    @property
+    def cors_allow_origins_list(self) -> list[str]:
+        raw = self.CORS_ALLOW_ORIGINS.strip()
+        if not raw:
+            return []
+        return [value.strip() for value in raw.split(",") if value.strip()]
 
 
 def build_settings() -> Settings:

@@ -10,8 +10,9 @@ The API Reliability Suite is designed to be cloud-native and highly portable, ut
 
 The project uses a **multi-stage Docker build** to minimize the final image size and reduce the attack surface.
 
-- **Stage 1 (Builder):** Installs Poetry and downloads all dependencies.
-- **Stage 2 (Runtime):** Copies the installed packages, the `src/` application code, and the runtime helper scripts into a slim Python 3.12 image.
+- **Stage 1 (Builder):** Installs Poetry and downloads all runtime dependencies.
+- **Stage 2 (Runtime):** Copies the installed packages, the `src/` application code, and the runtime helper scripts into a pinned Python 3.12 slim image.
+- **Runtime User:** The container drops root and runs as the dedicated `app` user (`UID/GID 10001`).
 
 ### Building the Image
 ```bash
@@ -30,9 +31,11 @@ Example manifests are located in `infra/k8s/` to show a baseline deployment layo
 ### 1. Deployment (`deployment.yaml`)
 The deployment ensures at least **2 replicas** are always running.
 
-- **Probes:** Includes both `livenessProbe` and `readinessProbe` pointing to the `/health` endpoint to ensure the cluster only sends traffic to healthy pods.
+- **Probes:** `livenessProbe` uses `/health`, while `readinessProbe` uses `/ready` so traffic is only sent to pods whose database and shared dependencies are reachable.
 - **Resources:** Sets explicit CPU and Memory requests/limits to prevent resource contention.
 - **Metrics:** Annotated for automatic Prometheus scraping.
+- **Security Context:** Runs as a non-root user, drops Linux capabilities, and uses the runtime-default seccomp profile.
+- **Rollout Strategy:** Uses a rolling update strategy with `revisionHistoryLimit` so rollbacks stay available.
 
 ### 2. Auto-scaling (`hpa.yaml`)
 A `HorizontalPodAutoscaler` is configured to scale the API based on CPU utilization.
@@ -48,6 +51,25 @@ kubectl apply -f infra/k8s/
 
 > [!NOTE]
 > The templates expect secrets to be injected through Kubernetes Secrets (see `infra/k8s/deployment.yaml`), and shared environments should provide `DATABASE_URL`, `RATE_LIMIT_STORAGE_URI`, and `CIRCUIT_BREAKER_CACHE_URL`.
+
+### Release and Rollback Discipline
+
+For shared environments, avoid mutable image tags such as `latest`.
+
+Recommended release flow:
+
+1. Build and push a versioned image tag such as `ghcr.io/daretechie/api-reliability-suite:1.2.0`.
+2. Update `infra/k8s/deployment.yaml` to that immutable release tag.
+3. Apply the manifest and watch rollout health with `kubectl rollout status deployment/reliability-api`.
+4. If the rollout is unhealthy, use `kubectl rollout undo deployment/reliability-api`.
+
+### Backups and Restore Notes
+
+Once Postgres is your primary identity store, backup and restore need to be part of the deploy plan.
+
+- Capture logical backups with `pg_dump -Fc`.
+- Test restores with `pg_restore` into a fresh database before calling a backup policy complete.
+- Run `poetry run alembic upgrade head` during deployment so schema state stays aligned with application code.
 
 ---
 

@@ -10,7 +10,10 @@
 | Endpoint | Method | Security | Resilience | Description |
 | :--- | :--- | :--- | :--- | :--- |
 | `/health` | `GET` | Public | ✅ Rate Limit | Basic health check. Returns service status. |
-| `/login` | `POST` | Public | ✅ Rate Limit | Exchange credentials for a **JWT Access Token**. |
+| `/ready` | `GET` | Public | ✅ Dependency Checks | Dependency-aware readiness for the database, Redis-backed features, and the configured LLM provider. |
+| `/login` | `POST` | Public | ✅ Rate Limit | Exchange credentials for an **access token and refresh token**. |
+| `/token/refresh` | `POST` | Public | ✅ Rate Limit | Rotate a refresh token and receive a fresh token pair. |
+| `/logout` | `POST` | **Bearer** | — | Revoke the current access token and optionally revoke the presented refresh token. |
 | `/protected` | `GET` | **Bearer** | — | Example of a secure route requiring a valid token. |
 | `/external-api` | `GET` | Public | ✅ **Circuit Breaker** | Proxy to external service. When open, returns the latest cached upstream payload if fallback caching is configured. |
 | `/debug/summarize-errors` | `GET` | **Bearer (Admin)** | ✅ Rate Limit | Reads the configured log file, returns an AI summary, reports the runtime-selected provider, and records which admin requested it. |

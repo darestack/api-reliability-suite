@@ -44,6 +44,16 @@ def test_settings_require_shared_rate_limit_storage_in_production():
         )
 
 
+def test_settings_require_server_grade_database_in_production():
+    with pytest.raises(ValueError, match="DATABASE_URL must point"):
+        Settings(
+            _env_file=None,
+            ENVIRONMENT="production",
+            SECRET_KEY="not-the-demo-secret",
+            RATE_LIMIT_STORAGE_URI="redis://redis:6379/0",
+        )
+
+
 def test_development_defaults_remain_template_friendly():
     settings = Settings(_env_file=None)
 

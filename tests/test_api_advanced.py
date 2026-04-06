@@ -150,3 +150,41 @@ async def test_summarize_errors_requires_admin_role(client):
 
     assert response.status_code == 403
     assert response.json()["detail"] == "Insufficient permissions for this operation"
+
+
+@pytest.mark.asyncio
+async def test_refresh_token_rotation(client):
+    login_response = await client.post(
+        "/login", data={"username": "demo", "password": "secret123"}
+    )
+    original_refresh = login_response.json()["refresh_token"]
+
+    refreshed = await client.post(
+        "/token/refresh", json={"refresh_token": original_refresh}
+    )
+    assert refreshed.status_code == 200
+    payload = refreshed.json()
+    assert payload["refresh_token"] != original_refresh
+
+    reused = await client.post(
+        "/token/refresh", json={"refresh_token": original_refresh}
+    )
+    assert reused.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_logout_revokes_access_and_refresh_tokens(client, auth_session):
+    logout_response = await client.post(
+        "/logout",
+        headers=auth_session["headers"],
+        json={"refresh_token": auth_session["refresh_token"]},
+    )
+    assert logout_response.status_code == 204
+
+    protected = await client.get("/protected", headers=auth_session["headers"])
+    assert protected.status_code == 401
+
+    refreshed = await client.post(
+        "/token/refresh", json={"refresh_token": auth_session["refresh_token"]}
+    )
+    assert refreshed.status_code == 401

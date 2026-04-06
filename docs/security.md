@@ -8,17 +8,19 @@ The API Reliability Suite is designed with a "Secure by Default" mindset, implem
 
 ### Authentication & Authorization
 
-The system uses **JWT (JSON Web Tokens)** for stateless authentication.
+The system uses **JWT access tokens plus persisted refresh sessions** for authentication.
 - **Provider:** `python-jose`
 - **Hashing:** `bcrypt`
 - **Key Storage:** HMAC-SHA256 with `SECRET_KEY` loaded from env vars or secret files.
 - **Persistence:** User records are loaded from the configured relational database via SQLAlchemy.
+- **Session Storage:** Refresh-token rotation and access-token revocation are stored in the relational database.
 
 #### JWT Workflow
 1.  **Login:** Users authenticate at `/login`.
-2.  **Token Issuance:** Upon success, a signed JWT is returned with a 30-minute expiration (configurable via `ACCESS_TOKEN_EXPIRE_MINUTES`) and role-aware claims.
-3.  **Verification:** Protected endpoints use the `get_current_user` dependency to validate the token and re-resolve the user from the database.
-4.  **Authorization:** Sensitive routes such as `/debug/summarize-errors` require the `admin` role.
+2.  **Token Issuance:** Upon success, the API returns an access token plus a refresh token.
+3.  **Rotation:** `/token/refresh` rotates the refresh token and issues a fresh token pair.
+4.  **Revocation:** `/logout` revokes the current access token and can also revoke the presented refresh token.
+5.  **Authorization:** Sensitive routes such as `/debug/summarize-errors` require the `admin` role.
 
 ---
 
@@ -35,6 +37,26 @@ We use `slowapi` (based on the fixed-window counter algorithm) to protect agains
 ### Circuit Breaker
 
 The `pybreaker` implementation protects the API from cascading failures when interacting with external dependencies. If an external service fails repeatedly, the circuit opens, preventing further strain and returning a graceful fallback. When `CIRCUIT_BREAKER_CACHE_URL` is configured, the fallback can serve the latest cached success payload from Redis.
+
+### Reverse Proxy and Host Validation
+
+The API can enforce deployment-facing controls through middleware:
+
+- **Trusted hosts:** `TRUSTED_HOSTS` enables `TrustedHostMiddleware`.
+- **CORS:** `CORS_ALLOW_ORIGINS` enables `CORSMiddleware`.
+- **HTTPS redirects:** `HTTPS_REDIRECT_ENABLED=true` enables `HTTPSRedirectMiddleware`.
+
+These controls are intended for deployments behind a TLS-terminating reverse proxy or ingress.
+
+## 🔍 AI Log-Triage Safeguards
+
+Before the app sends error logs to an LLM provider, it:
+
+- filters to error-level lines only
+- redacts common secret-bearing keys such as `password`, `token`, and `authorization`
+- redacts common PII or credential patterns such as email addresses, bearer tokens, JWTs, and IPv4 addresses
+
+This keeps the summarization path narrower than raw log forwarding.
 
 ---
 
@@ -68,3 +90,5 @@ The application uses **Pydantic v2** with `strict=True` enabled in the model con
 - Configure `CIRCUIT_BREAKER_CACHE_URL` with Redis for cache-backed fallback responses.
 - Keep `RATE_LIMIT_IN_MEMORY_FALLBACK_ENABLED=false` in production.
 - Run behind TLS and restrict access to `/metrics` if exposed.
+- Configure `TRUSTED_HOSTS` and `CORS_ALLOW_ORIGINS` explicitly in shared environments.
+- Keep the admin-only AI triage path behind role-based access.

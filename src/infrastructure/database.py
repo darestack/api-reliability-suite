@@ -1,6 +1,7 @@
 from collections.abc import AsyncIterator
 from pathlib import Path
 
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from src.core.config import settings
@@ -38,6 +39,10 @@ async def init_database() -> None:
     """Create the current schema for local/dev use."""
     # Import models here so metadata is fully populated before create_all.
     from src.infrastructure.user_models import UserTable  # noqa: F401
+    from src.infrastructure.session_models import (  # noqa: F401
+        RefreshTokenTable,
+        RevokedAccessTokenTable,
+    )
 
     async with engine.begin() as connection:
         await connection.run_sync(Base.metadata.create_all)
@@ -46,3 +51,13 @@ async def init_database() -> None:
 async def close_database() -> None:
     """Dispose of the async engine cleanly."""
     await engine.dispose()
+
+
+async def database_is_ready() -> bool:
+    """Execute a lightweight query to confirm the primary database is reachable."""
+    try:
+        async with engine.connect() as connection:
+            await connection.execute(text("SELECT 1"))
+        return True
+    except Exception:
+        return False

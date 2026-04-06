@@ -1,4 +1,7 @@
-.PHONY: install run test lint format docker-build docker-run clean
+.PHONY: install run test lint format docker-build docker-run stack-up stack-down debug load-test clean
+
+BASE_URL ?= http://localhost:8000
+LOAD_TEST_ENV ?= local-docker-compose
 
 install:
 	poetry install
@@ -32,6 +35,14 @@ stack-down:
 
 debug:
 	docker compose exec api python scripts/cli_debugger.py
+
+load-test:
+	k6 run \
+		-e BASE_URL=$(BASE_URL) \
+		-e ENV_NAME=$(LOAD_TEST_ENV) \
+		-e GIT_SHA=$$(git rev-parse --short HEAD)$$(git diff --quiet --ignore-submodules HEAD -- || printf -- '-dirty') \
+		-e TEST_DATE=$$(date -u +%F) \
+		loadtests/k6/reliability-smoke.js
 
 clean:
 	rm -rf .pytest_cache .ruff_cache .coverage htmlcov app.json app.log app.json.* test_app.json

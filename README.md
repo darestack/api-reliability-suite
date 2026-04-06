@@ -22,7 +22,7 @@ This repository contains a working FastAPI application plus supporting local obs
 
 Backend:
 
-- JWT-based login and protected routes
+- JWT-based login, refresh-token rotation, logout, and protected routes
 - Relational user persistence backed by SQLAlchemy with Postgres-ready configuration
 - Separation between request handling, services, and infrastructure adapters
 - Config-driven token expiry, role-aware auth, and request-level RBAC
@@ -31,7 +31,7 @@ DevOps:
 
 - Route-level rate limiting with SlowAPI
 - Alertmanager-ready local alerting plus SLO-oriented Prometheus recording rules
-- Prometheus metrics plus Grafana and Jaeger for local observability
+- Prometheus metrics plus auto-provisioned Grafana dashboards and Jaeger for local observability
 - Circuit-breaker behavior with Redis-backed fallback caching
 - Structured logging with correlation IDs and trace context
 
@@ -39,7 +39,7 @@ AI:
 
 - AI-assisted log summarization with Groq, OpenAI, or Google Gemini
 - Runtime reporting of the active summarization provider
-- Error-log filtering before summarization to keep the debugging path focused
+- Error-log filtering plus PII/secret redaction before summarization to keep the debugging path focused
 
 ## Requirements
 
@@ -77,7 +77,8 @@ Current boundaries:
 - Rate limiting uses in-memory storage by default unless `RATE_LIMIT_STORAGE_URI` is set (the Docker Compose stack uses Redis).
 - `/external-api` returns the most recent cached upstream payload when the breaker is open and Redis fallback caching is configured.
 - `/debug/summarize-errors` is restricted to admin users, reads the configured log file, and reports the runtime-selected provider.
-- When `ENVIRONMENT` is set to `staging` or `production`, the app requires a non-default `SECRET_KEY` and a shared `RATE_LIMIT_STORAGE_URI`.
+- `/ready` performs dependency-aware checks for the database, Redis-backed features, and the configured LLM provider.
+- When `ENVIRONMENT` is set to `staging` or `production`, the app requires a non-default `SECRET_KEY`, a shared `RATE_LIMIT_STORAGE_URI`, and a server-grade `DATABASE_URL`.
 
 ## Local Observability Stack
 
@@ -98,6 +99,13 @@ Services:
 | Redis      | `redis://localhost:6379` |
 
 Grafana default login: `admin / admin`
+Provisioned dashboard: `http://localhost:3030/d/api-reliability-slo`
+
+If Postgres or Redis are already bound on your machine, override the host ports:
+
+```bash
+POSTGRES_PORT=15432 REDIS_PORT=16379 docker compose up -d
+```
 
 ## Configuration
 
@@ -109,10 +117,14 @@ Common settings:
 - `DATABASE_URL`
 - `SECRET_KEY`
 - `ACCESS_TOKEN_EXPIRE_MINUTES`
+- `REFRESH_TOKEN_EXPIRE_DAYS`
 - `RATE_LIMIT_STORAGE_URI`
 - `CIRCUIT_BREAKER_CACHE_URL`
 - `RATE_LIMIT_HEADERS_ENABLED`
 - `RATE_LIMIT_KEY_PREFIX`
+- `TRUSTED_HOSTS`
+- `CORS_ALLOW_ORIGINS`
+- `HTTPS_REDIRECT_ENABLED`
 - `SETTINGS_SECRETS_DIR`
 - `OTLP_ENDPOINT`
 - `PROMETHEUS_BASE_URL`
@@ -123,13 +135,17 @@ Common settings:
 
 The structured log file path defaults to `app.json`.
 Docker and Kubernetes secret files are supported by setting `SETTINGS_SECRETS_DIR` (defaults to `/run/secrets` if present).
+Shared deployments should also set `TRUSTED_HOSTS`, terminate TLS at a reverse proxy or ingress, and enable `HTTPS_REDIRECT_ENABLED` behind that proxy.
 
 ## API Overview
 
 | Endpoint                  | Method | Purpose                                               |
 | :------------------------ | :----- | :---------------------------------------------------- |
 | `/health`                 | `GET`  | Health check with rate limiting                       |
-| `/login`                  | `POST` | Exchange credentials for a JWT                        |
+| `/ready`                  | `GET`  | Dependency-aware readiness for DB, Redis, and LLMs    |
+| `/login`                  | `POST` | Exchange credentials for an access and refresh token  |
+| `/token/refresh`          | `POST` | Rotate a refresh token and issue a fresh token pair   |
+| `/logout`                 | `POST` | Revoke the current access token and optional refresh token |
 | `/protected`              | `GET`  | Example authenticated route                           |
 | `/external-api`           | `GET`  | Circuit-breaker demo endpoint with cache-backed fallback support |
 | `/debug/summarize-errors` | `GET`  | Admin-only log summarization with the configured LLM provider |
@@ -145,6 +161,7 @@ For more detail, see [API Reference](docs/api-reference.md).
 make lint
 make format
 make test
+make load-test
 ```
 
 Focused verification used for the recent hardening pass:
@@ -165,6 +182,7 @@ poetry run mkdocs serve
 
 - [Architecture & Internals](docs/architecture.md)
 - [Monitoring & Metrics](docs/observability.md)
+- [Load Testing](docs/load-testing.md)
 - [Development Guide](docs/development.md)
 - [Configuration Guide](docs/configuration.md)
 - [Security Guide](docs/security.md)

@@ -2,24 +2,29 @@
 
 This suite includes a practical observability starter stack built around **Prometheus**, **Grafana**, and **Jaeger**.
 
+The app also exposes a dependency-aware `/ready` endpoint so operators can distinguish between basic process health and backing-service readiness.
+
 ---
 
 ## 📊 Real-Time Dashboard (Grafana)
 
-The suite includes a comprehensive Grafana Dashboard designed for SREs and Reliability Engineers.
-
-![Grafana Dashboard](assets/grafana-dashboard.png)
+The Docker Compose stack provisions the Prometheus data source and the `API Reliability SLO Overview` dashboard automatically.
 
 ### Key Metrics Tracked
-- **SLO Tracking**: Monitors the Error Budget Burn Rate to detect reliability risks early.
-- **Latency Distribution**: Tracks P99 Latency to ensure performance for tail-end users.
-- **System Resilience**: Visualizes Circuit Breaker states in real-time.
+- **SLO Tracking**: Success ratio, p99 latency, request rate, and error-budget burn rate.
+- **Latency Distribution**: Tracks the 5-minute p99 latency recording rule for tail behavior.
+- **System Resilience**: Visualizes the circuit breaker state in real time.
 
-!!! tip "Import Instructions"
-    1.  Access Grafana at `http://localhost:3030`.
-    2.  Navigate to **Dashboards** &rarr; **New** &rarr; **Import**.
-    3.  Upload the configuration file: `infra/grafana/dashboard.json`.
-    4.  Select **Prometheus** as the data source.
+!!! tip "Open the Provisioned Dashboard"
+    1.  Start the stack with `make stack-up`.
+    2.  Access Grafana at `http://localhost:3030` with `admin / admin`.
+    3.  Open `http://localhost:3030/d/api-reliability-slo`.
+
+Provisioning files live in:
+
+- `infra/grafana/provisioning/datasources/prometheus.yml`
+- `infra/grafana/provisioning/dashboards/dashboards.yml`
+- `infra/grafana/dashboards/api-reliability-overview.json`
 
 ---
 
@@ -50,4 +55,4 @@ The local Prometheus container loads **Golden Signal** alert rules and forwards 
     Rules are defined in `infra/prometheus/alert_rules.yml`, mounted into the local Prometheus container at `/etc/prometheus/alert_rules.yml`, and routed to Alertmanager at `http://localhost:9093`.
 
 !!! info "Recording Rules"
-    Prometheus also records SLO-oriented series for error ratio, p99 latency, and error-budget burn rate. See [`docs/load-testing.md`](load-testing.md) for the report template and metrics to capture.
+    Prometheus also records SLO-oriented series for request rate, error ratio, p99 latency, and error-budget burn rate. See [`docs/load-testing.md`](load-testing.md) for the smoke profile and the latest recorded local baseline.

@@ -1,82 +1,91 @@
 # Load Testing
 
-This page provides the load-test scaffold for the API Reliability Suite and a simple report template for sharing results.
+This page documents the smoke-load profile for the API Reliability Suite and the latest local baseline captured from a real run.
 
 ---
 
-## Test Script
+## Smoke Profile
 
-The current k6 scaffold lives in `loadtests/k6/reliability-smoke.js`.
+The k6 smoke script lives in `loadtests/k6/reliability-smoke.js`.
 
-It exercises:
-- `/health` for a fast smoke path
-- `/slow` for a bounded latency probe
+It uses one login during `setup()` and then exercises three representative paths:
 
-The script uses per-endpoint tags and thresholds so health checks and latency probes can be measured separately.
+- `/protected` as the authenticated fast path
+- `/external-api` as the resilience path behind the circuit breaker
+- `/slow` as the bounded latency probe
 
-### Run It
+The traffic profile is intentionally sized to stay within the app's route-level rate limits, so this is a smoke benchmark, not a capacity benchmark.
 
-If you have k6 installed locally:
+## Run It
+
+The simplest path uses the Make target, which stamps the current Git SHA and test date into the generated report:
 
 ```bash
-k6 run loadtests/k6/reliability-smoke.js
+make load-test
 ```
 
-If you prefer the official container image:
+Equivalent direct command:
 
 ```bash
-docker run --rm -i -e BASE_URL=http://localhost:8000 grafana/k6:latest run - < loadtests/k6/reliability-smoke.js
+k6 run \
+  -e BASE_URL=http://localhost:8000 \
+  -e ENV_NAME=local-docker-compose \
+  -e GIT_SHA=$(git rev-parse --short HEAD)$(git diff --quiet --ignore-submodules HEAD -- || printf -- '-dirty') \
+  -e TEST_DATE=$(date -u +%F) \
+  loadtests/k6/reliability-smoke.js
 ```
 
-Adjust `BASE_URL` for your environment if the API is not on `localhost:8000`. If you are using the Docker compose stack, `localhost:8000` works from the host shell.
+If the API is running in Docker Compose, `BASE_URL=http://localhost:8000` works from the host shell. For another target, override `BASE_URL`, `LOAD_TEST_USERNAME`, and `LOAD_TEST_PASSWORD`.
 
 ---
 
-## What To Capture
+## Generated Artifacts
 
-Record the following after each run:
+The script writes:
 
-- test date and environment
-- script version or commit SHA
-- command used
-- response failure rate
-- p95 latency for `/health`
-- p95 latency for `/slow`
-- any alert noise or breaker state changes
+- `loadtests/results/latest-report.md`
+- `loadtests/results/latest-summary.json`
 
----
+These are overwritten on each run so the latest local smoke snapshot is always easy to inspect.
 
-## Report Template
+## Latest Local Smoke Snapshot
 
-```markdown
-# Load Test Report
+This section is updated from a real run against the local Docker Compose stack and should be treated as a local baseline, not a portability guarantee.
 
-- Date:
-- Environment:
-- Commit:
-- Command:
+- Date: `2026-04-06`
+- Environment: `local-docker-compose` with host-port overrides for Postgres (`15432`) and Redis (`16379`)
+- Commit: `ab3d869-dirty`
+- Command: `make load-test`
 
-## Target Thresholds
+### Thresholds
 
-- `/health` error rate: < 1%
-- `/health` p95 latency: < 500 ms
+- `/protected` error rate: < 1%
+- `/protected` p95 latency: < 500 ms
+- `/external-api` error rate: < 1%
+- `/external-api` p95 latency: < 500 ms
+- `/slow` error rate: < 1%
 - `/slow` p95 latency: < 2500 ms
 
-## Observed Results
+### Observed Results
 
-- `/health` error rate:
-- `/health` p95 latency:
-- `/slow` p95 latency:
-- Alertmanager activity:
-- Grafana observations:
+- Aggregate request rate: `0.94 req/s`
+- `/protected` error rate: `0.00%`
+- `/protected` p95 latency: `8.86 ms`
+- `/external-api` error rate: `0.00%`
+- `/external-api` p95 latency: `5.84 ms`
+- `/slow` error rate: `0.00%`
+- `/slow` p95 latency: `2009.37 ms`
 
-## Notes
+### Follow-Up Checks
 
-- What changed in the stack:
-- What should be tuned next:
-```
-
----
+- After the next Prometheus recording-rule evaluation, `/slo/report` reported:
+  - `request_rate_5m`: about `0.56 req/s`
+  - `error_ratio_5m`: `0.0`
+  - `p99_latency_seconds_5m`: `1.0`
+  - `error_budget_burn_rate_5m`: `0.0`
+- Prometheus evaluates the bundled recording rules every `60` seconds, so a fresh smoke run may take one evaluation cycle before the recorded series catches up.
+- Review the `API Reliability SLO Overview` Grafana dashboard at `http://localhost:3030/d/api-reliability-slo`.
+- Check Alertmanager at `http://localhost:9093` if thresholds were crossed.
 
 ## SLO View
 

@@ -7,7 +7,7 @@ The API Reliability Suite uses modern asynchronous patterns and observability to
 ## ⚡ Application Performance
 
 ### Asynchronous Execution
-The entire API (FastAPI) and its core features (LLM analysis, logging, file I/O) use non-blocking **async/await**. This allows the server to handle thousands of concurrent requests without thread starvation.
+The API and its core I/O-heavy features use non-blocking **async/await**. This helps the service handle concurrent work without tying progress to one thread per request.
 
 **Key async components:**
 - **`src/main.py`**: All routes and lifespan events.
@@ -49,4 +49,4 @@ OpenTelemetry is used to identify performance bottlenecks. By examining traces i
 
 ### Load-Test Scaffold
 
-See [`docs/load-testing.md`](load-testing.md) for the k6 script, run commands, and the report template used by this repo.
+See [`docs/load-testing.md`](load-testing.md) for the k6 smoke profile, run commands, generated artifacts, and the latest local baseline snapshot.

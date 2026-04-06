@@ -43,6 +43,6 @@ Use this runbook when the `HighErrorRate` alert fires.
 
 ## After Action
 
-- Update the root-cause section in the report template in `docs/load-testing.md`.
+- Update `docs/load-testing.md` or attach a new dated smoke-test report if the incident changed the local baseline.
 - Capture the fix, the detection gap, and the follow-up action.
 - If the alert was noisy or incomplete, update the Prometheus rule or dashboard note.

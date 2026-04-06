@@ -6,6 +6,13 @@ metadata:
     app: reliability-api
 spec:
   replicas: 2
+  revisionHistoryLimit: 5
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app: reliability-api
@@ -17,12 +24,22 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "8000"
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: api
-          image: reliability-api:latest
+          image: ghcr.io/daretechie/api-reliability-suite:replace-with-release-tag
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
           # -----------------------------------------------------------
           # Template baseline: probes are required for health-based routing
           # -----------------------------------------------------------
@@ -35,7 +52,7 @@ spec:
             failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /health
+              path: /ready
               port: 8000
             initialDelaySeconds: 5
             periodSeconds: 10
@@ -51,6 +68,10 @@ spec:
               value: "production"
             - name: LOG_LEVEL
               value: "INFO"
+            - name: TRUSTED_HOSTS
+              value: "api.example.com"
+            - name: HTTPS_REDIRECT_ENABLED
+              value: "true"
             - name: OTLP_ENDPOINT
               value: "http://otel-collector:4317"
             - name: PROMETHEUS_BASE_URL

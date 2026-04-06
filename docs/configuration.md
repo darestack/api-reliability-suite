@@ -25,10 +25,14 @@ The following settings are defined in `src/core/config.py`:
 | `SEED_DEMO_USER` | `True` | Seeds the demo admin account on startup for local runs. |
 | `SECRET_KEY` | `"change-me-in-production"` | Secret key used for JWT signing. **Must be changed for production!** |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | `30` | JWT token expiration time in minutes. |
+| `REFRESH_TOKEN_EXPIRE_DAYS` | `14` | Refresh-token lifetime used for session rotation. |
 | `RATE_LIMIT_STORAGE_URI` | `"memory://"` | Rate limit storage backend (use Redis in shared environments). |
 | `RATE_LIMIT_HEADERS_ENABLED` | `False` | Adds standard rate limit headers to responses. |
 | `RATE_LIMIT_IN_MEMORY_FALLBACK_ENABLED` | `False` | Allow in-memory fallback if storage is unavailable. |
 | `RATE_LIMIT_KEY_PREFIX` | `"api-reliability-suite"` | Prefix for rate limit keys in shared storage. |
+| `TRUSTED_HOSTS` | `"*"` | Comma-separated public hostnames allowed by `TrustedHostMiddleware`. |
+| `CORS_ALLOW_ORIGINS` | `""` | Comma-separated origins allowed by CORS middleware. |
+| `HTTPS_REDIRECT_ENABLED` | `False` | Redirect incoming `http` traffic to `https`. |
 | `SETTINGS_SECRETS_DIR` | `None` | Optional secrets directory path (defaults to `/run/secrets` when present). |
 
 ### Observability Configuration
@@ -41,6 +45,14 @@ The following settings are defined in `src/core/config.py`:
 | `CIRCUIT_BREAKER_CACHE_TTL_SECONDS` | `300` | TTL for the cached upstream payload returned during degraded fallback. |
 | `SLO_TARGET_SUCCESS_RATIO` | `0.99` | Availability target used in SLO/error-budget reporting. |
 | `SLO_TARGET_P99_LATENCY_SECONDS` | `1.0` | Latency objective used in SLO/error-budget reporting. |
+| `HTTP_CLIENT_TIMEOUT_SECONDS` | `10.0` | Default timeout for outbound HTTP requests. |
+| `HTTP_CLIENT_MAX_CONNECTIONS` | `20` | Global connection cap for the shared outbound HTTP client. |
+| `HTTP_CLIENT_MAX_KEEPALIVE_CONNECTIONS` | `10` | Keep-alive pool size for the shared outbound HTTP client. |
+| `LLM_REQUEST_TIMEOUT_SECONDS` | `20.0` | Timeout for AI summarization requests. |
+| `LLM_HEALTHCHECK_TIMEOUT_SECONDS` | `5.0` | Timeout for configured LLM provider readiness checks. |
+| `LLM_MAX_RETRIES` | `2` | Retry count for provider SDK calls that support retries. |
+| `LLM_MAX_CONCURRENCY` | `4` | Bulkhead limit for concurrent LLM summarization requests. |
+| `ENABLE_LLM_READINESS_CHECKS` | `True` | Include configured LLM provider health in `/ready`. |
 
 ### AI/LLM Provider Keys
 
@@ -118,6 +130,16 @@ For Docker and Kubernetes deployments, you can provide secrets as files by mount
 /run/secrets/RATE_LIMIT_STORAGE_URI
 ```
 
+## 🌐 Reverse Proxy Settings
+
+When the API sits behind ingress or a TLS-terminating proxy, configure the middleware settings together:
+
+- `TRUSTED_HOSTS=api.example.com`
+- `CORS_ALLOW_ORIGINS=https://frontend.example.com`
+- `HTTPS_REDIRECT_ENABLED=true`
+
+The middleware is only enabled when these settings are configured.
+
 ---
 
 ## 📋 Production Readiness Standard
@@ -130,3 +152,6 @@ For Docker and Kubernetes deployments, you can provide secrets as files by mount
 - [ ] **Log Level Alignment:** Confirm `LOG_LEVEL` is set to `info` or `warning` for production stability.
 - [ ] **LLM Connectivity:** Ensure at least one valid API key for an LLM provider is present in the `.env` file.
 - [ ] **Tracing Setup:** Verify `OTLP_ENDPOINT` points to a valid collector if distributed tracing is required.
+- [ ] **Trusted Hosts:** Replace `TRUSTED_HOSTS=*` with the real public hostnames for the deployment.
+- [ ] **CORS Policy:** Restrict `CORS_ALLOW_ORIGINS` to the frontends that actually call the API.
+- [ ] **Dependency Checks:** Keep `ENABLE_LLM_READINESS_CHECKS=true` when AI summarization is a required dependency.

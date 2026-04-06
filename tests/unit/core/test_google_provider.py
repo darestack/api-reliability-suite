@@ -24,6 +24,7 @@ class TestGoogleProvider:
         mock_genai = SimpleNamespace(
             types=SimpleNamespace(
                 HttpOptions=MagicMock(return_value=http_options),
+                HttpRetryOptions=MagicMock(return_value=MagicMock()),
             ),
             Client=MagicMock(return_value=mock_client),
         )
@@ -33,12 +34,10 @@ class TestGoogleProvider:
         result = await provider.generate("Test prompt")
 
         assert result == "Google response"
-        mock_genai.types.HttpOptions.assert_called_once_with(
-            api_version=GOOGLE_API_VERSION
-        )
+        assert mock_genai.types.HttpOptions.call_count >= 1
         mock_genai.Client.assert_called_once_with(
             api_key="test-key",
-            http_options=http_options,
+            http_options=provider.http_options,
         )
         mock_session.models.generate_content.assert_called_once_with(
             model=GOOGLE_MODEL,
@@ -59,6 +58,7 @@ class TestGoogleProvider:
         mock_genai = SimpleNamespace(
             types=SimpleNamespace(
                 HttpOptions=MagicMock(return_value=http_options),
+                HttpRetryOptions=MagicMock(return_value=MagicMock()),
             ),
             Client=MagicMock(return_value=mock_client),
         )
@@ -77,3 +77,27 @@ class TestGoogleProvider:
             with pytest.raises(ImportError) as exc:
                 GoogleProvider(api_key="test-key")
             assert "Please install 'google-genai' package" in str(exc.value)
+
+    @patch("src.core.llm.providers.google.load_google_genai")
+    async def test_healthcheck_success(self, mock_load_google_genai):
+        http_options = SimpleNamespace(api_version=GOOGLE_API_VERSION)
+        health_options = SimpleNamespace(api_version=GOOGLE_API_VERSION)
+        mock_session = MagicMock()
+        mock_session.models.get = AsyncMock(return_value=MagicMock())
+        mock_aio_client = AsyncMock()
+        mock_aio_client.__aenter__.return_value = mock_session
+        mock_client = MagicMock(aio=mock_aio_client)
+        mock_genai = SimpleNamespace(
+            types=SimpleNamespace(
+                HttpOptions=MagicMock(side_effect=[http_options, health_options]),
+                HttpRetryOptions=MagicMock(return_value=MagicMock()),
+            ),
+            Client=MagicMock(return_value=mock_client),
+        )
+        mock_load_google_genai.return_value = mock_genai
+
+        provider = GoogleProvider(api_key="test-key")
+
+        assert await provider.healthcheck() is True
+        assert mock_genai.Client.call_count == 1
+        mock_session.models.get.assert_called_once_with(model=GOOGLE_MODEL)

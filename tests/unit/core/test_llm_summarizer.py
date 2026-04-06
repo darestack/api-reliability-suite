@@ -67,3 +67,20 @@ Summary info here.
         assert "Summary info here" in result["summary_text"]
         assert result["structured_insight"] is None
         assert result["provider"] == "openai"
+
+    @patch("src.core.llm.summarizer.LLMFactory")
+    async def test_summarize_redacts_sensitive_data_before_prompt(self, mock_factory):
+        mock_provider = AsyncMock()
+        mock_factory.get_provider_with_name.return_value = ("groq", mock_provider)
+        mock_provider.generate.return_value = "Redacted summary"
+
+        logs = [
+            '{"level":"error","email":"owner@example.com","password":"secret123","authorization":"Bearer abc.def.ghi"}'
+        ]
+        await summarize_with_llm(logs)
+
+        called_prompt = mock_provider.generate.await_args.args[0]
+        assert "owner@example.com" not in called_prompt
+        assert "secret123" not in called_prompt
+        assert "abc.def.ghi" not in called_prompt
+        assert "[REDACTED]" in called_prompt

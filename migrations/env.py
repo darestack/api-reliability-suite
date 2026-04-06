@@ -11,6 +11,10 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from src.infrastructure.db_base import Base
+from src.infrastructure.session_models import (  # noqa: F401
+    RefreshTokenTable,
+    RevokedAccessTokenTable,
+)
 from src.infrastructure.user_models import UserTable  # noqa: F401
 
 config = context.config

@@ -65,3 +65,17 @@ def auth_headers():
 
     token = create_access_token(data={"sub": "demo", "role": "admin"})
     return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+async def auth_session(client):
+    response = await client.post(
+        "/login", data={"username": "demo", "password": "secret123"}
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    return {
+        "access_token": payload["access_token"],
+        "refresh_token": payload["refresh_token"],
+        "headers": {"Authorization": f"Bearer {payload['access_token']}"},
+    }

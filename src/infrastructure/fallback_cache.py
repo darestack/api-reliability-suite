@@ -55,5 +55,16 @@ class FallbackCache:
             await self._client.aclose()
             self._client = None
 
+    async def ping(self) -> bool:
+        client = self._get_client()
+        if client is None:
+            return False
+
+        try:
+            return bool(await client.ping())
+        except Exception as exc:
+            logger.warning("fallback_cache_ping_failed", error=str(exc))
+            return False
+
 
 fallback_cache = FallbackCache(settings.CIRCUIT_BREAKER_CACHE_URL)

@@ -33,6 +33,9 @@
     # Build and start all services
     make docker-build
     make stack-up
+
+    # Apply the current database schema
+    DATABASE_URL=postgresql+asyncpg://app:app@localhost:${POSTGRES_PORT:-5432}/reliability_suite poetry run alembic upgrade head
     ```
 
     **Service Registry:**
@@ -46,6 +49,17 @@
     | **Jaeger** | `http://localhost:16686` | — |
     | **Postgres** | `postgres://app:app@localhost:5432/reliability_suite` | app / app |
     | **Redis** | `redis://localhost:6379` | — |
+
+    Grafana provisions the Prometheus data source and the `API Reliability SLO Overview` dashboard automatically. Open:
+
+    - `http://localhost:3030`
+    - `http://localhost:3030/d/api-reliability-slo`
+
+    If Postgres or Redis already use their default host ports on your machine, override them when starting the stack:
+
+    ```bash
+    POSTGRES_PORT=15432 REDIS_PORT=16379 docker compose up -d
+    ```
 
 ## Secrets, Postgres, and Redis (Production-Oriented)
 
@@ -81,6 +95,12 @@ The app can run locally with SQLite, but the Compose stack demonstrates the inte
 - `CIRCUIT_BREAKER_CACHE_URL=redis://redis:6379/1`
 
 When `PROMETHEUS_BASE_URL` points to Prometheus, `/slo/report` also resolves the latest recording-rule values for SLO/error-budget reporting.
+
+If you deploy behind a reverse proxy or ingress, also set:
+
+- `TRUSTED_HOSTS` to your public API hostname(s)
+- `CORS_ALLOW_ORIGINS` to the frontend origins that should call the API
+- `HTTPS_REDIRECT_ENABLED=true` once TLS termination is in place
 
 ## Verification
 

@@ -18,6 +18,16 @@ lsof -i :8000
 kill -9 <PID>
 ```
 
+### Postgres or Redis Port Collision in Docker Compose
+**Problem:** `docker compose up` fails because `5432` or `6379` is already allocated.
+
+**Solution:**
+1.  Override the host ports when starting the stack:
+    ```bash
+    POSTGRES_PORT=15432 REDIS_PORT=16379 docker compose up -d
+    ```
+2.  Keep using the service names inside the Compose network. The API container still talks to `postgres:5432` and `redis:6379`.
+
 ### LLM Provider Missing
 **Problem:** AI Debugging (`make debug`) fails with "Provider not configured" or authentication errors.
 
@@ -50,6 +60,11 @@ kill -9 <PID>
 **Solution:**
 1.  Ensure you have made at least one request to the API: `curl http://localhost:8000/health`.
 2.  Check if Prometheus is scraping the API: Open `http://localhost:9099/targets` and verify the `fastapi` target is **UP**.
+3.  Open the provisioned dashboard directly at `http://localhost:3030/d/api-reliability-slo`.
+4.  If the dashboard itself is missing, inspect Grafana provisioning logs:
+    ```bash
+    docker compose logs grafana
+    ```
 
 ### Alerts Not Reaching Alertmanager
 **Problem:** Prometheus rules fire, but no alerts appear in Alertmanager.
@@ -94,6 +109,7 @@ Use these commands for a rapid system audit:
 | **Logic Verification** | `make test` |
 | **Full Cleanup** | `make clean` |
 | **AI Triage Audit** | `make debug` |
+| **Smoke Load Test** | `make load-test` |
 | **Check Logs** | `cat "${LOG_FILE_PATH:-app.json}" | jq .` |
 
 ---

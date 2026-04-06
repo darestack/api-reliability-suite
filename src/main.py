@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Depends, HTTPException, status
+from fastapi import FastAPI, Request, Depends, HTTPException, Response, status
 from typing import Annotated
 import structlog
 import uvicorn
@@ -15,11 +15,13 @@ from src.core.tracing import configure_tracing
 from src.core.config import DEFAULT_SECRET_KEY, settings
 from src.core.rate_limit import limiter, rate_limit_exceeded_handler
 from src.core.llm import summarize_with_llm
-from src.domain.models import AuthenticatedUser, HealthStatus, Token, UserRole
+from src.domain.models import AuthenticatedUser, HealthStatus, UserRole
 from src.services.auth_service import AuthService
 from src.infrastructure.database import close_database, init_database
+from src.infrastructure.dependency_checks import build_readiness_report
 from src.infrastructure.fallback_cache import fallback_cache
 from src.infrastructure.http_client import http_client
+from src.infrastructure.session_repository import session_repository
 from src.infrastructure.user_repository import user_repository
 from src.core.circuit_breaker import external_api_breaker
 import pybreaker
@@ -27,6 +29,12 @@ import pybreaker
 from slowapi.errors import RateLimitExceeded
 from fastapi import Form
 from fastapi.security import OAuth2PasswordBearer
+from fastapi.responses import JSONResponse
+from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
+
+from src.domain.models import LogoutRequest, RefreshTokenRequest, TokenPair
 
 
 # Configure logging
@@ -42,6 +50,7 @@ auth_service = AuthService(repository=user_repository)
 async def lifespan(app: FastAPI):
     logger.info("startup_event", status="starting_app")
     await init_database()
+    await session_repository.prune_expired_refresh_sessions()
     await user_repository.ensure_demo_user()
     if settings.SECRET_KEY == DEFAULT_SECRET_KEY:
         logger.warning(
@@ -69,6 +78,18 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
 
 # Register Middlewares
+if settings.trusted_hosts_list != ["*"]:
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.trusted_hosts_list)
+if settings.cors_allow_origins_list:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_allow_origins_list,
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_headers=["Authorization", "Content-Type", "X-Correlation-ID"],
+    )
+if settings.HTTPS_REDIRECT_ENABLED:
+    app.add_middleware(HTTPSRedirectMiddleware)
 app.add_middleware(CorrelationIdMiddleware)  # Traceability first
 app.add_exception_handler(Exception, handle_unexpected_exception)
 
@@ -102,7 +123,7 @@ async def slow_endpoint(request: Request):
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
-@app.post("/login", response_model=Token)
+@app.post("/login", response_model=TokenPair)
 @limiter.limit("5/minute")
 async def login(
     request: Request,
@@ -118,16 +139,23 @@ async def login(
     if not authenticated:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
-    token = auth_service.create_access_token(
-        data={"sub": authenticated.username, "role": authenticated.role}
-    )
+    return await auth_service.create_token_pair(authenticated)
 
-    return Token(access_token=token, token_type="bearer")
+
+@app.post("/token/refresh", response_model=TokenPair)
+@limiter.limit("10/minute")
+async def refresh_token(request: Request, payload: RefreshTokenRequest):
+    """Rotate the current refresh token and issue a new access token."""
+    return await auth_service.rotate_refresh_token(payload.refresh_token)
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     """Dependency that validates the JWT and returns the current principal."""
     return await auth_service.verify_token(token)
+
+
+async def get_current_token(token: str = Depends(oauth2_scheme)) -> str:
+    return token
 
 
 def require_roles(*allowed_roles: UserRole):
@@ -157,6 +185,20 @@ async def protected_route(
         "user": current_user.username,
         "role": current_user.role,
     }
+
+
+@app.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
+async def logout(
+    payload: LogoutRequest,
+    current_token: str = Depends(get_current_token),
+    current_user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Revoke the current access token and optionally the presented refresh token."""
+    logger.info("logout_requested", username=current_user.username)
+    await auth_service.logout(
+        access_token=current_token, refresh_token=payload.refresh_token
+    )
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @app.get("/debug/summarize-errors")
@@ -192,6 +234,21 @@ async def summarize_errors(
         "provider": provider,
         "requested_by": current_user.username,
     }
+
+
+@app.get("/ready")
+async def readiness_check():
+    """Dependency-aware readiness report for DB, Redis-backed features, and optional LLM providers."""
+    http_status, report = await build_readiness_report()
+    return JSONResponse(
+        content={
+            "status": report["status"],
+            "service": "reliability-suite",
+            "dependencies": report["dependencies"],
+        },
+        status_code=http_status,
+        headers={"X-Readiness-Report": "dependency-aware"},
+    )
 
 
 # Simulation state
