@@ -18,8 +18,9 @@ RUN pip install --no-cache-dir poetry==2.2.1
 # Copy dependencies file
 COPY pyproject.toml poetry.lock* ./
 
-# Install dependencies
-RUN poetry config virtualenvs.create false \
+# Install runtime dependencies into an app-local virtualenv so the final image
+# does not carry Poetry or builder-only packages.
+RUN poetry config virtualenvs.in-project true \
   && poetry install --only main --no-interaction --no-ansi
 
 # Stage 2: Runtime
@@ -38,9 +39,10 @@ RUN groupadd --system --gid ${APP_GID} app \
   && mkdir -p /app/data /app/scripts \
   && chown -R app:app /app
 
-# Copy installed packages from builder
-COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
-COPY --from=builder /usr/local/bin /usr/local/bin
+ENV PATH="/app/.venv/bin:${PATH}"
+
+# Copy the runtime virtualenv from builder
+COPY --from=builder /app/.venv /app/.venv
 
 # Copy application code and runtime helper scripts
 COPY --chown=app:app src/ ./src/

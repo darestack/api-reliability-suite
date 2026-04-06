@@ -1,0 +1,10 @@
+ignore:
+  # The current official python:3.12-slim image is still 3.12.13 as of 2026-04-06.
+  # Grype reports CVE-2025-13836 against /usr/local/bin/python3.12, but there is
+  # no newer 3.12-slim tag available to consume yet. Keep this rule narrowly
+  # scoped to the interpreter binary and remove it once the upstream base image
+  # publishes a patched Python 3.12 release.
+  - vulnerability: CVE-2025-13836
+    package:
+      name: python
+      location: "/usr/local/bin/python3.12"

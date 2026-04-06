@@ -38,6 +38,8 @@ jobs:
           fail-build: true
           severity-cutoff: high
           only-fixed: true
+          cache-db: true
+          config: .grype.yaml
           output-format: sarif
 
       - name: Upload vulnerability report
