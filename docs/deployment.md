@@ -11,18 +11,21 @@ The API Reliability Suite is designed to be cloud-native and highly portable, ut
 The project uses a **multi-stage Docker build** to minimize the final image size and reduce the attack surface.
 
 - **Stage 1 (Builder):** Installs Poetry and downloads all dependencies.
-- **Stage 2 (Runtime):** Copies only the installed packages and the `src/` directory into a slim Python 3.12 image.
+- **Stage 2 (Runtime):** Copies the installed packages, the `src/` application code, and the runtime helper scripts into a slim Python 3.12 image.
 
 ### Building the Image
 ```bash
 make docker-build
 ```
 
+> [!NOTE]
+> The local `docker-compose.yml` stack includes Redis for rate limiting. Production deployments should also configure `RATE_LIMIT_STORAGE_URI` to a shared Redis instance.
+
 ---
 
 ## ☸️ Kubernetes (Infrastructure as Code)
 
-Production-ready manifests are located in `infra/k8s/`. These manifests follow the 2026 Reliability Standards for high-availability APIs.
+Example manifests are located in `infra/k8s/` to show a baseline deployment layout and scaling strategy.
 
 ### 1. Deployment (`deployment.yaml`)
 The deployment ensures at least **2 replicas** are always running.
@@ -42,6 +45,9 @@ A `HorizontalPodAutoscaler` is configured to scale the API based on CPU utilizat
 ```bash
 kubectl apply -f infra/k8s/
 ```
+
+> [!NOTE]
+> The templates expect secrets to be injected through Kubernetes Secrets (see `infra/k8s/deployment.yaml`), and rate limiting should use Redis via `RATE_LIMIT_STORAGE_URI` in shared environments.
 
 ---
 

@@ -1,6 +1,6 @@
 # Monitoring & Metrics
 
-This suite provides enterprise-grade observability out of the box using the **Prometheus**, **Grafana**, and **Jaeger** stack.
+This suite includes a practical observability starter stack built around **Prometheus**, **Grafana**, and **Jaeger**.
 
 ---
 
@@ -25,7 +25,7 @@ The suite includes a comprehensive Grafana Dashboard designed for SREs and Relia
 
 ## 🔗 Distributed Tracing (Jaeger)
 
-Every request is traced using **OpenTelemetry**, providing visibility into how requests flow through your system.
+Requests can be traced using **OpenTelemetry**, providing visibility into how traffic moves through the application during local runs and demos.
 
 ### Trace Propagation
 - **Inbound**: Middleware automatically injects `trace_id`, `span_id`, and a user-facing `correlation_id`.
@@ -38,7 +38,7 @@ Every request is traced using **OpenTelemetry**, providing visibility into how r
 
 ## 🚨 Alerting Strategy
 
-Prometheus is configured with **Golden Signal** alerts to proactively notify you of system distress.
+The local Prometheus container loads **Golden Signal** alert rules so you can inspect firing conditions during demos and manual testing.
 
 | Alert | Condition | Severity |
 | :--- | :--- | :--- |
@@ -47,4 +47,4 @@ Prometheus is configured with **Golden Signal** alerts to proactively notify you
 | **CircuitBreakerOpen** | Breaker state is "Open" | Warning |
 
 !!! example "Alert Config"
-    Rules are defined in `infra/prometheus/alert_rules.yml`.
+    Rules are defined in `infra/prometheus/alert_rules.yml` and mounted into the local Prometheus container at `/etc/prometheus/alert_rules.yml`.

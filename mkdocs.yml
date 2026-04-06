@@ -1,6 +1,6 @@
 site_name: API Reliability Suite
 site_url: https://daretechie.github.io/api-reliability-suite/
-site_description: A production-ready template for robust, debuggable, and maintainable APIs (Blueprint 2026 Aligned).
+site_description: Backend, DevOps, and AI reliability template for FastAPI services.
 site_author: daretechie
 repo_url: https://github.com/daretechie/api-reliability-suite
 repo_name: daretechie/api-reliability-suite
@@ -89,4 +89,3 @@ nav:
       - Hexagonal Arch: adr/0001-hexagonal-architecture.md
       - Logging: adr/0002-structured-logging.md
       - AI & LLM: adr/0003-ai-error-analysis.md
-  - Developer Wiki: wiki.md

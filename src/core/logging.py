@@ -55,7 +55,7 @@ def configure_logging():
     # File Handler
     # Rotate after 10MB, keeps last 5 files
     file_handler = RotatingFileHandler(
-        "app.json", maxBytes=10 * 1024 * 1024, backupCount=5
+        settings.LOG_FILE_PATH, maxBytes=10 * 1024 * 1024, backupCount=5
     )
     file_formatter = structlog.stdlib.ProcessorFormatter(
         foreign_pre_chain=shared_processors,

@@ -1,195 +1,170 @@
-# API Reliability & Debugging Suite
+# API Reliability Suite
+
+Backend-focused FastAPI template with DevOps observability workflows and AI-assisted log triage.
 
 ![Thumbnail](docs/assets/thumbnail.png)
 
-![CI Pipeline](https://github.com/daretechie/api-reliability-suite/actions/workflows/ci.yml/badge.svg)
 [![Documentation](https://img.shields.io/badge/docs-live-forestgreen)](https://daretechie.github.io/api-reliability-suite/)
-![Version](https://img.shields.io/badge/version-1.0.0-gold)
-![Architecture](https://img.shields.io/badge/architecture-Hexagonal-orange)
+[![CI Pipeline](https://github.com/daretechie/api-reliability-suite/actions/workflows/ci.yml/badge.svg)](https://github.com/daretechie/api-reliability-suite/actions/workflows/ci.yml)
+[![Security Policy](https://img.shields.io/badge/security-policy-blue)](SECURITY.md)
 ![Python](https://img.shields.io/badge/python-3.12%20%7C%203.13-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.128-009688)
-[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-pink)](https://github.com/sponsors/daretechie)
 
----
+Portfolio one-liner: Backend FastAPI service template that pairs DevOps observability with AI-assisted log triage.
 
-## 😤 The Reality
+## Why This Exists
 
-> **"Our API crashed at 3 AM and we have no idea why."**
-> **"This endpoint is slow, but we can't figure out where the bottleneck is."**
+Many FastAPI examples stop at routes and CRUD flows. This repository goes further by combining backend service patterns, DevOps reliability tooling, and AI-assisted debugging in a small runnable system.
 
-Most APIs are built without proper **observability**, **security**, or **testing**—making debugging a nightmare when it matters most.
+## What's Included
 
-## ✅ The Solution
+This repository contains a working FastAPI application plus supporting local observability services.
 
-This suite is a **production-ready blueprint** for building "High-Reliability" APIs. It moves beyond basic tutorials to deliver an Enterprise-Grade Product.
+Backend:
 
-### 🚀 Key Capabilities
+- JWT-based login and protected routes
+- Separation between request handling, services, and infrastructure adapters
+- Config-driven token expiry and request-level auth flow
 
-| Feature | Description |
-| :--- | :--- |
-| **🔍 Observable** | Every request is traced via **OpenTelemetry**. Logs are structured (JSON) and correlated across services. |
-| **🤖 Intelligent** | Integrated **AI Agent** (Groq/OpenAI) analyzes error logs and suggests root-cause fixes automatically. |
-| **🛡️ Secure** | Enterprise protection patterns including **Rate Limiting** (Token Bucket) and **JWT Authentication**. |
-| **🔗 Distributed** | **Trace Propagation** is built-in. Context is preserved from Client &rarr; API &rarr; External Services. |
-| **💥 Resilient** | **Circuit Breakers** prevent cascading failures when downstream dependencies go offline. |
-| **📊 Visual** | Includes a production-grade **Grafana Dashboard** for real-time SLO & Error Budget tracking.
+DevOps:
 
----
+- Route-level rate limiting with SlowAPI
+- Prometheus metrics plus Grafana and Jaeger for local observability
+- Circuit-breaker behavior for a demo upstream endpoint
+- Structured logging with correlation IDs and trace context
 
-## 🏛️ Architecture: Hexagonal (Ports & Adapters)
+AI:
 
-This project follows **Hexagonal Architecture** to decouple business logic from infrastructure. This ensures the system remains testable, maintainable, and swap-able.
+- AI-assisted log summarization with Groq, OpenAI, or Google Gemini
+- Runtime reporting of the active summarization provider
+- Error-log filtering before summarization to keep the debugging path focused
 
-```mermaid
-graph TD
-    subgraph "External World"
-        Client[Client Request]
-        Jaeger[Jaeger Tracing]
-        Prom[Prometheus]
-    end
+## Requirements
 
-    subgraph "Infrastructure Adapters (Driving)"
-        API["FastAPI Entrypoint<br/>(src.main)"]
-    end
+- Python 3.12 or 3.13
+- Poetry
+- Docker with Compose support for the local observability stack
 
-    subgraph "Core Application (The Domain)"
-        direction TB
-        Service["Auth Service<br/>(src.services.auth_service)"]
-        Domain["Domain Models<br/>(src.domain.models)"]
-    end
+## Quickstart
 
-    subgraph "Infrastructure Adapters (Driven)"
-        Repo["User Repository<br/>(src.infrastructure.user_repository)"]
-        LLM["AI Adapter<br/>(src.core.llm)"]
-        Logger["Structlog Adapter<br/>(src.core.logging)"]
-        HTTP["Instrumented HTTP Client<br/>(src.infrastructure.http_client)"]
-    end
+```bash
+git clone https://github.com/daretechie/api-reliability-suite.git
+cd api-reliability-suite
 
-    subgraph "Observability Sidecars"
-        OTel[OpenTelemetry Collector]
-        Metrics[Metrics Instrumentator]
-    end
-
-    Client --> API
-    API --> Service
-    Service --> Domain
-    Service --> Repo
-
-    API -.-> OTel
-    API -.-> Metrics
-    LLM -.-> API
-    HTTP -.-> OTel
-
-    OTel --> Jaeger
-    Metrics --> Prom
+make install
+make run
 ```
 
----
+The API will be available at `http://localhost:8000`.
 
-## 📂 The Codebase Explained
+Swagger UI is available at `http://localhost:8000/docs`.
 
-Features you might miss if you don't look closely:
+For local exploration, a demo user is available:
 
-| Path | Feature | Why it matters |
-|------|---------|----------------|
-| `src/core/middleware.py` | **Correlation ID** | Injects `X-Correlation-ID` into every request. Connects logs across microservices. |
-| `src/core/config.py` | **Fail-Fast Settings** | Uses **Pydantic v2** to validate env vars on startup. If a key is missing, the app crashes immediately (safe) rather than failing silently later. |
-| `src/infrastructure/http_client.py` | **Distributed Tracing** | An instrumented client that automatically passes trace headers to external APIs (OpenAI, Stripe, etc). |
-| `src/core/circuit_breaker.py` | **Circuit Breaker** | Tracks external failures. If an API is down, it "trips" and returns cached data instantly, preventing system hang. |
-| `src/core/rate_limit.py` | **Token Bucket Limiter** | Prevents abuse by limiting requests per IP. |
-| `src/services/` | **Hexagonal Logic** | Business logic is pure Python. It doesn't know what "FastAPI" is, making it easy to test. |
+- Username: `demo`
+- Password: `secret123`
 
----
+## Project Scope
 
-## 🚀 Day 2 Operations: Monitoring & Tracing
+This project is best treated as a template or reference implementation rather than a finished production system.
 
-### 1. The "WOW" Dashboard (Real-Time)
-We provide a pre-built Grafana Dashboard (`infra/grafana/dashboard.json`) that tracks:
-*   **SLO Tracking**: Error Budget Burn Rate.
-*   **Experience**: P99 Latency (the slowest 1% of requests).
-*   **Resilience**: Live Circuit Breaker status.
+Current boundaries:
 
-**How to Import:**
-1. Open Grafana (`http://localhost:3030` - admin/admin).
-2. **Dashboards** → **New** → **Import**.
-3. Upload `infra/grafana/dashboard.json`.
-4. Select **Prometheus** datasource and Load.
+- `SECRET_KEY` defaults to a demo value and must be replaced for real deployments.
+- Rate limiting uses in-memory storage by default unless `RATE_LIMIT_STORAGE_URI` is set (the Docker Compose stack uses Redis).
+- `/external-api` returns a static degraded fallback when the breaker is open; it is not cache-backed.
+- `/debug/summarize-errors` reads the configured log file and reports the runtime-selected provider.
+- When `ENVIRONMENT` is set to `staging` or `production`, the app requires a non-default `SECRET_KEY` and a shared `RATE_LIMIT_STORAGE_URI`.
 
-![Grafana Dashboard](docs/assets/grafana-dashboard.png)
+## Local Observability Stack
 
-### 2. Distributed Tracing (Jaeger)
-See the lifecycle of every request.
-
-1. **Spin up Infrastructure**: `docker compose up -d`
-2. **Generate Traffic**: `make run` and hit endpoints.
-3. **View Traces**: `http://localhost:16686`
-
----
-
-### Run Full Stack (Recommended)
 ```bash
-# Build image
-make docker-build
-
-# Start API + Prometheus + Jaeger + Grafana
 make stack-up
 ```
 
-### Stop All Services
+Services:
+
+| Service    | URL                      |
+| :--------- | :----------------------- |
+| API        | `http://localhost:8000`  |
+| Prometheus | `http://localhost:9099`  |
+| Grafana    | `http://localhost:3030`  |
+| Jaeger     | `http://localhost:16686` |
+| Redis      | `redis://localhost:6379` |
+
+Grafana default login: `admin / admin`
+
+## Configuration
+
+Create a `.env` file or export environment variables for the settings you want to override.
+
+Common settings:
+
+- `ENVIRONMENT`
+- `SECRET_KEY`
+- `ACCESS_TOKEN_EXPIRE_MINUTES`
+- `RATE_LIMIT_STORAGE_URI`
+- `RATE_LIMIT_HEADERS_ENABLED`
+- `RATE_LIMIT_KEY_PREFIX`
+- `SETTINGS_SECRETS_DIR`
+- `OTLP_ENDPOINT`
+- `LOG_FILE_PATH`
+- `OPENAI_API_KEY`
+- `GROQ_API_KEY`
+- `GOOGLE_API_KEY`
+
+The structured log file path defaults to `app.json`.
+Docker and Kubernetes secret files are supported by setting `SETTINGS_SECRETS_DIR` (defaults to `/run/secrets` if present).
+
+## API Overview
+
+| Endpoint                  | Method | Purpose                                               |
+| :------------------------ | :----- | :---------------------------------------------------- |
+| `/health`                 | `GET`  | Health check with rate limiting                       |
+| `/login`                  | `POST` | Exchange credentials for a JWT                        |
+| `/protected`              | `GET`  | Example authenticated route                           |
+| `/external-api`           | `GET`  | Circuit-breaker demo endpoint                         |
+| `/debug/summarize-errors` | `GET`  | Summarize error logs with the configured LLM provider |
+| `/slow`                   | `GET`  | Simulate latency for tracing demos                    |
+| `/force-error`            | `GET`  | Trigger a 500 error for alerting and debugging demos  |
+
+For more detail, see [API Reference](docs/api-reference.md).
+
+## Development
+
 ```bash
-make stack-down
-```
-
----
-
-## 🔍 API Endpoints
-
-| Endpoint | Auth | Resilience | Description |
-|----------|------|------------|-------------|
-| `GET /health` | ❌ | ✅ Rate Limit | Health check |
-| `GET /slow` | ❌ | ❌ | Simulates slow request (tracing demo) |
-| `POST /login` | ❌ | ❌ | Get JWT token (demo/secret123) |
-| `GET /protected` | ✅ | ❌ | Protected route (requires JWT) |
-| `GET /external-api` | ❌ | ✅ **Circuit Breaker** | Demonstrates fault tolerance & fallback |
-| `GET /debug/summarize-errors`| ✅ | ✅ Rate Limit | **AI analyzes logs** and returns insights 🤖 |
-| `GET /metrics` | ❌ | ❌ | Prometheus metrics for Grafana 📊 |
-
----
-
-## 🧠 AI-Powered Debugging
-This project includes a **Self-Healing AI Agent** that reads `app.json` logs and provides actionable insights.
-
-![AI Agent Screenshot](docs/assets/ai-debug-screenshot.png)
-
-**How to use:**
-1. Set an API key in `.env`: `GROQ_API_KEY`, `OPENAI_API_KEY`, or `GOOGLE_API_KEY`.
-2. Hit the `/debug/summarize-errors` endpoint (requires auth).
-3. Receive a JSON summary of root causes and fixes.
-
----
-
-## 👷 Developer Tools
-
-This project uses **Ruff** for linting and **Pre-Commit** for quality checks.
-
-```bash
-# Install git hooks (runs automatically on commit)
-make install-hooks
-
-# Run tests
-make test
-
-# Format code manually
+make lint
 make format
+make test
 ```
 
----
+Focused verification used for the recent hardening pass:
 
-## 💖 Support This Project
+```bash
+poetry run pytest -q --no-cov tests/test_auth.py tests/test_api_advanced.py tests/test_reliability.py tests/unit/core/test_llm_factory.py tests/unit/core/test_llm_summarizer.py tests/unit/core/test_google_provider.py tests/unit/core/test_openai_provider.py tests/unit/core/test_groq_provider.py
+```
 
-If this template helps you, consider [sponsoring my work](https://github.com/sponsors/daretechie)!
+## Documentation
 
-## 🤝 Hire Me
+- [Architecture & Internals](docs/architecture.md)
+- [Monitoring & Metrics](docs/observability.md)
+- [Development Guide](docs/development.md)
+- [Configuration Guide](docs/configuration.md)
+- [Security Guide](docs/security.md)
+- [Security Policy](SECURITY.md)
+- [Production Checklist](docs/security.md)
 
-Looking for a developer who understands **API reliability, security, and DevOps**?
-📧 [adelekedare2012@gmail.com](mailto:adelekedare2012@gmail.com) | [LinkedIn](https://linkedin.com/in/daretechie)
+This project was built with AI-assisted iteration for scaffolding, documentation, and test support, with manual review, correction, and verification of the final implementation.
+
+## GitHub Metadata
+
+Suggested repo description: Backend + DevOps + AI reliability template for FastAPI with auth, rate limiting, observability, circuit breaker, and log triage.
+
+Suggested topics:
+`fastapi` `backend` `devops` `observability` `opentelemetry` `prometheus` `grafana` `jaeger` `rate-limiting` `circuit-breaker` `jwt` `llm` `ai-ops`
+
+## Support
+
+- Documentation: <https://daretechie.github.io/api-reliability-suite/>
+- Issues: <https://github.com/daretechie/api-reliability-suite/issues>
+- Maintainer: [adelekedare2012@gmail.com](mailto:adelekedare2012@gmail.com) | [LinkedIn](https://linkedin.com/in/daretechie)

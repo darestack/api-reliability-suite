@@ -1,7 +1,11 @@
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 from typing import Optional
 from jose import jwt
-from src.core.auth import verify_password, ALGORITHM
+from src.core.auth import (
+    ALGORITHM,
+    create_access_token as build_access_token,
+    verify_password,
+)
 from src.core.config import settings
 from fastapi import HTTPException
 import structlog
@@ -31,15 +35,7 @@ class AuthService:
         """
         Generates a JWT token.
         """
-        to_encode = data.copy()
-        if expires_delta:
-            expire = datetime.now(timezone.utc) + expires_delta
-        else:
-            expire = datetime.now(timezone.utc) + timedelta(minutes=15)
-
-        to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
-        return encoded_jwt
+        return build_access_token(data=data, expires_delta=expires_delta)
 
     def verify_token(self, token: str):
         """

@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "api-reliability-suite"
 version = "1.0.0"
-description = "A Production-Ready Reliability Suite: Hexagonal Architecture, AI Triage, and Full-Stack Observability"
+description = "Backend, DevOps, and AI reliability template for FastAPI services with observability, auth, and log triage"
 authors = ["Dare AbdulGoniyy adelekedare2012@gmail.com"]
 readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.12,<3.14"
 fastapi = "^0.128.0"
 uvicorn = "^0.40.0"
 structlog = "^25.5.0"
@@ -17,16 +17,17 @@ opentelemetry-instrumentation-fastapi = "^0.60b1"
 pydantic-settings = "^2.12.0"
 slowapi = "^0.1.9"
 python-jose = {extras = ["cryptography"], version = "^3.5.0"}
-passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 bcrypt = "<4.1"
 python-multipart = "^0.0.21"
 prometheus-fastapi-instrumentator = "^7.1.0"
 groq = "^1.0.0"
 openai = "^2.14.0"
-google-generativeai = "^0.8.6"
 aiofiles = "^25.1.0"
 pybreaker = "^1.4.1"
 mkdocs-material = "^9.7.1"
+google-genai = "^1.70.0"
+redis = "^6.4.0"
+rich = "^14.1.0"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -1,8 +1,14 @@
-import pytest
-from httpx import AsyncClient, ASGITransport
+import os
 from unittest.mock import MagicMock
-from src.main import app
+from importlib import import_module
+
+import pytest
+from httpx import ASGITransport, AsyncClient
 from opentelemetry import trace
+
+os.environ["DEBUG"] = "false"
+os.environ["OTLP_ENDPOINT"] = ""
+os.environ["LOG_FILE_PATH"] = "test_app.json"
 
 
 @pytest.fixture(autouse=True)
@@ -11,16 +17,47 @@ def mock_otlp_exporter(monkeypatch):
     Prevents tests from trying to connect to Jaeger.
     Mocks OTLPSpanExporter to do nothing.
     """
+    tracing = import_module("src.core.tracing")
+    monkeypatch.setattr(tracing, "configure_tracing", lambda app: None)
     monkeypatch.setattr("src.core.tracing.OTLPSpanExporter", MagicMock())
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(autouse=True)
+def reset_rate_limiter():
+    limiter = import_module("src.core.rate_limit").limiter
+    reset = getattr(getattr(limiter, "_storage", None), "reset", None)
+    if callable(reset):
+        reset()
+    yield
+    if callable(reset):
+        reset()
+
+
+@pytest.fixture
 async def client():
     """
     Creates an async test client for our FastAPI app.
+    raise_app_exceptions=False makes 500 responses observable to tests.
     """
+    app = import_module("src.main").app
     async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test"
+        transport=ASGITransport(app=app, raise_app_exceptions=False),
+        base_url="http://test",
     ) as c:
         yield c
-    trace.get_tracer_provider().shutdown()
+    if os.path.exists("test_app.json"):
+        os.remove("test_app.json")
+    shutdown = getattr(trace.get_tracer_provider(), "shutdown", None)
+    if callable(shutdown):
+        shutdown()
+
+
+@pytest.fixture
+def auth_headers():
+    """Returns headers with a valid JWT token for 'demo' user."""
+    from src.services.auth_service import AuthService
+    from src.infrastructure.user_repository import user_repository
+
+    service = AuthService(repository=user_repository)
+    token = service.create_access_token(data={"sub": "demo"})
+    return {"Authorization": f"Bearer {token}"}

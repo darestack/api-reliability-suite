@@ -43,20 +43,20 @@ async def test_circuit_breaker_flow(client):
         elif resp.status_code == 200:
             # Circuit might have opened
             data = resp.json()
-            if data.get("source") == "cache":
+            if data.get("source") == "fallback":
                 circuit_opened = True
                 break
             else:
-                assert False, f"Iteration {i+1}: got 200 OK (success) but expected failure/fallback. Body: {data}"
+                assert False, f"Iteration {i + 1}: got 200 OK (success) but expected failure/fallback. Body: {data}"
         else:
-            assert False, f"Iteration {i+1}: Unexpected status {resp.status_code}"
+            assert False, f"Iteration {i + 1}: Unexpected status {resp.status_code}"
 
     assert circuit_opened, "Circuit did not open after 7 failed attempts"
 
     # 3. Verify it stays open
     resp = await client.get("/external-api")
     assert resp.status_code == 200
-    assert resp.json()["source"] == "cache"
+    assert resp.json()["source"] == "fallback"
 
     # 4. Reset
     await client.post("/simulate-failure/false")

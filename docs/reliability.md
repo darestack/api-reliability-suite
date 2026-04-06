@@ -1,14 +1,15 @@
 # Reliability & Resilience Features
 
-This suite implements advanced patterns to ensure your API remains available, responsive, and easy to debug under pressure.
+This suite demonstrates reliability patterns that help keep an API available, observable, and easier to debug under pressure.
 
 ---
 
-## 🛡️ Self-Healing: Circuit Breakers
+## 🛡️ Circuit Breaker Demo
 The **Circuit Breaker** pattern protects your system from cascading failures when external services (like databases or third-party APIs) go offline.
 
-- **Fast Failure**: Instead of waiting for a slow timeout, the system immediately returns a "Service Unavailable" error.
+- **Fast Failure**: Instead of waiting for a slow timeout, the system quickly stops hammering a failing dependency.
 - **Auto-Recovery**: After a cooldown period, the system automatically checks if the service is back online.
+- **Current Fallback**: The demo endpoint returns a static degraded response when the breaker is open. It is not cache-backed yet.
 
 !!! info "Implementation"
     See [Architecture & Internals](architecture.md#circuit-breakers) for the technical breakdown.
@@ -16,10 +17,11 @@ The **Circuit Breaker** pattern protects your system from cascading failures whe
 ---
 
 ## 🚦 Traffic Control: Rate Limiting
-To prevent DDoS attacks and ensure fair usage, we implement a **Token Bucket** rate limiter.
+To prevent abuse and ensure fair usage, we implement a **fixed-window** rate limiter via SlowAPI.
 
 - **Login Protection**: Hardened against brute-force attacks.
 - **Global Limits**: Prevents single users from exhausting server resources.
+- **Storage**: `RATE_LIMIT_STORAGE_URI` controls the backend (Redis recommended for shared deployments).
 
 !!! tip "Customization"
     Rate limits are environment-configurable via the `.env` file.
@@ -27,12 +29,12 @@ To prevent DDoS attacks and ensure fair usage, we implement a **Token Bucket** r
 ---
 
 ## 🤖 AI-Powered Triage
-When an error occurs, the **AI Agent** automatically analyzes your logs to provide human-readable insights.
+When an error occurs, the **AI summarizer** can analyze your logs to provide human-readable insights.
 
 ![AI Triage Screenshot](assets/ai-debug-screenshot.png)
 
-- **Root Cause Analysis**: Identifies exactly why a request failed (e.g., "Invalid API Key" vs "Database Timeout").
-- **Actionable Advice**: Provides a step-by-step remediation plan for developers.
+- **Summarization**: Groups error patterns and surfaces likely causes based on log content.
+- **Actionable Hints**: Offers suggested next steps from the LLM output.
 
 !!! abstract "CLI Tool"
     You can trigger this analysis directly from your terminal using `make debug`.

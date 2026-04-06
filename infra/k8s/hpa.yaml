@@ -17,7 +17,7 @@ spec:
         type: Utilization
         averageUtilization: 70
   # -----------------------------------------------------------
-  # 2026 Reliability Standard: Stable Scaling Logic
+  # Template baseline: stable scaling logic
   # Prevents "flapping" (rapid scale up/down)
   # -----------------------------------------------------------
   behavior:

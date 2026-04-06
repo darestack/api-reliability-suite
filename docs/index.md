@@ -1,4 +1,4 @@
-# API Reliability & Debugging Suite
+# Backend, DevOps & AI Reliability Suite
 
 ![Thumbnail](assets/thumbnail.png)
 
@@ -9,27 +9,22 @@
 
 ---
 
-## 😤 The Reality
+## Why This Project Exists
 
-!!! quote "The '3 AM' Problem"
-    > **"Our API crashed at 3 AM and we have no idea why."**
-    > **"This endpoint is slow, but we can't figure out where the bottleneck is."**
+Many API demos show the route layer but leave out the operational side of backend work. This project is designed to show how backend service structure, DevOps visibility, and AI-assisted debugging can fit together in one FastAPI codebase.
 
-Most APIs are built without proper **observability**, **security**, or **testing**—making debugging a nightmare when it matters most.
+This suite is a **production-inspired FastAPI template** for studying reliability-focused APIs. It goes beyond a minimal tutorial, but it still expects hardening work before real production use.
 
-## ✅ The Solution
+## Core Themes
 
-This suite is a **production-ready blueprint** for building "High-Reliability" APIs. It moves beyond basic tutorials to deliver an Enterprise-Grade Product.
-
-### 🚀 Key Capabilities
-
-| Feature | Description |
+| Theme | Current implementation |
 | :--- | :--- |
-| **🔍 Observable** | Every request is traced via **OpenTelemetry**. Logs are structured (JSON) and correlated across services. |
-| **🤖 Intelligent** | Integrated **AI Agent** (Groq/OpenAI) analyzes error logs and suggests root-cause fixes automatically. |
-| **🛡️ Secure** | Enterprise protection patterns including **Rate Limiting** (Token Bucket) and **JWT Authentication**. |
-| **🔗 Distributed** | **Trace Propagation** is built-in. Context is preserved from Client &rarr; API &rarr; External Services. |
-| **💥 Resilient** | **Circuit Breakers** prevent cascading failures when downstream dependencies go offline. |
-| **📊 Visual** | Includes a production-grade **Grafana Dashboard** for real-time SLO & Error Budget tracking.
+| **Backend** | JWT authentication, protected routes, service and infrastructure separation, and configuration-driven behavior. |
+| **DevOps** | OpenTelemetry tracing, structured logs, Prometheus metrics, Grafana dashboards, Jaeger traces, rate limiting, and circuit-breaker behavior. |
+| **AI** | LLM-based error summarization with Groq, OpenAI, and Google Gemini provider support. |
+
+## Security and Hardening
+
+See the production hardening checklist and secret-management guidance in the [Security Guide](security.md).
 
 [Get Started](setup.md){ .md-button .md-button--primary } [View Architecture](architecture.md){ .md-button } [Development Guide](development.md){ .md-button }

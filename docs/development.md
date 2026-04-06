@@ -37,22 +37,20 @@ make stack-up
 | `make test` | Runs the full test suite with coverage report. |
 | `make lint` | Runs Ruff check on the codebase. |
 | `make format` | Runs Ruff format on the codebase. |
-| `make debug` | Runs the AI-Powered CLI Debugger. |
+| `make debug` | Runs the AI-powered CLI log triage tool against `LOG_FILE_PATH`. |
 
 ---
 
 ## 🏗️ Project Structure
 
-The project follows a **Hexagonal (Ports & Adapters)** architecture to ensure testability and clean separation of concerns.
+The project uses a **service layer plus adapters** layout to keep request handling, business logic, and integrations separated.
 
 ```
 src/
-├── api/             # FastAPI routers and endpoint definitions (entry points)
 ├── core/            # Framework-level logic (logging, tracing, auth, config)
 ├── domain/          # Pure business models (Pydantic schemas)
 ├── infrastructure/  # External adapters (persistence, external clients)
-├── services/        # Business logic orchestration (the "core" of the hexagon)
-├── scripts/         # Standalone utility scripts (AI debugger)
+├── services/        # Business logic orchestration
 └── main.py          # Application assembly and startup
 ```
 
@@ -93,18 +91,18 @@ poetry run pytest tests/test_reliability.py
 ## 🔍 Debugging & Analysis
 
 ### AI-Powered CLI Debugger
-Run `make debug` to trigger an automated analysis of your `app.json` log file. This tool filters for errors and uses an LLM to provide:
+Run `make debug` to trigger an automated analysis of the configured `LOG_FILE_PATH`. This tool filters for error events and uses an LLM to provide:
 1.  **Summary:** A human-readable explanation of why the crash happened.
 2.  **Remediation:** Actionable steps to fix the issue.
 
 ### Log Inspection
-Logs are structured as JSON in `app.json`. You can use `jq` to analyze them:
+Logs are structured as JSON in the file configured by `LOG_FILE_PATH` (`app.json` by default). You can use `jq` to analyze them:
 ```bash
 # View only error logs
-cat app.json | jq 'select(.level == "error")'
+cat "${LOG_FILE_PATH:-app.json}" | jq 'select(.level == "error")'
 
 # Trace a request by correlation_id
-cat app.json | jq 'select(.correlation_id == "your-id")'
+cat "${LOG_FILE_PATH:-app.json}" | jq 'select(.correlation_id == "your-id")'
 ```
 
 ---

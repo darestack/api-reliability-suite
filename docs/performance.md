@@ -1,6 +1,6 @@
 # Performance Guide
 
-The API Reliability Suite is engineered for high-performance, utilizing modern asynchronous patterns and observability-driven optimization.
+The API Reliability Suite uses modern asynchronous patterns and observability tooling to make performance experiments easier.
 
 ---
 
@@ -11,8 +11,8 @@ The entire API (FastAPI) and its core features (LLM analysis, logging, file I/O)
 
 **Key async components:**
 - **`src/main.py`**: All routes and lifespan events.
-- **`src/core/llm.py`**: Asynchronous calls to LLM providers.
-- **`src/core/logging.py`**: Asynchronous log processing with structlog.
+- **`src/core/llm/`**: Asynchronous calls to LLM providers.
+- **`src/infrastructure/http_client.py`**: Async outbound HTTP calls with trace propagation support.
 
 ### Circuit Breaker (Fault Tolerance)
 We use `pybreaker` to prevent slow downstream dependencies from degrading system performance. By "tripping" the circuit after repeated failures, we avoid long timeouts and preserve resource headroom for healthy requests.
