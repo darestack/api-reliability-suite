@@ -46,3 +46,7 @@ OpenTelemetry is used to identify performance bottlenecks. By examining traces i
 ### Production Tuning
 - [ ] **Workers:** Increase the number of Uvicorn workers (e.g., `workers = (2 * CPU) + 1`).
 - [ ] **Kubernetes HPA:** Adjust the CPU target in `infra/k8s/hpa.yaml` based on your specific load profile.
+
+### Load-Test Scaffold
+
+See [`docs/load-testing.md`](load-testing.md) for the k6 script, run commands, and the report template used by this repo.

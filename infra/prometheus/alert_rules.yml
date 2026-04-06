@@ -1,13 +1,26 @@
 groups:
+  - name: slo_recordings
+    rules:
+      - record: api:http_requests:rate5m
+        expr: sum(rate(http_requests_total[5m]))
+
+      - record: api:http_requests:error_ratio_5m
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total[5m]))
+
+      - record: api:http_request_duration_seconds:p99_5m
+        expr: histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))
+
+      - record: api:error_budget_burn_rate_5m
+        expr: api:http_requests:error_ratio_5m / 0.01
+
   - name: golden_signals
     rules:
       # Signal 1: Errors
       - alert: HighErrorRate
-        expr: |
-          sum(rate(http_requests_total{status=~"5.."}[1m]))
-          /
-          sum(rate(http_requests_total[1m]))
-          > 0.05
+        expr: api:http_requests:error_ratio_5m > 0.05
         for: 1m
         labels:
           severity: critical
@@ -17,7 +30,7 @@ groups:
 
       # Signal 2: Latency
       - alert: HighLatency
-        expr: histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 1.0
+        expr: api:http_request_duration_seconds:p99_5m > 1.0
         for: 1m
         labels:
           severity: warning

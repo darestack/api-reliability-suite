@@ -38,7 +38,7 @@ Requests can be traced using **OpenTelemetry**, providing visibility into how tr
 
 ## 🚨 Alerting Strategy
 
-The local Prometheus container loads **Golden Signal** alert rules so you can inspect firing conditions during demos and manual testing.
+The local Prometheus container loads **Golden Signal** alert rules and forwards them to Alertmanager so you can inspect firing conditions during demos and manual testing.
 
 | Alert | Condition | Severity |
 | :--- | :--- | :--- |
@@ -47,4 +47,7 @@ The local Prometheus container loads **Golden Signal** alert rules so you can in
 | **CircuitBreakerOpen** | Breaker state is "Open" | Warning |
 
 !!! example "Alert Config"
-    Rules are defined in `infra/prometheus/alert_rules.yml` and mounted into the local Prometheus container at `/etc/prometheus/alert_rules.yml`.
+    Rules are defined in `infra/prometheus/alert_rules.yml`, mounted into the local Prometheus container at `/etc/prometheus/alert_rules.yml`, and routed to Alertmanager at `http://localhost:9093`.
+
+!!! info "Recording Rules"
+    Prometheus also records SLO-oriented series for error ratio, p99 latency, and error-budget burn rate. See [`docs/load-testing.md`](load-testing.md) for the report template and metrics to capture.

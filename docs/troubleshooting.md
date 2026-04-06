@@ -51,6 +51,15 @@ kill -9 <PID>
 1.  Ensure you have made at least one request to the API: `curl http://localhost:8000/health`.
 2.  Check if Prometheus is scraping the API: Open `http://localhost:9099/targets` and verify the `fastapi` target is **UP**.
 
+### Alerts Not Reaching Alertmanager
+**Problem:** Prometheus rules fire, but no alerts appear in Alertmanager.
+
+**Solution:**
+1.  Verify the `alertmanager` container is running in `docker compose ps`.
+2.  Open `http://localhost:9093` and confirm Alertmanager is reachable.
+3.  Check the Prometheus configuration includes the `alertmanager:9093` target in `alerting.alertmanagers`.
+4.  Confirm the alert rule has matched by checking `http://localhost:9099/alerts`.
+
 ---
 
 ## 🛡️ Security & Authentication

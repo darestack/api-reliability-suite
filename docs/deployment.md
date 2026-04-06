@@ -56,6 +56,7 @@ kubectl apply -f infra/k8s/
 When deploying to a cluster, ensure the following services are available (or use the provided `docker-compose.yml` for local testing):
 
 - **Prometheus:** Scrapes metrics from the `/metrics` endpoint.
+- **Alertmanager:** Receives Prometheus alerts and keeps alert routing close to the metrics stack.
 - **Jaeger:** Receives distributed traces via the OTLP exporter (if `OTLP_ENDPOINT` is configured).
 - **Grafana:** Visualizes the "Golden Signals" (Latency, Errors, Traffic, Saturation).
 
