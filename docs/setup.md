@@ -27,7 +27,7 @@
 
 === "Docker Deployment"
 
-    To spin up the full stack (API + Prometheus + Jaeger + Grafana):
+    To spin up the full stack (API + Postgres + Redis + Prometheus + Alertmanager + Jaeger + Grafana):
 
     ```bash
     # Build and start all services
@@ -41,11 +41,13 @@
     |---------|-----|-------|
     | **API** | `http://localhost:8000` | — |
     | **Prometheus** | `http://localhost:9099` | — |
+    | **Alertmanager** | `http://localhost:9093` | — |
     | **Grafana** | `http://localhost:3030` | admin / admin |
     | **Jaeger** | `http://localhost:16686` | — |
+    | **Postgres** | `postgres://app:app@localhost:5432/reliability_suite` | app / app |
     | **Redis** | `redis://localhost:6379` | — |
 
-## Secrets and Redis (Production-Oriented)
+## Secrets, Postgres, and Redis (Production-Oriented)
 
 ### Secrets Directory
 
@@ -69,6 +71,16 @@ RATE_LIMIT_STORAGE_URI=redis://redis:6379/0
 ```
 
 The CLI triage tool and `/debug/summarize-errors` both read from `LOG_FILE_PATH`, which defaults to `app.json`.
+
+### Database and Fallback Cache
+
+The app can run locally with SQLite, but the Compose stack demonstrates the intended shared backing services:
+
+- `DATABASE_URL=postgresql+asyncpg://app:app@postgres:5432/reliability_suite`
+- `RATE_LIMIT_STORAGE_URI=redis://redis:6379/0`
+- `CIRCUIT_BREAKER_CACHE_URL=redis://redis:6379/1`
+
+When `PROMETHEUS_BASE_URL` points to Prometheus, `/slo/report` also resolves the latest recording-rule values for SLO/error-budget reporting.
 
 ## Verification
 

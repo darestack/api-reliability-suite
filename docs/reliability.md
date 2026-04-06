@@ -9,7 +9,7 @@ The **Circuit Breaker** pattern protects your system from cascading failures whe
 
 - **Fast Failure**: Instead of waiting for a slow timeout, the system quickly stops hammering a failing dependency.
 - **Auto-Recovery**: After a cooldown period, the system automatically checks if the service is back online.
-- **Current Fallback**: The demo endpoint returns a static degraded response when the breaker is open. It is not cache-backed yet.
+- **Cache-Backed Fallback**: When `CIRCUIT_BREAKER_CACHE_URL` is configured, the demo endpoint returns the most recent successful upstream payload from Redis while the breaker is open.
 
 !!! info "Implementation"
     See [Architecture & Internals](architecture.md#circuit-breakers) for the technical breakdown.
@@ -35,6 +35,18 @@ When an error occurs, the **AI summarizer** can analyze your logs to provide hum
 
 - **Summarization**: Groups error patterns and surfaces likely causes based on log content.
 - **Actionable Hints**: Offers suggested next steps from the LLM output.
+- **RBAC Guardrail**: `/debug/summarize-errors` is restricted to authenticated admin users.
 
 !!! abstract "CLI Tool"
     You can trigger this analysis directly from your terminal using `make debug`.
+
+---
+
+## 📉 SLO Reporting
+
+The suite exposes `/slo/report` for lightweight SLO reporting. It always returns the configured targets and, when `PROMETHEUS_BASE_URL` is set, also queries the current recording-rule values for:
+
+- request rate
+- 5-minute error ratio
+- 5-minute p99 latency
+- 5-minute error-budget burn rate

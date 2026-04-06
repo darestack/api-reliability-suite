@@ -37,6 +37,7 @@ async def test_summarize_errors_endpoint_success(client, auth_headers):
             assert "ai_summary" in data
             assert data["ai_summary"]["summary_text"] == "Mocked summary"
             assert data["provider"] == "groq"
+            assert data["requested_by"] == "demo"
     finally:
         if os.path.exists(settings.LOG_FILE_PATH):
             os.remove(settings.LOG_FILE_PATH)
@@ -71,13 +72,13 @@ async def test_summarize_errors_file_not_found(client, auth_headers):
 
 
 @pytest.mark.asyncio
-async def test_auth_service_authenticate_no_user():
+async def test_auth_service_authenticate_no_user(client):
     """Test AuthService when user does not exist (Coverage)"""
     from src.services.auth_service import AuthService
     from src.infrastructure.user_repository import user_repository
 
     service = AuthService(repository=user_repository)
-    assert service.authenticate_user("non-existent", "password") is False
+    assert await service.authenticate_user("non-existent", "password") is None
 
 
 @pytest.mark.asyncio
@@ -112,7 +113,7 @@ async def test_auth_service_default_token_uses_configured_expiry():
 
 
 @pytest.mark.asyncio
-async def test_auth_service_verify_token_no_sub():
+async def test_auth_service_verify_token_no_sub(client):
     """Test AuthService.verify_token with payload missing 'sub' (Coverage)"""
     from src.services.auth_service import AuthService
     from src.infrastructure.user_repository import user_repository
@@ -125,4 +126,27 @@ async def test_auth_service_verify_token_no_sub():
     token = jwt.encode({"some": "payload"}, settings.SECRET_KEY, algorithm=ALGORITHM)
 
     with pytest.raises(Exception):  # FastAPI HTTPException
-        service.verify_token(token)
+        await service.verify_token(token)
+
+
+@pytest.mark.asyncio
+async def test_summarize_errors_requires_admin_role(client):
+    """The AI triage route should be restricted to admin users."""
+    from src.core.auth import create_access_token
+    from src.domain.models import UserRole
+    from src.infrastructure.user_repository import user_repository
+
+    await user_repository.upsert_user(
+        username="reader",
+        password="secret123",
+        role=UserRole.USER,
+    )
+    token = create_access_token(data={"sub": "reader", "role": "user"})
+
+    response = await client.get(
+        "/debug/summarize-errors",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == 403
+    assert response.json()["detail"] == "Insufficient permissions for this operation"

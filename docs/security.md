@@ -12,11 +12,13 @@ The system uses **JWT (JSON Web Tokens)** for stateless authentication.
 - **Provider:** `python-jose`
 - **Hashing:** `bcrypt`
 - **Key Storage:** HMAC-SHA256 with `SECRET_KEY` loaded from env vars or secret files.
+- **Persistence:** User records are loaded from the configured relational database via SQLAlchemy.
 
 #### JWT Workflow
 1.  **Login:** Users authenticate at `/login`.
-2.  **Token Issuance:** Upon success, a signed JWT is returned with a 30-minute expiration (configurable via `ACCESS_TOKEN_EXPIRE_MINUTES`).
-3.  **Verification:** Protected endpoints (e.g., `/protected`, `/debug/summarize-errors`) use the `get_current_user` dependency to validate the token's presence and signature.
+2.  **Token Issuance:** Upon success, a signed JWT is returned with a 30-minute expiration (configurable via `ACCESS_TOKEN_EXPIRE_MINUTES`) and role-aware claims.
+3.  **Verification:** Protected endpoints use the `get_current_user` dependency to validate the token and re-resolve the user from the database.
+4.  **Authorization:** Sensitive routes such as `/debug/summarize-errors` require the `admin` role.
 
 ---
 
@@ -32,7 +34,7 @@ We use `slowapi` (based on the fixed-window counter algorithm) to protect agains
 
 ### Circuit Breaker
 
-The `pybreaker` implementation protects the API from cascading failures when interacting with external dependencies. If an external service fails repeatedly, the circuit opens, preventing further strain and returning a graceful fallback.
+The `pybreaker` implementation protects the API from cascading failures when interacting with external dependencies. If an external service fails repeatedly, the circuit opens, preventing further strain and returning a graceful fallback. When `CIRCUIT_BREAKER_CACHE_URL` is configured, the fallback can serve the latest cached success payload from Redis.
 
 ---
 
@@ -50,15 +52,19 @@ The application uses **Pydantic v2** with `strict=True` enabled in the model con
 
 ### Security Hardening Audit
 - [ ] **Change `SECRET_KEY`:** Ensure `SECRET_KEY` is set to a cryptographically strong value in production.
+- [ ] **Use Postgres (or equivalent):** Point `DATABASE_URL` to a server-grade relational database in shared environments.
 - [ ] **Use Secret Files:** Mount secrets under `/run/secrets` or set `SETTINGS_SECRETS_DIR`.
 - [ ] **Enforce HTTPS:** Always serve the API behind a TLS-terminating proxy (Nginx, Ingress-Nginx).
 - [ ] **Review Log Levels:** Ensure `LOG_LEVEL` is not set to `debug` in production to avoid leaking sensitive metadata.
 - [ ] **Scale Rate Limiting:** Use Redis-backed storage via `RATE_LIMIT_STORAGE_URI` for distributed deployments.
+- [ ] **Protect Fallback Cache:** Use Redis-backed fallback storage via `CIRCUIT_BREAKER_CACHE_URL` for degraded response continuity.
 
 ## ✅ Production Hardening Checklist
 
 - Set `ENVIRONMENT=production` and verify the app fails fast with default secrets.
+- Set `DATABASE_URL` to a shared relational database before shared deployment.
 - Provide `SECRET_KEY` via a secrets file or trusted secret manager.
 - Configure `RATE_LIMIT_STORAGE_URI` with Redis for shared deployments.
+- Configure `CIRCUIT_BREAKER_CACHE_URL` with Redis for cache-backed fallback responses.
 - Keep `RATE_LIMIT_IN_MEMORY_FALLBACK_ENABLED=false` in production.
 - Run behind TLS and restrict access to `/metrics` if exposed.

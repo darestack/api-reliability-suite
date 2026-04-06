@@ -53,6 +53,8 @@ htmlcov/
 
 # Local test/debug artifacts
 test_script.json
+data/
+test_data/
 
 # Editors
 .vscode/

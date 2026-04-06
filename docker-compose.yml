@@ -7,8 +7,13 @@ services:
       - .env
     environment:
       - OTLP_ENDPOINT=http://jaeger:4317
+      - PROMETHEUS_BASE_URL=http://prometheus:9090
+      - DATABASE_URL=postgresql+asyncpg://app:app@postgres:5432/reliability_suite
       - RATE_LIMIT_STORAGE_URI=redis://redis:6379/0
+      - CIRCUIT_BREAKER_CACHE_URL=redis://redis:6379/1
     depends_on:
+      postgres:
+        condition: service_healthy
       redis:
         condition: service_healthy
     networks:
@@ -52,6 +57,22 @@ services:
     ports:
       - "16686:16686"
       - "4317:4317"
+    networks:
+      - monitoring
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      - POSTGRES_DB=reliability_suite
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=app
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d reliability_suite"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - monitoring
 

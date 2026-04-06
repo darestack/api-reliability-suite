@@ -1,5 +1,6 @@
 import pytest
 import uuid
+from unittest.mock import AsyncMock, patch
 
 
 @pytest.mark.asyncio
@@ -64,7 +65,7 @@ async def test_circuit_breaker_flow(client):
 
 
 @pytest.mark.asyncio
-async def test_auth_service_invalid_token():
+async def test_auth_service_invalid_token(client):
     """Verify AuthService handles invalid tokens correctly (Coverage)"""
     from src.services.auth_service import AuthService
     from src.infrastructure.user_repository import user_repository
@@ -72,7 +73,7 @@ async def test_auth_service_invalid_token():
     service = AuthService(repository=user_repository)
 
     with pytest.raises(Exception):  # FastAPI HTTPException
-        service.verify_token("invalid-token-123")
+        await service.verify_token("invalid-token-123")
 
 
 @pytest.mark.asyncio
@@ -80,3 +81,38 @@ async def test_ai_summarize_no_token(client):
     """Test AI endpoint rejects unauthenticated (Coverage)"""
     response = await client.get("/debug/summarize-errors")
     assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_slo_report_without_prometheus_returns_targets(client):
+    response = await client.get("/slo/report")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["targets"]["success_ratio"] == 0.99
+    assert data["metrics"] is None
+
+
+@pytest.mark.asyncio
+async def test_circuit_breaker_uses_cached_fallback_when_available(client):
+    from src.core.circuit_breaker import external_api_breaker
+
+    external_api_breaker.open()
+
+    with patch(
+        "src.main.fallback_cache.get_json",
+        new=AsyncMock(
+            return_value={
+                "status": "ok",
+                "message": "Cached success",
+                "source": "upstream",
+            }
+        ),
+    ):
+        response = await client.get("/external-api")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "degraded"
+    assert body["source"] == "fallback_cache"
+
+    external_api_breaker.close()

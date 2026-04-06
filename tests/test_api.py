@@ -71,6 +71,7 @@ async def test_protected_with_valid_token(client):
     )
     assert response.status_code == 200
     assert "Hello demo, you are authorized!" in response.json()["message"]
+    assert response.json()["role"] == "admin"
 
 
 # --- Rate Limiting Tests ---

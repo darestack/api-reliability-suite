@@ -33,6 +33,15 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "info"
     LOG_FILE_PATH: str = "app.json"
     OTLP_ENDPOINT: str | None = None  # Where to send the traces
+    PROMETHEUS_BASE_URL: str | None = None
+
+    # Data layer
+    DATABASE_URL: str = "sqlite+aiosqlite:///./data/reliability_suite.db"
+    DATABASE_ECHO: bool = False
+    SEED_DEMO_USER: bool = True
+    DEMO_USERNAME: str = "demo"
+    DEMO_PASSWORD: str = "secret123"
+    DEMO_USER_ROLE: Literal["admin", "user"] = "admin"
 
     # LLM Provider Keys (set One of these)
     OPENAI_API_KEY: str | None = None
@@ -50,6 +59,12 @@ class Settings(BaseSettings):
     RATE_LIMIT_IN_MEMORY_FALLBACK_ENABLED: bool = False
     RATE_LIMIT_KEY_PREFIX: str = "api-reliability-suite"
 
+    # Reliability features
+    CIRCUIT_BREAKER_CACHE_URL: str | None = None
+    CIRCUIT_BREAKER_CACHE_TTL_SECONDS: int = 300
+    SLO_TARGET_SUCCESS_RATIO: float = 0.99
+    SLO_TARGET_P99_LATENCY_SECONDS: float = 1.0
+
     model_config = SettingsConfigDict(env_file=".env", strict=True)
 
     def model_post_init(self, __context) -> None:
@@ -66,6 +81,11 @@ class Settings(BaseSettings):
         ):
             raise ValueError(
                 "RATE_LIMIT_STORAGE_URI must point to shared storage when ENVIRONMENT is staging or production."
+            )
+
+        if protected_environment and self.DATABASE_URL.startswith("sqlite"):
+            raise ValueError(
+                "DATABASE_URL must point to a server-grade database when ENVIRONMENT is staging or production."
             )
 
 

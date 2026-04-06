@@ -1,3 +1,5 @@
+from enum import StrEnum
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -21,11 +23,27 @@ class Token(CommonBaseModel):
     token_type: str = Field("bearer", description="The type of token")
 
 
+class UserRole(StrEnum):
+    """Application roles used for route-level authorization."""
+
+    ADMIN = "admin"
+    USER = "user"
+
+
 class User(CommonBaseModel):
     """Internal user model for authentication."""
 
     username: str = Field(..., min_length=3, max_length=50)
     hashed_password: str = Field(..., description="Bcrypt hashed password")
+    role: UserRole = Field(default=UserRole.USER)
+    is_active: bool = Field(default=True)
+
+
+class AuthenticatedUser(CommonBaseModel):
+    """Authenticated principal resolved from JWT + persistence layer."""
+
+    username: str = Field(..., min_length=3, max_length=50)
+    role: UserRole = Field(..., description="Resolved role for the current user")
 
 
 class AIRecommendation(CommonBaseModel):

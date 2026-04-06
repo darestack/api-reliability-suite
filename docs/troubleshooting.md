@@ -74,6 +74,14 @@ kill -9 <PID>
     curl -H "Authorization: Bearer <TOKEN>" http://localhost:8000/protected
     ```
 
+### Admin Route Rejected (403 Forbidden)
+**Problem:** `/debug/summarize-errors` returns `403` even with a valid token.
+
+**Solution:**
+1.  Confirm the authenticated user has the `admin` role in the configured database.
+2.  If you are using the seeded local demo user, log in as `demo / secret123`.
+3.  If you changed `DATABASE_URL`, verify the expected user record exists in that database.
+
 ---
 
 ## 🐛 Diagnostic Commands

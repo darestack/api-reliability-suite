@@ -19,7 +19,7 @@ make docker-build
 ```
 
 > [!NOTE]
-> The local `docker-compose.yml` stack includes Redis for rate limiting. Production deployments should also configure `RATE_LIMIT_STORAGE_URI` to a shared Redis instance.
+> The local `docker-compose.yml` stack includes Postgres for user persistence, Redis for rate limiting and breaker fallback caching, Prometheus, Alertmanager, Jaeger, and Grafana. Production deployments should configure equivalent shared services through environment variables and secrets.
 
 ---
 
@@ -47,7 +47,7 @@ kubectl apply -f infra/k8s/
 ```
 
 > [!NOTE]
-> The templates expect secrets to be injected through Kubernetes Secrets (see `infra/k8s/deployment.yaml`), and rate limiting should use Redis via `RATE_LIMIT_STORAGE_URI` in shared environments.
+> The templates expect secrets to be injected through Kubernetes Secrets (see `infra/k8s/deployment.yaml`), and shared environments should provide `DATABASE_URL`, `RATE_LIMIT_STORAGE_URI`, and `CIRCUIT_BREAKER_CACHE_URL`.
 
 ---
 

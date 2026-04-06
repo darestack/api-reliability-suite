@@ -53,13 +53,25 @@ spec:
               value: "INFO"
             - name: OTLP_ENDPOINT
               value: "http://otel-collector:4317"
+            - name: PROMETHEUS_BASE_URL
+              value: "http://prometheus.monitoring.svc.cluster.local:9090"
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: reliability-api-secrets
                   key: SECRET_KEY
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: reliability-api-secrets
+                  key: DATABASE_URL
             - name: RATE_LIMIT_STORAGE_URI
               valueFrom:
                 secretKeyRef:
                   name: reliability-api-secrets
                   key: RATE_LIMIT_STORAGE_URI
+            - name: CIRCUIT_BREAKER_CACHE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: reliability-api-secrets
+                  key: CIRCUIT_BREAKER_CACHE_URL

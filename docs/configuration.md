@@ -20,6 +20,9 @@ The following settings are defined in `src/core/config.py`:
 | `DEBUG` | `False` | Enable debug mode. |
 | `LOG_LEVEL` | `"info"` | Logging level (debug, info, warning, error, critical). |
 | `LOG_FILE_PATH` | `"app.json"` | Path to the structured log file used by the AI summarizer and file logging handler. |
+| `DATABASE_URL` | `"sqlite+aiosqlite:///./data/reliability_suite.db"` | SQLAlchemy database URL. Use Postgres for shared or production-style environments. |
+| `DATABASE_ECHO` | `False` | Enables SQLAlchemy SQL logging. |
+| `SEED_DEMO_USER` | `True` | Seeds the demo admin account on startup for local runs. |
 | `SECRET_KEY` | `"change-me-in-production"` | Secret key used for JWT signing. **Must be changed for production!** |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | `30` | JWT token expiration time in minutes. |
 | `RATE_LIMIT_STORAGE_URI` | `"memory://"` | Rate limit storage backend (use Redis in shared environments). |
@@ -33,6 +36,11 @@ The following settings are defined in `src/core/config.py`:
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `OTLP_ENDPOINT` | `None` | The OTLP collector endpoint (e.g., `http://jaeger:4317`). If not set, traces are exported to the console. |
+| `PROMETHEUS_BASE_URL` | `None` | Prometheus API base URL used by `/slo/report` to retrieve recording-rule values. |
+| `CIRCUIT_BREAKER_CACHE_URL` | `None` | Redis URL for cache-backed circuit-breaker fallback payloads. |
+| `CIRCUIT_BREAKER_CACHE_TTL_SECONDS` | `300` | TTL for the cached upstream payload returned during degraded fallback. |
+| `SLO_TARGET_SUCCESS_RATIO` | `0.99` | Availability target used in SLO/error-budget reporting. |
+| `SLO_TARGET_P99_LATENCY_SECONDS` | `1.0` | Latency objective used in SLO/error-budget reporting. |
 
 ### AI/LLM Provider Keys
 
@@ -60,8 +68,11 @@ PROJECT_NAME="My Reliability Template"
 ENVIRONMENT="development"
 LOG_LEVEL=debug
 LOG_FILE_PATH=app.json
+DATABASE_URL="postgresql+asyncpg://app:app@localhost:5432/reliability_suite"
 SECRET_KEY=y0ur-5ecur3-k3y-h3r3
 RATE_LIMIT_STORAGE_URI="redis://localhost:6379/0"
+CIRCUIT_BREAKER_CACHE_URL="redis://localhost:6379/1"
+PROMETHEUS_BASE_URL="http://localhost:9099"
 GROQ_API_KEY=gsk_...
 ```
 
@@ -113,7 +124,9 @@ For Docker and Kubernetes deployments, you can provide secrets as files by mount
 
 ### Operational Configuration Audit
 - [ ] **Secret Management:** Verify `SECRET_KEY` is not using the default value.
+- [ ] **Persistent Identity Store:** Point `DATABASE_URL` at Postgres or another server-grade relational database for shared environments.
 - [ ] **Shared Rate Limiting:** Use `RATE_LIMIT_STORAGE_URI` with Redis for distributed deployments.
+- [ ] **Fallback Cache:** Configure `CIRCUIT_BREAKER_CACHE_URL` with Redis for cache-backed degraded responses.
 - [ ] **Log Level Alignment:** Confirm `LOG_LEVEL` is set to `info` or `warning` for production stability.
 - [ ] **LLM Connectivity:** Ensure at least one valid API key for an LLM provider is present in the `.env` file.
 - [ ] **Tracing Setup:** Verify `OTLP_ENDPOINT` points to a valid collector if distributed tracing is required.

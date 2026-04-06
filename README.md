@@ -23,14 +23,16 @@ This repository contains a working FastAPI application plus supporting local obs
 Backend:
 
 - JWT-based login and protected routes
+- Relational user persistence backed by SQLAlchemy with Postgres-ready configuration
 - Separation between request handling, services, and infrastructure adapters
-- Config-driven token expiry and request-level auth flow
+- Config-driven token expiry, role-aware auth, and request-level RBAC
 
 DevOps:
 
 - Route-level rate limiting with SlowAPI
+- Alertmanager-ready local alerting plus SLO-oriented Prometheus recording rules
 - Prometheus metrics plus Grafana and Jaeger for local observability
-- Circuit-breaker behavior for a demo upstream endpoint
+- Circuit-breaker behavior with Redis-backed fallback caching
 - Structured logging with correlation IDs and trace context
 
 AI:
@@ -71,9 +73,10 @@ This project is best treated as a template or reference implementation rather th
 Current boundaries:
 
 - `SECRET_KEY` defaults to a demo value and must be replaced for real deployments.
+- Local `make run` defaults to SQLite unless `DATABASE_URL` is set; the Docker Compose stack uses Postgres.
 - Rate limiting uses in-memory storage by default unless `RATE_LIMIT_STORAGE_URI` is set (the Docker Compose stack uses Redis).
-- `/external-api` returns a static degraded fallback when the breaker is open; it is not cache-backed.
-- `/debug/summarize-errors` reads the configured log file and reports the runtime-selected provider.
+- `/external-api` returns the most recent cached upstream payload when the breaker is open and Redis fallback caching is configured.
+- `/debug/summarize-errors` is restricted to admin users, reads the configured log file, and reports the runtime-selected provider.
 - When `ENVIRONMENT` is set to `staging` or `production`, the app requires a non-default `SECRET_KEY` and a shared `RATE_LIMIT_STORAGE_URI`.
 
 ## Local Observability Stack
@@ -88,8 +91,10 @@ Services:
 | :--------- | :----------------------- |
 | API        | `http://localhost:8000`  |
 | Prometheus | `http://localhost:9099`  |
+| Alertmanager | `http://localhost:9093` |
 | Grafana    | `http://localhost:3030`  |
 | Jaeger     | `http://localhost:16686` |
+| Postgres   | `postgres://app:app@localhost:5432/reliability_suite` |
 | Redis      | `redis://localhost:6379` |
 
 Grafana default login: `admin / admin`
@@ -101,13 +106,16 @@ Create a `.env` file or export environment variables for the settings you want t
 Common settings:
 
 - `ENVIRONMENT`
+- `DATABASE_URL`
 - `SECRET_KEY`
 - `ACCESS_TOKEN_EXPIRE_MINUTES`
 - `RATE_LIMIT_STORAGE_URI`
+- `CIRCUIT_BREAKER_CACHE_URL`
 - `RATE_LIMIT_HEADERS_ENABLED`
 - `RATE_LIMIT_KEY_PREFIX`
 - `SETTINGS_SECRETS_DIR`
 - `OTLP_ENDPOINT`
+- `PROMETHEUS_BASE_URL`
 - `LOG_FILE_PATH`
 - `OPENAI_API_KEY`
 - `GROQ_API_KEY`
@@ -123,8 +131,9 @@ Docker and Kubernetes secret files are supported by setting `SETTINGS_SECRETS_DI
 | `/health`                 | `GET`  | Health check with rate limiting                       |
 | `/login`                  | `POST` | Exchange credentials for a JWT                        |
 | `/protected`              | `GET`  | Example authenticated route                           |
-| `/external-api`           | `GET`  | Circuit-breaker demo endpoint                         |
-| `/debug/summarize-errors` | `GET`  | Summarize error logs with the configured LLM provider |
+| `/external-api`           | `GET`  | Circuit-breaker demo endpoint with cache-backed fallback support |
+| `/debug/summarize-errors` | `GET`  | Admin-only log summarization with the configured LLM provider |
+| `/slo/report`             | `GET`  | Report SLO targets and Prometheus-backed recording-rule values when configured |
 | `/slow`                   | `GET`  | Simulate latency for tracing demos                    |
 | `/force-error`            | `GET`  | Trigger a 500 error for alerting and debugging demos  |
 
