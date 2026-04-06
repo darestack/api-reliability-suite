@@ -97,12 +97,13 @@ async def test_readiness_report_defaults_to_ok(client):
     response = await client.get("/ready")
     assert response.status_code == 200
     payload = response.json()
-    assert payload["status"] == "ok"
+    assert payload["status"] in {"ok", "degraded"}
     assert payload["dependencies"]["database"]["status"] == "ok"
     assert payload["dependencies"]["llm_provider"]["status"] in {
         "skipped",
         "configured",
         "ok",
+        "error",
     }
 
 

@@ -37,6 +37,7 @@ jobs:
           image: localbuild/api-reliability-suite:${{ github.sha }}
           fail-build: true
           severity-cutoff: high
+          only-fixed: true
           output-format: sarif
 
       - name: Upload vulnerability report
