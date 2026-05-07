@@ -10,7 +10,7 @@ Backend-focused FastAPI template with DevOps observability workflows and AI-assi
 ![Python](https://img.shields.io/badge/python-3.12%20%7C%203.13-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.128-009688)
 
-Portfolio one-liner: Backend FastAPI service template that pairs DevOps observability with AI-assisted log triage.
+A FastAPI service that pairs production backend patterns (JWT auth, rate limiting, circuit breaker) with a local observability stack (Prometheus, Grafana, Jaeger) and AI-assisted log triage.
 
 ## Why This Exists
 
@@ -101,6 +101,14 @@ Services:
 Grafana default login: `admin / admin`
 Provisioned dashboard: `http://localhost:3030/d/api-reliability-slo`
 
+### Optional components
+
+Not every use case needs the full stack. Here's what you can skip:
+
+| Component | Skip if... | Core alternative |
+|---|---|---|
+| **Jaeger** | You don't need distributed trace visualization | Remove from `compose.yml`; structured logs still include trace IDs |
+| **Alertmanager** | You don't need alert routing / notification channels | Prometheus rules still fire; just no forwarding |
 If Postgres or Redis are already bound on your machine, override the host ports:
 
 ```bash
