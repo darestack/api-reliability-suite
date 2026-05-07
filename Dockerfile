@@ -34,6 +34,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
+RUN apt-get update \
+  && apt-get install -y --only-upgrade --no-install-recommends \
+    libssl3t64 \
+    openssl \
+    openssl-provider-legacy \
+  && rm -rf /var/lib/apt/lists/*
+
 RUN groupadd --system --gid ${APP_GID} app \
   && useradd --system --uid ${APP_UID} --gid ${APP_GID} --home-dir /app --shell /usr/sbin/nologin app \
   && mkdir -p /app/data /app/scripts \
