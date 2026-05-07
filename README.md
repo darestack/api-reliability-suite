@@ -109,7 +109,13 @@ Not every use case needs the full stack. Here's what you can skip:
 |---|---|---|
 | **Jaeger** | You don't need distributed trace visualization | Remove from `compose.yml`; structured logs still include trace IDs |
 | **Alertmanager** | You don't need alert routing / notification channels | Prometheus rules still fire; just no forwarding |
+| **Redis** | You don't need rate limiting or circuit-breaker fallback cache | Set `RATE_LIMIT_STORAGE_URI` empty; breaker still works without cache |
+| **AI log triage** | No LLM API key available | `/debug/summarize-errors` is admin-only and non-critical |
+
+Minimum viable setup: `make run` (SQLite + in-memory rate limiting). No Docker required.
+
 If Postgres or Redis are already bound on your machine, override the host ports:
+
 
 ```bash
 POSTGRES_PORT=15432 REDIS_PORT=16379 docker compose up -d
