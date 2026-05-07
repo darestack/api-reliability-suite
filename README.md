@@ -1,20 +1,30 @@
 # API Reliability Suite
 
-Backend-focused FastAPI template with DevOps observability workflows and AI-assisted log triage.
+Backend-focused FastAPI reliability reference with observability workflows and AI-assisted log triage.
 
 ![Thumbnail](docs/assets/thumbnail.png)
 
-[![Documentation](https://img.shields.io/badge/docs-live-forestgreen)](https://daretechie.github.io/api-reliability-suite/)
-[![CI Pipeline](https://github.com/daretechie/api-reliability-suite/actions/workflows/ci.yml/badge.svg)](https://github.com/daretechie/api-reliability-suite/actions/workflows/ci.yml)
+[![Documentation](https://img.shields.io/badge/docs-live-forestgreen)](https://darestack.github.io/api-reliability-suite/)
+[![CI Pipeline](https://github.com/darestack/api-reliability-suite/actions/workflows/ci.yml/badge.svg)](https://github.com/darestack/api-reliability-suite/actions/workflows/ci.yml)
 [![Security Policy](https://img.shields.io/badge/security-policy-blue)](SECURITY.md)
 ![Python](https://img.shields.io/badge/python-3.12%20%7C%203.13-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.128-009688)
 
-A FastAPI service that pairs production backend patterns (JWT auth, rate limiting, circuit breaker) with a local observability stack (Prometheus, Grafana, Jaeger) and AI-assisted log triage.
+A FastAPI service that pairs backend reliability patterns (JWT auth, rate limiting, circuit breaker) with a local observability stack (Prometheus, Grafana, Jaeger) and AI-assisted log triage.
 
 ## Why This Exists
 
 Many FastAPI examples stop at routes and CRUD flows. This repository goes further by combining backend service patterns, DevOps reliability tooling, and AI-assisted debugging in a small runnable system.
+
+## Evidence
+
+| Artifact | Status |
+|---|---|
+| CI matrix | Passing on Python 3.12 and 3.13: [CI run](https://github.com/darestack/api-reliability-suite/actions/runs/25492412618) |
+| Container security scan | Passing SBOM + Grype scan after OpenSSL, Mako, and python-multipart fixes: [Security run](https://github.com/darestack/api-reliability-suite/actions/runs/25492412650) |
+| Documentation deploy | Passing GitHub Pages build/deploy: [Docs run](https://github.com/darestack/api-reliability-suite/actions/runs/25492412663) |
+| Local test suite | `59 passed` with patched dependency set |
+| Observability proof | Grafana and AI-debug screenshots in `docs/assets/` |
 
 ## What's Included
 
@@ -50,7 +60,7 @@ AI:
 ## Quickstart
 
 ```bash
-git clone https://github.com/daretechie/api-reliability-suite.git
+git clone https://github.com/darestack/api-reliability-suite.git
 cd api-reliability-suite
 
 make install
@@ -186,7 +196,7 @@ poetry run pytest -q --no-cov tests/test_auth.py tests/test_api_advanced.py test
 
 ## Documentation
 
-Live docs: <https://daretechie.github.io/api-reliability-suite/>
+Live docs: <https://darestack.github.io/api-reliability-suite/>
 
 Run docs locally:
 
@@ -207,13 +217,13 @@ This project was built with AI-assisted iteration for scaffolding, documentation
 
 ## GitHub Metadata
 
-Suggested repo description: Backend + DevOps + AI reliability template for FastAPI with auth, rate limiting, observability, circuit breaker, and log triage.
+Suggested repo description: FastAPI reliability reference with auth, rate limiting, observability, circuit breaker fallback, and tested LLM log triage.
 
 Suggested topics:
 `fastapi` `backend` `devops` `observability` `opentelemetry` `prometheus` `grafana` `jaeger` `rate-limiting` `circuit-breaker` `jwt` `llm` `ai-ops`
 
 ## Support
 
-- Documentation: <https://daretechie.github.io/api-reliability-suite/>
-- Issues: <https://github.com/daretechie/api-reliability-suite/issues>
+- Documentation: <https://darestack.github.io/api-reliability-suite/>
+- Issues: <https://github.com/darestack/api-reliability-suite/issues>
 - Maintainer: [adelekedare2012@gmail.com](mailto:adelekedare2012@gmail.com) | [LinkedIn](https://linkedin.com/in/daretechie)
