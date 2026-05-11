@@ -60,3 +60,6 @@ test_data/
 .vscode/
 .idea/
 site/
+PROJECT_GUIDE.local.md
+.codex
+codealike.json
