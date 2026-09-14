@@ -1,4 +1,4 @@
-# Backend, DevOps & AI Reliability Suite
+# Backend & DevOps Reliability Suite
 
 ![Thumbnail](assets/thumbnail.png)
 
@@ -11,7 +11,7 @@
 
 ## Why This Project Exists
 
-Many API demos show the route layer but leave out the operational side of backend work. This project is designed to show how backend service structure, DevOps visibility, and AI-assisted debugging can fit together in one FastAPI codebase.
+Many API demos show the route layer but leave out the operational side of backend work. This project is designed to show how backend service structure, DevOps visibility, and deterministic debugging can fit together in one FastAPI codebase.
 
 This suite is a **production-inspired FastAPI template** for studying reliability-focused APIs. It goes beyond a minimal tutorial, but it still expects hardening work before real production use.
 
@@ -21,7 +21,7 @@ This suite is a **production-inspired FastAPI template** for studying reliabilit
 | :--- | :--- |
 | **Backend** | JWT authentication, protected routes, service and infrastructure separation, and configuration-driven behavior. |
 | **DevOps** | OpenTelemetry tracing, structured logs, Prometheus metrics, Grafana dashboards, Jaeger traces, rate limiting, and circuit-breaker behavior. |
-| **AI** | LLM-based error summarization with Groq, OpenAI, and Google Gemini provider support. |
+| **Diagnostics** | Admin-only local error summary from structured logs, with redaction of secrets and PII. |
 
 ## Security and Hardening
 

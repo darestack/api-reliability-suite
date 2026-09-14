@@ -28,16 +28,16 @@ kill -9 <PID>
     ```
 2.  Keep using the service names inside the Compose network. The API container still talks to `postgres:5432` and `redis:6379`.
 
-### LLM Provider Missing
-**Problem:** AI Debugging (`make debug`) fails with "Provider not configured" or authentication errors.
+### Error Triage Missing
+**Problem:** `make debug` fails or returns no summary.
 
 **Solution:**
-1.  Check your `.env` file for `GROQ_API_KEY`, `OPENAI_API_KEY`, or `GOOGLE_API_KEY`.
+1.  Confirm the log file configured by `LOG_FILE_PATH` exists and contains error events.
 2.  Verify the keys are loaded:
     ```bash
     python -c "from src.core.config import settings; print(settings.model_dump())"
     ```
-3.  Confirm the log file configured by `LOG_FILE_PATH` exists and contains error events.
+3.  Ensure the admin role is assigned to the user hitting `/debug/summarize-errors`.
 
 ---
 
@@ -108,7 +108,7 @@ Use these commands for a rapid system audit:
 | **Linting Check** | `make lint` |
 | **Logic Verification** | `make test` |
 | **Full Cleanup** | `make clean` |
-| **AI Triage Audit** | `make debug` |
+| **Error Triage Audit** | `make debug` |
 | **Smoke Load Test** | `make load-test` |
 | **Check Logs** | `cat "${LOG_FILE_PATH:-app.json}" | jq .` |
 
@@ -119,4 +119,4 @@ Use these commands for a rapid system audit:
 If an issue persists:
 1.  Enable debug logs: Set `LOG_LEVEL=debug` in `.env`.
 2.  Capture the relevant logs from `LOG_FILE_PATH` using `cat "${LOG_FILE_PATH:-app.json}" | jq .`.
-3.  Review the logs with the AI triage tool (`make debug`).
+3.  Review the logs with the error triage tool (`make debug`).

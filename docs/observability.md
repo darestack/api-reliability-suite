@@ -34,7 +34,7 @@ Requests can be traced using **OpenTelemetry**, providing visibility into how tr
 
 ### Trace Propagation
 - **Inbound**: Middleware automatically injects `trace_id`, `span_id`, and a user-facing `correlation_id`.
-- **Outbound**: The instrumented HTTP client (`src/infrastructure/http_client.py`) propagates context to external services (like Groq or OpenAI) via **W3C `traceparent`** headers.
+- **Outbound**: The instrumented HTTP client (`src/infrastructure/http_client.py`) propagates context to external services via **W3C `traceparent`** headers.
 
 !!! info "Dashboard Access"
     View live traces at [http://localhost:16686](http://localhost:16686).

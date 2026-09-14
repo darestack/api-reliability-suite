@@ -19,7 +19,7 @@ The following settings are defined in `src/core/config.py`:
 | `ENVIRONMENT` | `"development"` | Deployment environment (`development`, `test`, `staging`, `production`). |
 | `DEBUG` | `False` | Enable debug mode. |
 | `LOG_LEVEL` | `"info"` | Logging level (debug, info, warning, error, critical). |
-| `LOG_FILE_PATH` | `"app.json"` | Path to the structured log file used by the AI summarizer and file logging handler. |
+| `LOG_FILE_PATH` | `"app.json"` | Path to the structured log file used by the local error triage and file logging handler. |
 | `DATABASE_URL` | `"sqlite+aiosqlite:///./data/reliability_suite.db"` | SQLAlchemy database URL. Use Postgres for shared or production-style environments. |
 | `DATABASE_ECHO` | `False` | Enables SQLAlchemy SQL logging. |
 | `SEED_DEMO_USER` | `True` | Seeds the demo admin account on startup for local runs. |
@@ -48,28 +48,8 @@ The following settings are defined in `src/core/config.py`:
 | `HTTP_CLIENT_TIMEOUT_SECONDS` | `10.0` | Default timeout for outbound HTTP requests. |
 | `HTTP_CLIENT_MAX_CONNECTIONS` | `20` | Global connection cap for the shared outbound HTTP client. |
 | `HTTP_CLIENT_MAX_KEEPALIVE_CONNECTIONS` | `10` | Keep-alive pool size for the shared outbound HTTP client. |
-| `LLM_REQUEST_TIMEOUT_SECONDS` | `20.0` | Timeout for AI summarization requests. |
-| `LLM_HEALTHCHECK_TIMEOUT_SECONDS` | `5.0` | Timeout for configured LLM provider readiness checks. |
-| `LLM_MAX_RETRIES` | `2` | Retry count for provider SDK calls that support retries. |
-| `LLM_MAX_CONCURRENCY` | `4` | Bulkhead limit for concurrent LLM summarization requests. |
-| `ENABLE_LLM_READINESS_CHECKS` | `True` | Include configured LLM provider health in `/ready`. |
-
-### AI/LLM Provider Keys
-
-To use the AI-powered CLI Debugger or the `/debug/summarize-errors` endpoint, you must provide **at least one** of the following keys:
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `OPENAI_API_KEY` | `None` | OpenAI API Key. |
-| `GROQ_API_KEY` | `None` | Groq API Key. |
-| `GOOGLE_API_KEY` | `None` | Google AI (Gemini) API Key. |
-
-> [!NOTE]
-> The application automatically selects the first available provider in this order: `GROQ_API_KEY`, `OPENAI_API_KEY`, then `GOOGLE_API_KEY`.
 
 ---
-
-## 🔧 Configuration Files
 
 ### `.env` File
 
@@ -85,7 +65,6 @@ SECRET_KEY=y0ur-5ecur3-k3y-h3r3
 RATE_LIMIT_STORAGE_URI="redis://localhost:6379/0"
 CIRCUIT_BREAKER_CACHE_URL="redis://localhost:6379/1"
 PROMETHEUS_BASE_URL="http://localhost:9099"
-GROQ_API_KEY=gsk_...
 ```
 
 ### Logging Configuration (`src/core/logging.py`)
@@ -150,8 +129,7 @@ The middleware is only enabled when these settings are configured.
 - [ ] **Shared Rate Limiting:** Use `RATE_LIMIT_STORAGE_URI` with Redis for distributed deployments.
 - [ ] **Fallback Cache:** Configure `CIRCUIT_BREAKER_CACHE_URL` with Redis for cache-backed degraded responses.
 - [ ] **Log Level Alignment:** Confirm `LOG_LEVEL` is set to `info` or `warning` for production stability.
-- [ ] **LLM Connectivity:** Ensure at least one valid API key for an LLM provider is present in the `.env` file.
 - [ ] **Tracing Setup:** Verify `OTLP_ENDPOINT` points to a valid collector if distributed tracing is required.
 - [ ] **Trusted Hosts:** Replace `TRUSTED_HOSTS=*` with the real public hostnames for the deployment.
 - [ ] **CORS Policy:** Restrict `CORS_ALLOW_ORIGINS` to the frontends that actually call the API.
-- [ ] **Dependency Checks:** Keep `ENABLE_LLM_READINESS_CHECKS=true` when AI summarization is a required dependency.
+- [ ] **Dependency Checks:** Keep structured-log error triage enabled when log debugging is a required dependency.

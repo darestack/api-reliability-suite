@@ -99,12 +99,8 @@ async def test_readiness_report_defaults_to_ok(client):
     payload = response.json()
     assert payload["status"] in {"ok", "degraded"}
     assert payload["dependencies"]["database"]["status"] == "ok"
-    assert payload["dependencies"]["llm_provider"]["status"] in {
-        "skipped",
-        "configured",
-        "ok",
-        "error",
-    }
+    assert "rate_limit_store" in payload["dependencies"]
+    assert "fallback_cache" in payload["dependencies"]
 
 
 @pytest.mark.asyncio
@@ -118,10 +114,9 @@ async def test_readiness_report_can_be_degraded_without_failing_traffic(client):
                     "status": "degraded",
                     "dependencies": {
                         "database": {"status": "ok", "required": True},
-                        "llm_provider": {
+                        "fallback_cache": {
                             "status": "error",
                             "required": False,
-                            "provider": "groq",
                         },
                     },
                 },
@@ -133,7 +128,7 @@ async def test_readiness_report_can_be_degraded_without_failing_traffic(client):
     assert response.status_code == 200
     payload = response.json()
     assert payload["status"] == "degraded"
-    assert payload["dependencies"]["llm_provider"]["status"] == "error"
+    assert payload["dependencies"]["fallback_cache"]["status"] == "error"
 
 
 @pytest.mark.asyncio

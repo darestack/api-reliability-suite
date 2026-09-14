@@ -1,6 +1,6 @@
 # API Reliability Suite
 
-Backend-focused FastAPI reliability reference with observability workflows and AI-assisted log triage.
+Backend-focused FastAPI reliability reference with health checks, auth, metrics, and failure handling.
 
 ![Thumbnail](docs/assets/thumbnail.png)
 
@@ -10,11 +10,11 @@ Backend-focused FastAPI reliability reference with observability workflows and A
 ![Python](https://img.shields.io/badge/python-3.12%20%7C%203.13-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.128-009688)
 
-A FastAPI service that pairs backend reliability patterns (JWT auth, rate limiting, circuit breaker) with a local observability stack (Prometheus, Grafana, Jaeger) and AI-assisted log triage.
+A small FastAPI service that demonstrates backend reliability patterns without requiring external AI providers.
 
 ## Why This Exists
 
-Many FastAPI examples stop at routes and CRUD flows. This repository goes further by combining backend service patterns, DevOps reliability tooling, and AI-assisted debugging in a small runnable system.
+Many FastAPI examples stop at routes and CRUD flows. This repository focuses on a small, runnable set of operational behaviors: health, readiness, authentication, rate limiting, metrics, and circuit-breaker fallback.
 
 ## Evidence
 
@@ -24,7 +24,7 @@ Many FastAPI examples stop at routes and CRUD flows. This repository goes furthe
 | Container security scan | Passing SBOM + Grype scan after OpenSSL, Mako, and python-multipart fixes: [Security run](https://github.com/darestack/api-reliability-suite/actions/runs/25492412650) |
 | Documentation deploy | Passing GitHub Pages build/deploy: [Docs run](https://github.com/darestack/api-reliability-suite/actions/runs/25492412663) |
 | Local test suite | `59 passed` with patched dependency set |
-| Observability proof | Grafana and AI-debug screenshots in `docs/assets/` |
+| Observability proof | Prometheus metrics and structured logs |
 
 ## What's Included
 
@@ -45,11 +45,9 @@ DevOps:
 - Circuit-breaker behavior with Redis-backed fallback caching
 - Structured logging with correlation IDs and trace context
 
-AI:
+Diagnostics:
 
-- AI-assisted log summarization with Groq, OpenAI, or Google Gemini
-- Runtime reporting of the active summarization provider
-- Error-log filtering plus PII/secret redaction before summarization to keep the debugging path focused
+- Local error-count and latest-error summary from structured logs
 
 ## Requirements
 
@@ -86,8 +84,8 @@ Current boundaries:
 - Local `make run` defaults to SQLite unless `DATABASE_URL` is set; the Docker Compose stack uses Postgres.
 - Rate limiting uses in-memory storage by default unless `RATE_LIMIT_STORAGE_URI` is set (the Docker Compose stack uses Redis).
 - `/external-api` returns the most recent cached upstream payload when the breaker is open and Redis fallback caching is configured.
-- `/debug/summarize-errors` is restricted to admin users, reads the configured log file, and reports the runtime-selected provider.
-- `/ready` performs dependency-aware checks for the database, Redis-backed features, and the configured LLM provider.
+- `/debug/summarize-errors` is restricted to admin users and reads the configured log file locally.
+- `/ready` performs dependency-aware checks for the database and configured Redis-backed features.
 - When `ENVIRONMENT` is set to `staging` or `production`, the app requires a non-default `SECRET_KEY`, a shared `RATE_LIMIT_STORAGE_URI`, and a server-grade `DATABASE_URL`.
 
 ## Local Observability Stack
@@ -120,7 +118,7 @@ Not every use case needs the full stack. Here's what you can skip:
 | **Jaeger** | You don't need distributed trace visualization | Remove from `compose.yml`; structured logs still include trace IDs |
 | **Alertmanager** | You don't need alert routing / notification channels | Prometheus rules still fire; just no forwarding |
 | **Redis** | You don't need rate limiting or circuit-breaker fallback cache | Set `RATE_LIMIT_STORAGE_URI` empty; breaker still works without cache |
-| **AI log triage** | No LLM API key available | `/debug/summarize-errors` is admin-only and non-critical |
+| **Local error summary** | You only need deterministic diagnostics | `/debug/summarize-errors` remains admin-only |
 
 Minimum viable setup: `make run` (SQLite + in-memory rate limiting). No Docker required.
 
@@ -153,9 +151,6 @@ Common settings:
 - `OTLP_ENDPOINT`
 - `PROMETHEUS_BASE_URL`
 - `LOG_FILE_PATH`
-- `OPENAI_API_KEY`
-- `GROQ_API_KEY`
-- `GOOGLE_API_KEY`
 
 The structured log file path defaults to `app.json`.
 Docker and Kubernetes secret files are supported by setting `SETTINGS_SECRETS_DIR` (defaults to `/run/secrets` if present).
@@ -166,13 +161,13 @@ Shared deployments should also set `TRUSTED_HOSTS`, terminate TLS at a reverse p
 | Endpoint                  | Method | Purpose                                               |
 | :------------------------ | :----- | :---------------------------------------------------- |
 | `/health`                 | `GET`  | Health check with rate limiting                       |
-| `/ready`                  | `GET`  | Dependency-aware readiness for DB, Redis, and LLMs    |
+| `/ready`                  | `GET`  | Dependency-aware readiness for DB and Redis           |
 | `/login`                  | `POST` | Exchange credentials for an access and refresh token  |
 | `/token/refresh`          | `POST` | Rotate a refresh token and issue a fresh token pair   |
 | `/logout`                 | `POST` | Revoke the current access token and optional refresh token |
 | `/protected`              | `GET`  | Example authenticated route                           |
 | `/external-api`           | `GET`  | Circuit-breaker demo endpoint with cache-backed fallback support |
-| `/debug/summarize-errors` | `GET`  | Admin-only log summarization with the configured LLM provider |
+| `/debug/summarize-errors` | `GET`  | Admin-only local error summary                         |
 | `/slo/report`             | `GET`  | Report SLO targets and Prometheus-backed recording-rule values when configured |
 | `/slow`                   | `GET`  | Simulate latency for tracing demos                    |
 | `/force-error`            | `GET`  | Trigger a 500 error for alerting and debugging demos  |
@@ -188,10 +183,10 @@ make test
 make load-test
 ```
 
-Focused verification used for the recent hardening pass:
+Focused verification:
 
 ```bash
-poetry run pytest -q --no-cov tests/test_auth.py tests/test_api_advanced.py tests/test_reliability.py tests/unit/core/test_llm_factory.py tests/unit/core/test_llm_summarizer.py tests/unit/core/test_google_provider.py tests/unit/core/test_openai_provider.py tests/unit/core/test_groq_provider.py
+poetry run pytest -q --no-cov tests/test_auth.py tests/test_api.py tests/test_reliability.py
 ```
 
 ## Documentation
@@ -213,14 +208,12 @@ poetry run mkdocs serve
 - [Security Policy](SECURITY.md)
 - [Production Checklist](docs/security.md)
 
-This project was built with AI-assisted iteration for scaffolding, documentation, and test support, with manual review, correction, and verification of the final implementation.
-
 ## GitHub Metadata
 
-Suggested repo description: FastAPI reliability reference with auth, rate limiting, observability, circuit breaker fallback, and tested LLM log triage.
+Suggested repo description: FastAPI reliability reference with auth, rate limiting, metrics, and circuit-breaker fallback.
 
 Suggested topics:
-`fastapi` `backend` `devops` `observability` `opentelemetry` `prometheus` `grafana` `jaeger` `rate-limiting` `circuit-breaker` `jwt` `llm` `ai-ops`
+`fastapi` `backend` `devops` `observability` `prometheus` `rate-limiting` `circuit-breaker` `jwt`
 
 ## Support
 

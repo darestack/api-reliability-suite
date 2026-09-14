@@ -8,13 +8,12 @@ from pathlib import Path
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from src.core.logging import configure_logging
-from src.core.exceptions import handle_unexpected_exception
 from src.core.logs import is_error_log_line
+from src.core.exceptions import handle_unexpected_exception
 from src.core.middleware import CorrelationIdMiddleware
 from src.core.tracing import configure_tracing
 from src.core.config import DEFAULT_SECRET_KEY, settings
 from src.core.rate_limit import limiter, rate_limit_exceeded_handler
-from src.core.llm import summarize_with_llm
 from src.domain.models import AuthenticatedUser, HealthStatus, UserRole
 from src.services.auth_service import AuthService
 from src.infrastructure.database import close_database, init_database
@@ -207,38 +206,30 @@ async def summarize_errors(
     request: Request,
     current_user: AuthenticatedUser = Depends(require_roles(UserRole.ADMIN)),
 ):
-    """
-    Analyze local log file and summarize errors using LLM.
-    Requires Authentication!
-    """
-    log_file_path = Path(settings.LOG_FILE_PATH)
-
+    """Return a small local error summary from the configured log file."""
+    log_path = Path(settings.LOG_FILE_PATH)
     try:
-        # Read a snapshot of the current log file. Async iteration against the
-        # active rotating log file can stall under this logging setup.
-        log_contents = log_file_path.read_text()
+        log_lines = log_path.read_text(encoding="utf-8").splitlines()
     except FileNotFoundError:
-        return {"summary": "No log file found.", "provider": None}
+        return {"summary": "No log file found.", "provider": "local"}
 
-    logs = [
-        line.strip() for line in log_contents.splitlines() if is_error_log_line(line)
-    ]
+    error_lines = [line for line in log_lines if is_error_log_line(line)]
+    if not error_lines:
+        return {"summary": "No errors found in the log file.", "provider": "local"}
 
-    if not logs:
-        return {"summary": "No errors found in the log file.", "provider": None}
-
-    summary = await summarize_with_llm(logs)
-    provider = summary.pop("provider", None)
     return {
-        "ai_summary": summary,
-        "provider": provider,
+        "summary": {
+            "error_count": len(error_lines),
+            "latest_error": error_lines[-1],
+        },
+        "provider": "local",
         "requested_by": current_user.username,
     }
 
 
 @app.get("/ready")
 async def readiness_check():
-    """Dependency-aware readiness report for DB, Redis-backed features, and optional LLM providers."""
+    """Dependency-aware readiness report for the database and optional Redis services."""
     http_status, report = await build_readiness_report()
     return JSONResponse(
         content={

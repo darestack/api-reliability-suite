@@ -5,7 +5,6 @@ from urllib.parse import urlparse
 import redis.asyncio as redis
 
 from src.core.config import settings
-from src.core.llm import LLMFactory
 from src.infrastructure.database import database_is_ready
 from src.infrastructure.fallback_cache import fallback_cache
 
@@ -38,11 +37,6 @@ async def build_readiness_report() -> tuple[int, dict]:
     if fallback_dependency["required"] and fallback_dependency["status"] == "error":
         overall_status = "error"
         http_status = 503
-
-    llm_dependency = await LLMFactory.check_provider_health()
-    dependencies["llm_provider"] = llm_dependency
-    if overall_status == "ok" and llm_dependency["status"] == "error":
-        overall_status = "degraded"
 
     return http_status, {"status": overall_status, "dependencies": dependencies}
 

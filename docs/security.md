@@ -48,16 +48,6 @@ The API can enforce deployment-facing controls through middleware:
 
 These controls are intended for deployments behind a TLS-terminating reverse proxy or ingress.
 
-## 🔍 AI Log-Triage Safeguards
-
-Before the app sends error logs to an LLM provider, it:
-
-- filters to error-level lines only
-- redacts common secret-bearing keys such as `password`, `token`, and `authorization`
-- redacts common PII or credential patterns such as email addresses, bearer tokens, JWTs, and IPv4 addresses
-
-This keeps the summarization path narrower than raw log forwarding.
-
 ---
 
 ## 🧪 Input Validation
@@ -91,4 +81,4 @@ The application uses **Pydantic v2** with `strict=True` enabled in the model con
 - Keep `RATE_LIMIT_IN_MEMORY_FALLBACK_ENABLED=false` in production.
 - Run behind TLS and restrict access to `/metrics` if exposed.
 - Configure `TRUSTED_HOSTS` and `CORS_ALLOW_ORIGINS` explicitly in shared environments.
-- Keep the admin-only AI triage path behind role-based access.
+- Keep the admin-only error-triage path behind role-based access.

@@ -11,7 +11,6 @@ The API and its core I/O-heavy features use non-blocking **async/await**. This h
 
 **Key async components:**
 - **`src/main.py`**: All routes and lifespan events.
-- **`src/core/llm/`**: Asynchronous calls to LLM providers.
 - **`src/infrastructure/http_client.py`**: Async outbound HTTP calls with trace propagation support.
 
 ### Circuit Breaker (Fault Tolerance)

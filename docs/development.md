@@ -37,7 +37,6 @@ make stack-up
 | `make test` | Runs the full test suite with coverage report. |
 | `make lint` | Runs Ruff check on the codebase. |
 | `make format` | Runs Ruff format on the codebase. |
-| `make debug` | Runs the AI-powered CLI log triage tool against `LOG_FILE_PATH`. |
 
 ---
 
@@ -90,10 +89,11 @@ poetry run pytest tests/test_reliability.py
 
 ## 🔍 Debugging & Analysis
 
-### AI-Powered CLI Debugger
-Run `make debug` to trigger an automated analysis of the configured `LOG_FILE_PATH`. This tool filters for error events and uses an LLM to provide:
-1.  **Summary:** A human-readable explanation of why the crash happened.
-2.  **Remediation:** Actionable steps to fix the issue.
+### Local Error Triage
+Run `make debug` to print the latest error lines from the configured `LOG_FILE_PATH` for admin review. This tool filters for error events and reports a compact summary:
+
+1.  **Summary:** A count of error lines and the most recent failing line.
+2.  **Remediation:** Inspect the structured log directly with `jq`.
 
 ### Log Inspection
 Logs are structured as JSON in the file configured by `LOG_FILE_PATH` (`app.json` by default). You can use `jq` to analyze them:

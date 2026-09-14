@@ -28,13 +28,10 @@ To prevent abuse and ensure fair usage, we implement a **fixed-window** rate lim
 
 ---
 
-## 🤖 AI-Powered Triage
-When an error occurs, the **AI summarizer** can analyze your logs to provide human-readable insights.
+## 🛠️ Local Error Triage
+When an error occurs, the admin-only `/debug/summarize-errors` endpoint reads the structured log file and returns a compact local summary: error count and the latest error line.
 
-![AI Triage Screenshot](assets/ai-debug-screenshot.png)
-
-- **Summarization**: Groups error patterns and surfaces likely causes based on log content.
-- **Actionable Hints**: Offers suggested next steps from the LLM output.
+- **Summarization**: Groups error patterns and surfaces the latest failing line for investigation.
 - **RBAC Guardrail**: `/debug/summarize-errors` is restricted to authenticated admin users.
 
 !!! abstract "CLI Tool"

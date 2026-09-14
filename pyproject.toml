@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "api-reliability-suite"
 version = "1.0.0"
-description = "Backend, DevOps, and AI reliability template for FastAPI services with observability, auth, and log triage"
+description = "Backend and DevOps reliability template for FastAPI services with observability, auth, and log triage"
 authors = ["Dare AbdulGoniyy adelekedare2012@gmail.com"]
 readme = "README.md"
 package-mode = false
@@ -20,11 +20,7 @@ python-jose = {extras = ["cryptography"], version = "^3.5.0"}
 bcrypt = "<4.1"
 python-multipart = ">=0.0.27,<0.1.0"
 prometheus-fastapi-instrumentator = "^7.1.0"
-groq = "^1.0.0"
-openai = "^2.14.0"
-aiofiles = "^25.1.0"
 pybreaker = "^1.4.1"
-google-genai = "^1.70.0"
 redis = "^6.4.0"
 rich = "^14.1.0"
 sqlalchemy = "^2.0.49"

@@ -34,7 +34,8 @@ stack-down:
 	docker compose down
 
 debug:
-	docker compose exec api python scripts/cli_debugger.py
+	@echo "Latest error lines from $${LOG_FILE_PATH:-app.json}:"
+	@test -f "$${LOG_FILE_PATH:-app.json}" && tail -n 20 "$${LOG_FILE_PATH:-app.json}" | grep -i "error\|exception" || echo "No log file found."
 
 load-test:
 	k6 run \

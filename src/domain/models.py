@@ -61,19 +61,9 @@ class RefreshTokenRequest(CommonBaseModel):
 
 
 class LogoutRequest(CommonBaseModel):
-    """Logout request that can revoke the current refresh token too."""
+    """Logout request that can also revoke the presented refresh token."""
 
     refresh_token: str | None = Field(
         default=None,
         description="Optional refresh token to revoke alongside the current access token",
     )
-
-
-class AIRecommendation(CommonBaseModel):
-    """Structured insight returned by the LLM analysis agent."""
-
-    root_cause_id: str = Field(
-        ..., description="Short identifier for the identified issue"
-    )
-    severity: str = Field(..., pattern="^(CRITICAL|HIGH|MEDIUM|LOW)$")
-    action: list[str] = Field(..., description="List of recommended remediation steps")

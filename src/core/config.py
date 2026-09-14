@@ -43,11 +43,6 @@ class Settings(BaseSettings):
     DEMO_PASSWORD: str = "secret123"
     DEMO_USER_ROLE: Literal["admin", "user"] = "admin"
 
-    # LLM Provider Keys (set One of these)
-    OPENAI_API_KEY: str | None = None
-    GROQ_API_KEY: str | None = None
-    GOOGLE_API_KEY: str | None = None
-
     # Security Settings
     SECRET_KEY: str = DEFAULT_SECRET_KEY
 
@@ -75,14 +70,6 @@ class Settings(BaseSettings):
     HTTP_CLIENT_TIMEOUT_SECONDS: float = 10.0
     HTTP_CLIENT_MAX_CONNECTIONS: int = 20
     HTTP_CLIENT_MAX_KEEPALIVE_CONNECTIONS: int = 10
-    LLM_REQUEST_TIMEOUT_SECONDS: float = 20.0
-    LLM_HEALTHCHECK_TIMEOUT_SECONDS: float = 5.0
-    LLM_MAX_RETRIES: int = 2
-    LLM_MAX_CONCURRENCY: int = 4
-
-    # Dependency checks
-    ENABLE_LLM_READINESS_CHECKS: bool = True
-
     model_config = SettingsConfigDict(env_file=".env", strict=True)
 
     def model_post_init(self, __context) -> None:

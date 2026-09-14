@@ -1,12 +1,12 @@
 # Architecture & Internals
 
-This project uses a service-oriented layout with **ports-and-adapters-inspired seams**. Some boundaries are formalized through abstractions such as `BaseLLM`, while others are still concrete implementations that can be refactored further as the template matures.
+This project uses a service-oriented layout with **ports-and-adapters-inspired seams**. Some boundaries are formalized through abstractions, while others are still concrete implementations that can be refactored further as the template matures.
 
 The goal is practical separation rather than architecture theater:
 
 - Request handling stays in FastAPI routes and middleware.
 - Business logic lives in services and domain models.
-- External integrations sit behind infrastructure adapters or provider abstractions.
+- External integrations sit behind infrastructure adapters.
 - Reliability concerns such as tracing, logging, rate limiting, and circuit breaking are treated as part of the application design, not bolt-ons.
 
 ---
@@ -33,7 +33,6 @@ graph TD
 
     subgraph "Infrastructure Adapters (Driven)"
         Repo["User Repository<br/>(src.infrastructure.user_repository)"]
-        LLM["AI Adapter<br/>(src.core.llm/)"]
         Logger["Structlog Adapter<br/>(src.core.logging)"]
         HTTP["Instrumented HTTP Client<br/>(src.infrastructure.http_client)"]
     end
@@ -50,7 +49,6 @@ graph TD
 
     API -.-> OTel
     API -.-> Metrics
-    LLM -.-> API
     HTTP -.-> OTel
 
     OTel --> Jaeger
@@ -66,20 +64,17 @@ graph TD
 We decouple the core decision-making paths from the external systems they depend on.
 
 Why it helps:
-
 - **Testability:** Services and helper modules can be exercised without booting the full observability stack.
-- **Provider Switching:** Moving between supported LLM providers is mostly a configuration and adapter concern.
-- **Refactor Path:** More boundaries can be promoted into explicit protocols or ports as the template grows.
+- **Refactor Path:** More boundaries can be promoted into explicit protocols or ports as the template matures.
 
 ### Reliability as a First-Class Concern
 
 Observability and failure handling are part of the runtime design, not just deployment garnish.
 
 Current examples in the codebase:
-
 - **Distributed Tracing:** Requests carry correlation metadata and export spans when `OTLP_ENDPOINT` is configured.
 - **Circuit Breaker:** The demo upstream path fails fast after repeated errors and returns a degraded fallback response.
-- **AI Log Triage:** The summarizer reads filtered local error logs and produces a first-pass explanation plus remediation hints.
+- **Local Log Triage:** The admin-only `/debug/summarize-errors` endpoint reads filtered local error logs and returns a compact summary.
 
 ---
 
@@ -99,12 +94,14 @@ Current examples in the codebase:
 ## ⚡ Resilience Implementation
 
 ### Circuit Breakers
+
 Our implementation tracks consecutive failures.
 - **Trip Condition**: 5 consecutive failures.
 - **Cooldown**: 60 seconds.
 - **Metric**: Each state change is exported as a Prometheus metric for real-time monitoring.
 
 ### Trace Propagation
+
 We provide an **instrumented HTTP client** in `src.infrastructure.http_client` that propagates trace context and correlation IDs for outbound calls.
 
 !!! info "ADRs"

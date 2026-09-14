@@ -1,6 +1,5 @@
 import pytest
 from datetime import UTC, datetime, timedelta
-from unittest.mock import AsyncMock, patch
 import os
 
 from jose import jwt
@@ -11,33 +10,19 @@ from src.core.config import settings
 
 @pytest.mark.asyncio
 async def test_summarize_errors_endpoint_success(client, auth_headers):
-    """Test /debug/summarize-errors success path with mocked LLM"""
-    # Create a dummy app.json
+    """Test /debug/summarize-errors success path with a local error log."""
     log_content = '{"event": "error occurred", "level": "error"}\n'
     with open(settings.LOG_FILE_PATH, "w") as f:
         f.write(log_content)
 
     try:
-        with patch(
-            "src.main.summarize_with_llm", new_callable=AsyncMock
-        ) as mock_summarize:
-            mock_summarize.return_value = {
-                "summary_text": "Mocked summary",
-                "structured_insight": {
-                    "root_cause_id": "test",
-                    "severity": "LOW",
-                    "action": ["none"],
-                },
-                "provider": "groq",
-            }
-
-            response = await client.get("/debug/summarize-errors", headers=auth_headers)
-            assert response.status_code == 200
-            data = response.json()
-            assert "ai_summary" in data
-            assert data["ai_summary"]["summary_text"] == "Mocked summary"
-            assert data["provider"] == "groq"
-            assert data["requested_by"] == "demo"
+        response = await client.get("/debug/summarize-errors", headers=auth_headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert "summary" in data
+        assert data["summary"]["error_count"] == 1
+        assert data["provider"] == "local"
+        assert data["requested_by"] == "demo"
     finally:
         if os.path.exists(settings.LOG_FILE_PATH):
             os.remove(settings.LOG_FILE_PATH)
@@ -53,7 +38,7 @@ async def test_summarize_errors_no_logs(client, auth_headers):
         response = await client.get("/debug/summarize-errors", headers=auth_headers)
         assert response.status_code == 200
         assert "No errors found" in response.json()["summary"]
-        assert response.json()["provider"] is None
+        assert response.json()["provider"] == "local"
     finally:
         if os.path.exists(settings.LOG_FILE_PATH):
             os.remove(settings.LOG_FILE_PATH)
@@ -68,7 +53,7 @@ async def test_summarize_errors_file_not_found(client, auth_headers):
     response = await client.get("/debug/summarize-errors", headers=auth_headers)
     assert response.status_code == 200
     assert "No log file found" in response.json()["summary"]
-    assert response.json()["provider"] is None
+    assert response.json()["provider"] == "local"
 
 
 @pytest.mark.asyncio
@@ -122,7 +107,6 @@ async def test_auth_service_verify_token_no_sub(client):
     from src.core.auth import ALGORITHM
 
     service = AuthService(repository=user_repository)
-    # Create token without 'sub'
     token = jwt.encode({"some": "payload"}, settings.SECRET_KEY, algorithm=ALGORITHM)
 
     with pytest.raises(Exception):  # FastAPI HTTPException
@@ -131,7 +115,7 @@ async def test_auth_service_verify_token_no_sub(client):
 
 @pytest.mark.asyncio
 async def test_summarize_errors_requires_admin_role(client):
-    """The AI triage route should be restricted to admin users."""
+    """The error triage route should be restricted to admin users."""
     from src.core.auth import create_access_token
     from src.domain.models import UserRole
     from src.infrastructure.user_repository import user_repository
